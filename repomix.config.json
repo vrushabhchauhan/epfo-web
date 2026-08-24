@@ -1,0 +1,21 @@
+﻿{
+  "output": {
+    "filePath": ".codex-context.xml",
+    "style": "xml",
+    "removeComments": false,
+    "removeEmptyLines": true,
+    "topFilesLength": 10
+  },
+  "ignore": {
+    "customPatterns": [
+      "**/*.lock",
+      "**/package-lock.json",
+      "**/*.min.*",
+      "**/*.svg",
+      "**/dist/**",
+      "**/build/**",
+      "**/.git/**",
+      "**/.vscode/**"
+    ]
+  }
+}
