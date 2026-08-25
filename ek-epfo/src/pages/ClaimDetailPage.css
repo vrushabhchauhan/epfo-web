@@ -1,0 +1,323 @@
+.claim-detail-page {
+  color: var(--color-text);
+}
+
+.claims-back-link {
+  color: var(--color-accent);
+  display: inline-block;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.claims-back-link:hover,
+.claims-back-link:focus {
+  color: var(--color-text);
+}
+
+.claims-back-link:focus-visible,
+.stage-help-button:focus-visible,
+.claim-fix-link:focus-visible,
+.help-modal__close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.claim-detail-header {
+  margin-top: var(--space-4);
+}
+
+.claim-detail-header h1,
+.claim-not-found h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.claim-detail-meta,
+.claim-not-found p {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.claim-detail-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.claim-timeline-card,
+.claim-status-card,
+.claim-not-found {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+}
+
+.claim-timeline-card h2,
+.claim-status-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.claim-timeline {
+  list-style: none;
+  margin: var(--space-5) 0 0;
+  padding: 0;
+}
+
+.claim-timeline__item {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: var(--space-4);
+}
+
+.claim-timeline__track {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.claim-timeline__marker {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-card-bg);
+  flex: 0 0 16px;
+  box-sizing: border-box;
+}
+
+.claim-timeline__marker--complete {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.claim-timeline__marker--attention {
+  background: var(--color-attention);
+  border-color: var(--color-attention);
+}
+
+.claim-timeline__line {
+  width: 2px;
+  min-height: var(--space-7);
+  flex: 1;
+  background: var(--color-border);
+}
+
+.claim-timeline__line--complete {
+  background: var(--color-accent);
+}
+
+.claim-timeline__content {
+  padding-bottom: var(--space-5);
+}
+
+.claim-timeline__item:last-child .claim-timeline__content {
+  padding-bottom: 0;
+}
+
+.claim-timeline__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.claim-timeline__label-row h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.claim-timeline__label--attention {
+  color: var(--color-attention);
+}
+
+.stage-help-button {
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  background: transparent;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-muted);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.stage-help-button:hover,
+.stage-help-button:focus {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.stage-help-button svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.claim-timeline__date {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.claim-timeline__description {
+  margin-top: var(--space-2);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.claim-status-card {
+  align-self: start;
+}
+
+.claim-status-label {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-bottom: var(--space-2);
+}
+
+.claim-status-description {
+  color: var(--color-text);
+  line-height: 1.5;
+  margin-top: var(--space-3);
+}
+
+.claim-status-amount {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-top: var(--space-4);
+}
+
+.claim-status-card__attention {
+  color: var(--color-attention);
+}
+
+.claim-fix-link {
+  display: inline-block;
+  margin-top: var(--space-5);
+  background: var(--color-attention);
+  border: 0;
+  border-radius: 8px;
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none;
+  transition: filter 150ms ease;
+}
+
+.claim-fix-link:hover,
+.claim-fix-link:focus {
+  filter: brightness(0.9);
+}
+
+.claim-not-found {
+  margin-top: var(--space-5);
+}
+
+.help-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  background: color-mix(in srgb, var(--color-text) 48%, transparent);
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6);
+  z-index: 1000;
+  animation: helpModalFadeIn 150ms ease-out;
+}
+
+@keyframes helpModalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.help-modal {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.help-modal__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.help-modal__top h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.help-modal__close {
+  width: var(--space-6);
+  height: var(--space-6);
+  background: transparent;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.125rem;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.help-modal__close:hover,
+.help-modal__close:focus {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.help-modal__body {
+  margin-top: var(--space-4);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .claim-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

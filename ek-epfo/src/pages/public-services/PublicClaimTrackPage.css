@@ -1,0 +1,94 @@
+﻿.track-result-box {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.track-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.track-claim-id {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gov-navy);
+}
+
+.track-header-row h2 {
+  font-size: 1.125rem;
+  margin: 2px 0;
+}
+
+.track-filed-date {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.track-stepper-container {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+}
+
+.track-step-row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.track-step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.track-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.track-step-row.done .track-step-dot {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.track-step-row.active .track-step-dot {
+  background: var(--gov-emerald);
+  border-color: var(--gov-emerald);
+  color: white;
+}
+
+.track-step-line {
+  flex: 1;
+  width: 2px;
+  background: var(--color-border);
+  min-height: 20px;
+}
+
+.track-step-content {
+  flex: 1;
+}
+
+.track-step-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+}
+
+.track-step-content p {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}

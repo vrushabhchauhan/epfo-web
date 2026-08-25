@@ -1,0 +1,87 @@
+﻿.allot-success-box {
+  text-align: center;
+  padding: var(--space-2) 0;
+}
+
+.digital-uan-card {
+  max-width: 520px;
+  margin: var(--space-4) auto var(--space-5);
+  background: linear-gradient(135deg, var(--gov-emerald-dark) 0%, var(--gov-emerald) 100%);
+  color: white;
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  text-align: left;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.uan-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6875rem;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.uan-card-tag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.uan-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) 0;
+}
+
+.card-label {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+}
+
+.card-uan-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #FDE047;
+  display: block;
+  letter-spacing: 0.04em;
+  margin: 2px 0;
+}
+
+.card-member-name {
+  font-size: 1rem;
+  font-weight: 700;
+  display: block;
+}
+
+.card-member-meta {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.dummy-qr {
+  width: 54px;
+  height: 54px;
+  background: white;
+  color: #0F172A;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.uan-card-bottom {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.75);
+  padding-top: var(--space-2);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}

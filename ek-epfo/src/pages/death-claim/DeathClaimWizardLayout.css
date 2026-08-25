@@ -1,0 +1,68 @@
+﻿.death-wizard-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+
+.death-wizard-topbar {
+  background: var(--color-card-bg);
+  border-bottom: var(--border-width) solid var(--color-border);
+  padding: var(--space-3) var(--space-4);
+}
+
+.death-wizard-topbar__inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.death-wizard-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: inherit;
+}
+
+.death-wizard-brand .emblem {
+  font-size: 1.5rem;
+}
+
+.death-wizard-brand strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--gov-emerald-dark);
+}
+
+.death-wizard-brand span {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.death-wizard-exit-btn {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-decoration: none;
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: all 150ms ease;
+}
+
+.death-wizard-exit-btn:hover {
+  background: var(--color-bg);
+  color: var(--gov-saffron);
+  border-color: var(--gov-saffron);
+}
+
+.death-wizard-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5) var(--space-4);
+}

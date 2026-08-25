@@ -1,0 +1,235 @@
+﻿.pensioner-layout {
+  max-width: 1040px;
+  margin: var(--space-6) auto;
+  padding: 0 var(--space-4);
+  display: grid;
+  gap: var(--space-5);
+}
+
+.pensioner-header {
+  margin-bottom: var(--space-2);
+}
+
+.pensioner-subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* PPO Search */
+.ppo-search-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.ppo-input-group label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.ppo-input-row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.ppo-input {
+  flex: 1;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.9375rem;
+}
+
+.btn-fetch-ppo {
+  background: var(--gov-emerald);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Hero Grid */
+.pensioner-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-5);
+}
+
+.pensioner-info-card,
+.dlc-status-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.info-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.ppo-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gov-navy);
+}
+
+.cpps-live-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-success);
+  background: var(--color-success-light);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.pensioner-name {
+  font-size: 1.25rem;
+}
+
+.pension-type {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.pension-rate-box {
+  background: var(--gov-emerald-light);
+  border: 1px solid rgba(11, 79, 63, 0.2);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.rate-label {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.rate-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gov-emerald-dark);
+  display: block;
+  margin: 2px 0;
+}
+
+.rate-sub {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+}
+
+.pensioner-bank-row {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* DLC Card */
+.dlc-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.dlc-icon { font-size: 2rem; }
+
+.dlc-header h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.dlc-status-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.dlc-desc {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-bottom: var(--space-3);
+}
+
+.dlc-validity-box {
+  background: var(--color-bg);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.btn-submit-dlc {
+  margin-top: auto;
+  background: var(--gov-navy);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Pension Ledger */
+.pension-ledger-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.ledger-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.ledger-header h2 {
+  font-size: 1.125rem;
+}
+
+.pension-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.pension-table th {
+  background: var(--color-bg);
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.pension-table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (max-width: 800px) {
+  .pensioner-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}

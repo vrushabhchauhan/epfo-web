@@ -1,0 +1,469 @@
+﻿.dashboard-grid-layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Corpus Banner */
+.corpus-banner {
+  background: linear-gradient(135deg, var(--gov-emerald-dark) 0%, var(--gov-emerald) 100%);
+  color: white;
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+}
+
+.corpus-banner__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  font-size: 0.75rem;
+}
+
+.corpus-badge {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.corpus-interest-rate strong {
+  color: #FDE047;
+}
+
+.corpus-hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.corpus-label {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.corpus-amount {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.corpus-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.btn-secondary-white {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.btn-secondary-white:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-primary-gold {
+  background: #F59E0B;
+  color: #0F172A;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.btn-primary-gold:hover {
+  background: #D97706;
+}
+
+.corpus-split-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.split-card {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+
+.split-card__label {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.split-card__amount {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  margin: 4px 0 2px;
+}
+
+.split-card__hint {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.split-card--interest .split-card__amount {
+  color: #FDE047;
+}
+
+/* Action Alert Banner */
+.action-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--gov-saffron-light);
+  border: 1.5px solid var(--gov-saffron);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.action-alert-banner__icon {
+  font-size: 1.75rem;
+}
+
+.action-alert-banner__content {
+  flex: 1;
+}
+
+.action-alert-banner__title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--gov-saffron);
+}
+
+.action-alert-banner__desc {
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  margin-top: 2px;
+}
+
+.action-alert-btn {
+  background: var(--gov-saffron);
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* 2-Column Grid */
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-5);
+}
+
+.dashboard-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-5);
+}
+
+.dashboard-card:last-child {
+  margin-bottom: 0;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.card-meta-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--gov-emerald);
+  background: var(--gov-emerald-light);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.card-header-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  text-decoration: none;
+}
+
+/* Statutory Grid */
+.statutory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.statutory-card {
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 150ms ease;
+}
+
+.statutory-card:hover {
+  border-color: var(--gov-emerald);
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.statutory-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.statutory-form-pill {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--gov-navy);
+  color: white;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+}
+
+.statutory-form-pill--gold {
+  background: var(--gov-gold);
+}
+
+.statutory-speed-tag {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.statutory-card__title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.statutory-card__desc {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.statutory-card__link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  margin-top: var(--space-2);
+  display: block;
+}
+
+/* Employer Box */
+.status-pill-green {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-success);
+  background: var(--color-success-light);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.employer-compliance-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  gap: var(--space-4);
+}
+
+.employer-info-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.employer-label {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.employer-name {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.employer-member-id {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.employer-status-col {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.deposit-tag strong {
+  color: var(--color-success);
+}
+
+.deposit-sub {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+/* Claims Tracker Right Column */
+.claims-summary-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.claim-summary-item {
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+
+.claim-summary-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.claim-item-form {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.claim-status-pill {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+}
+
+.claim-status-pill--disbursed {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.claim-status-pill--in_progress {
+  background: var(--gov-emerald-light);
+  color: var(--gov-emerald);
+}
+
+.claim-status-pill--rejected {
+  background: var(--gov-saffron-light);
+  color: var(--gov-saffron);
+}
+
+.claim-item-type {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: block;
+}
+
+.claim-item-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.claim-item-action-link {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  text-decoration: none;
+  margin-top: var(--space-2);
+}
+
+.claim-item-action-link.attention {
+  color: var(--gov-saffron);
+}
+
+/* Member Stack */
+.member-details-stack {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.stack-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  border-bottom: 1px dashed var(--color-border);
+  font-size: 0.75rem;
+}
+
+.stack-row:last-child {
+  border-bottom: 0;
+}
+
+.stack-label {
+  color: var(--color-muted);
+}
+
+.stack-val {
+  font-weight: 600;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+  .corpus-split-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .statutory-grid {
+    grid-template-columns: 1fr;
+  }
+}

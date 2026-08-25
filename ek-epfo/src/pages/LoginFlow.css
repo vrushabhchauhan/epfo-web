@@ -1,0 +1,345 @@
+.login-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: var(--space-5);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.login-card__header {
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.login-card__logo {
+  display: inline-block;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--gov-emerald);
+  text-decoration: none;
+  margin-bottom: var(--space-3);
+}
+
+.login-card__header h1 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.login-card__header p {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  margin-top: var(--space-1);
+}
+
+/* DPI Badge */
+.login-dpi-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--color-success-light);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  border-radius: var(--radius-pill);
+  padding: 4px var(--space-3);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-success);
+  margin-bottom: var(--space-4);
+}
+
+.dpi-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+/* Form Styles */
+.login-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.toggle-mode-btn {
+  background: transparent;
+  border: 0;
+  color: var(--gov-emerald);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle-mode-btn:hover {
+  text-decoration: underline;
+}
+
+.login-input {
+  width: 100%;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-card-bg);
+  box-sizing: border-box;
+  transition: border-color 150ms ease;
+}
+
+.login-input:focus {
+  border-color: var(--gov-emerald);
+  outline: 2px solid var(--gov-emerald-light);
+}
+
+.login-helper-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-recovery-link {
+  background: transparent;
+  border: 0;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.login-recovery-link:hover {
+  color: var(--gov-emerald);
+  text-decoration: underline;
+}
+
+.auth-error-banner {
+  background: var(--gov-saffron-light);
+  border: 1px solid var(--gov-saffron);
+  color: var(--gov-saffron);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-submit-btn {
+  background: var(--gov-emerald);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.login-submit-btn:hover {
+  background: var(--gov-emerald-dark);
+}
+
+/* OTP Boxes */
+.otp-boxes-container {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.otp-box {
+  width: 44px;
+  height: 48px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.otp-box:focus {
+  border-color: var(--gov-emerald);
+  outline: 2px solid var(--gov-emerald-light);
+}
+
+/* Multi-Rail */
+.multi-rail-container {
+  text-align: center;
+}
+
+.switch-rail-btn {
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  cursor: pointer;
+  width: 100%;
+}
+
+.switch-rail-btn:hover {
+  background: var(--gov-emerald-light);
+}
+
+.anti-lock-timer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.resend-active-btn {
+  background: transparent;
+  border: 0;
+  color: var(--gov-emerald);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-quick-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-border);
+}
+
+.quick-service-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  text-decoration: none;
+  background: var(--color-bg);
+  padding: 6px var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  transition: all 150ms ease;
+}
+
+.quick-service-link:hover {
+  background: var(--gov-emerald-light);
+  border-color: var(--gov-emerald);
+}
+
+.login-card__footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border);
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  z-index: 1000;
+}
+
+.modal-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-md);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.modal-header h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: 0;
+  font-size: 1.125rem;
+  cursor: pointer;
+  color: var(--color-muted);
+}
+
+.modal-desc {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.recovery-steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+
+.recovery-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-bg);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+}
+
+.step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gov-emerald);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.digilocker-auth-btn {
+  width: 100%;
+  background: var(--gov-navy);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}

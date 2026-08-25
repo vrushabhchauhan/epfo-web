@@ -1,0 +1,112 @@
+﻿*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Gov Brand Palette */
+  --gov-emerald: #0B4F3F;
+  --gov-emerald-dark: #07382D;
+  --gov-emerald-light: #E6F4F1;
+  --gov-navy: #1E3A8A;
+  --gov-saffron: #C2410C;
+  --gov-saffron-light: #FFF7ED;
+  --gov-gold: #D97706;
+
+  /* Neutrals */
+  --color-bg: #F8FAFC;
+  --color-card-bg: #FFFFFF;
+  --color-text: #0F172A;
+  --color-text-secondary: #475569;
+  --color-muted: #64748B;
+  --color-border: #E2E8F0;
+  --color-border-dark: #CBD5E1;
+
+  /* Functional Tokens */
+  --color-accent: var(--gov-emerald);
+  --color-accent-hover: var(--gov-emerald-dark);
+  --color-accent-light: var(--gov-emerald-light);
+  --color-attention: var(--gov-saffron);
+  --color-attention-light: var(--gov-saffron-light);
+  --color-success: #16A34A;
+  --color-success-light: #F0FDF4;
+
+  /* Typography */
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 28px;
+  --space-7: 40px;
+
+  /* Sizing & Layout */
+  --radius-sm: 6px;
+  --radius-card: 10px;
+  --radius-pill: 9999px;
+  --border-width: 1px;
+  --sidebar-width: 240px;
+  --content-max-width: 1200px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+nav ul,
+nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+p {
+  margin: 0;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(.number, [data-numeric='true']) {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,23 @@
+{
+  "0": "App.jsx",
+  "1": "mockData.js",
+  "2": "LandingPage.jsx",
+  "3": "package.json",
+  "4": ".oxlintrc.json",
+  "5": "react",
+  "6": "AuthLayout.jsx",
+  "7": "vite.config.js",
+  "8": "React + Vite",
+  "9": "AGENTS.md",
+  "10": "rules/graphify.md",
+  "11": "workflows/graphify.md",
+  "12": "CLAUDE.md",
+  "13": "GEMINI.md",
+  "14": "ClaimDetailPage.jsx",
+  "15": "TransfersPage.jsx",
+  "16": "DeathClaimStep3Page",
+  "17": "ProfilePage.jsx",
+  "18": "ClaimFixPage",
+  "19": "LoginVerifyPage",
+  "20": "PlaceholderPage.jsx"
+}

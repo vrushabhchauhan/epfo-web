@@ -1,0 +1,319 @@
+.death-confirmation-container {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  color: var(--color-text);
+}
+
+/* Official Receipt Card */
+.official-receipt-card {
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px solid var(--gov-emerald);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  margin: var(--space-4) 0;
+  text-align: left;
+  box-shadow: var(--shadow-md);
+  color: #0F172A;
+}
+
+.receipt-gov-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--gov-emerald);
+  margin-bottom: var(--space-4);
+}
+
+.receipt-gov-header .emblem-box {
+  font-size: 2.25rem;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.header-titles strong {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--gov-emerald-dark);
+}
+
+.header-titles span {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.receipt-type-pill {
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: var(--gov-navy);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+
+.qr-box {
+  background: var(--color-bg);
+  border: 1px dashed var(--color-border);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--gov-emerald);
+}
+
+.receipt-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  background: var(--color-bg);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.r-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.r-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.r-val {
+  font-size: 0.8125rem;
+  margin-top: 2px;
+}
+
+/* Entitlement Table */
+.receipt-entitlement-table {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.t-head {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr;
+  background: var(--gov-navy);
+  color: white;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.t-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+}
+
+.t-row:last-child {
+  border-bottom: 0;
+}
+
+.highlight-row {
+  background: var(--gov-saffron-light);
+}
+
+.receipt-security-footer {
+  font-size: 0.625rem;
+  color: var(--color-muted);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-2);
+}
+
+/* Print CSS */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+.death-confirmation-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.death-confirmation-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 15%, var(--color-card-bg));
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.death-confirmation-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.death-confirmation-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.death-confirmation-subtitle {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  max-width: 480px;
+}
+
+.death-confirmation-steps-box {
+  width: 100%;
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-border) 20%, var(--color-card-bg));
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 8px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.death-confirmation-steps-list {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.death-confirmation-fast-track-box {
+  margin-top: var(--space-4);
+  background: var(--gov-emerald-light);
+  border: 1px solid rgba(11, 79, 63, 0.3);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--gov-emerald-dark);
+}
+
+.fast-track-tag {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--gov-emerald);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.death-confirmation-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  width: 100%;
+}
+
+.death-confirm-home-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  text-decoration: none;
+  margin-top: var(--space-1);
+}
+
+.death-confirm-btn {
+  padding: var(--space-3) var(--space-5);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    filter 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease;
+  box-sizing: border-box;
+}
+
+.death-confirm-btn--primary {
+  background: var(--color-accent);
+  color: var(--color-card-bg);
+  border: 0;
+}
+
+.death-confirm-btn--primary:hover,
+.death-confirm-btn--primary:focus {
+  filter: brightness(0.9);
+}
+
+.death-confirm-btn--secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border);
+}
+
+.death-confirm-btn--secondary:hover,
+.death-confirm-btn--secondary:focus {
+  border-color: var(--color-text);
+}
+
+.death-confirm-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .death-confirmation-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .death-confirm-btn {
+    width: 100%;
+  }
+}

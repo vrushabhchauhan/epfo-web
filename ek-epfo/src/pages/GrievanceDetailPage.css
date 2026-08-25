@@ -1,0 +1,227 @@
+﻿.grv-detail-layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.grv-detail-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.header-meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.grv-status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--gov-saffron-light);
+  color: var(--gov-saffron);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+}
+
+.grv-detail-header .subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.status-toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.status-toast--success {
+  background: var(--color-success-light);
+  border: 1px solid var(--color-success);
+  color: var(--color-success);
+}
+
+.status-toast--alert {
+  background: var(--gov-saffron-light);
+  border: 1px solid var(--gov-saffron);
+  color: var(--gov-saffron);
+}
+
+.grv-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-5);
+}
+
+.grv-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-5);
+}
+
+.grv-card:last-child {
+  margin-bottom: 0;
+}
+
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+}
+
+.officer-box {
+  display: flex;
+  gap: var(--space-3);
+  background: var(--color-bg);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.officer-avatar {
+  font-size: 2rem;
+}
+
+.officer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.officer-name {
+  font-size: 0.9375rem;
+}
+
+.officer-ro {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.officer-sla {
+  font-size: 0.6875rem;
+  color: var(--gov-emerald);
+  margin-top: 4px;
+}
+
+/* Stepper */
+.grv-stepper {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.grv-step {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.grv-step__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grv-step__dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.6875rem;
+}
+
+.grv-step--done .grv-step__dot {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.grv-step__line {
+  flex: 1;
+  width: 2px;
+  background: var(--color-border);
+  min-height: 24px;
+}
+
+.grv-step__content {
+  flex: 1;
+}
+
+.grv-step__title-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+}
+
+.grv-step__desc {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+/* Action Card */
+.action-card-desc {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-bottom: var(--space-4);
+}
+
+.resolution-buttons-stack {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.btn-confirm-resolve {
+  background: var(--gov-emerald);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-escalate-ministry {
+  background: var(--gov-saffron-light);
+  color: var(--gov-saffron);
+  border: 1.5px solid var(--gov-saffron);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* RO Stats */
+.ro-stats-stack {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ro-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  padding: var(--space-1) 0;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.ro-stat-row:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .grv-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

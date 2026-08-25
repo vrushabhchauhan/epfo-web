@@ -1,0 +1,254 @@
+﻿.claim-fix-page {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--color-text);
+}
+
+.claim-fix-header {
+  margin-top: var(--space-4);
+}
+
+.claim-fix-header h1,
+.claim-fix-not-found h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.claim-fix-subtitle,
+.claim-fix-not-found p {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.claim-fix-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.claim-fix-explanation {
+  color: var(--color-text);
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.claim-fix-form {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.claim-fix-upload-section {
+  position: relative;
+}
+
+.claim-fix-file-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.claim-fix-dropzone {
+  width: 100%;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  background: color-mix(in srgb, var(--color-border) 20%, var(--color-card-bg));
+  cursor: pointer;
+  text-align: center;
+  font: inherit;
+  color: var(--color-text);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+  display: block;
+}
+
+.claim-fix-dropzone:hover,
+.claim-fix-dropzone:focus-visible {
+  border-color: var(--color-accent);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.claim-fix-dropzone--selected {
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-card-bg));
+  border-color: var(--color-accent);
+  border-style: solid;
+}
+
+.claim-fix-dropzone__upload-icon {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto var(--space-3);
+  color: var(--color-muted);
+}
+
+.claim-fix-dropzone__upload-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.claim-fix-dropzone__check-icon {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto var(--space-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 15%, var(--color-card-bg));
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.claim-fix-dropzone__check-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.claim-fix-dropzone__title {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.claim-fix-dropzone__sub {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  margin-top: var(--space-1);
+}
+
+.claim-fix-dropzone__filename {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-accent);
+  word-break: break-all;
+}
+
+.claim-fix-dropzone__hint {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  margin-top: var(--space-1);
+}
+
+.claim-fix-field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.claim-fix-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.claim-fix-textarea {
+  width: 100%;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 8px;
+  padding: var(--space-3);
+  font: inherit;
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  resize: vertical;
+  box-sizing: border-box;
+  line-height: 1.5;
+  transition: border-color 150ms ease;
+}
+
+.claim-fix-textarea:focus {
+  border-color: var(--color-accent);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.claim-fix-submit-button {
+  width: 100%;
+  background: var(--color-accent);
+  color: var(--color-card-bg);
+  border: 0;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition:
+    filter 150ms ease,
+    opacity 150ms ease;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.claim-fix-submit-button:hover:not(:disabled),
+.claim-fix-submit-button:focus-visible:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.claim-fix-submit-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.claim-fix-submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.claim-fix-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-5) 0;
+}
+
+.claim-fix-success__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 15%, var(--color-card-bg));
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.claim-fix-success__icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.claim-fix-success h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.claim-fix-success p {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  max-width: 420px;
+  margin-bottom: var(--space-5);
+}
+
+.claim-fix-success-link {
+  width: auto;
+  padding: var(--space-3) var(--space-5);
+}

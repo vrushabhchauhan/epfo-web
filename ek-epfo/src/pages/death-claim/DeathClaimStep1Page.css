@@ -1,0 +1,234 @@
+.death-step1-content {
+  color: var(--color-text);
+}
+
+.death-step1-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.death-step1-sub {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.death-uan-lookup-box {
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.lookup-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--gov-navy);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.lookup-input-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.lookup-input {
+  flex: 1;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.9375rem;
+}
+
+.btn-verify-member {
+  background: var(--gov-emerald);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-verify-member:hover {
+  background: var(--gov-emerald-dark);
+}
+
+.lookup-hint {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  display: block;
+  margin-top: var(--space-2);
+}
+
+/* Verified Member Banner */
+.verified-member-banner {
+  background: var(--color-success-light);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-card);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.verified-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-success);
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.verified-details-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.v-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  display: block;
+}
+
+.v-name {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.relationship-selection-section {
+  margin-top: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.demise-date-field label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.date-input {
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+}
+
+.rel-legend {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+
+.relationship-fieldset {
+  border: 0;
+  margin: var(--space-5) 0 0;
+  padding: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.relationship-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.relationship-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+  user-select: none;
+}
+
+.relationship-card:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
+}
+
+.relationship-card--selected {
+  border-color: var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 6%, var(--color-card-bg));
+}
+
+.relationship-card:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.relationship-card__radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.relationship-card__indicator {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  border-radius: 999px;
+  border: 2px solid var(--color-border);
+  background: var(--color-card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.relationship-card--selected .relationship-card__indicator {
+  border-color: var(--color-accent);
+}
+
+.relationship-card__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: transparent;
+  transition: background-color 150ms ease;
+}
+
+.relationship-card--selected .relationship-card__dot {
+  background: var(--color-accent);
+}
+
+.relationship-card__label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.relationship-card--selected .relationship-card__label {
+  font-weight: 600;
+}

@@ -1,0 +1,110 @@
+﻿.nominee-page {
+  color: var(--color-text);
+  max-width: 640px;
+}
+
+.nominee-header {
+  margin-top: var(--space-4);
+}
+
+.nominee-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.nominee-subtitle {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.nominee-content {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.nominee-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+}
+
+.nominee-rows {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.nominee-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nominee-row__label {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.nominee-row__value {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.nominee-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.nominee-edit-button {
+  background: transparent;
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.nominee-edit-button:hover,
+.nominee-edit-button:focus {
+  border-color: var(--color-text);
+}
+
+.nominee-edit-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.nominee-disclosure {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 520px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

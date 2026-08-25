@@ -1,0 +1,196 @@
+﻿.uan-service-layout {
+  max-width: 720px;
+  margin: var(--space-6) auto;
+  padding: 0 var(--space-4);
+}
+
+.uan-header {
+  margin-bottom: var(--space-5);
+}
+
+.uan-back-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gov-emerald);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: var(--space-2);
+}
+
+.uan-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.uan-title-row h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.uan-service-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--gov-navy);
+  color: white;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+}
+
+.uan-desc {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* Card */
+.uan-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.uan-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form-info-notice {
+  display: flex;
+  gap: var(--space-3);
+  background: var(--gov-emerald-light);
+  border: 1px solid rgba(11, 79, 63, 0.2);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-size: 0.75rem;
+  color: var(--gov-emerald);
+}
+
+.form-info-notice.success {
+  background: var(--color-success-light);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.notice-icon { font-size: 1.125rem; }
+
+.uan-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.form-group {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.uan-input {
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.9375rem;
+}
+
+.uan-input:focus {
+  border-color: var(--gov-emerald);
+  outline: 2px solid var(--gov-emerald-light);
+}
+
+.otp-input {
+  letter-spacing: 0.25em;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.consent-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.consent-checkbox-row input {
+  margin-top: 2px;
+}
+
+.uan-submit-btn {
+  background: var(--gov-emerald);
+  color: white;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.uan-submit-btn:hover {
+  background: var(--gov-emerald-dark);
+}
+
+.uan-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success Box */
+.uan-success-box {
+  text-align: center;
+  padding: var(--space-4) 0;
+}
+
+.success-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-success-light);
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 auto var(--space-3);
+}
+
+.uan-success-box h2 {
+  font-size: 1.375rem;
+  font-weight: 800;
+}
+
+.uan-success-box p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: var(--space-2) auto var(--space-5);
+  max-width: 480px;
+}
+
+.success-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+@media (max-width: 640px) {
+  .uan-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

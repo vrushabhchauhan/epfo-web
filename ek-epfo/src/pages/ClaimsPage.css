@@ -1,0 +1,268 @@
+﻿.claims-layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.claims-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.claims-header-row h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.claims-subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.btn-file-claim {
+  background: var(--gov-emerald);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 150ms ease;
+}
+
+.btn-file-claim:hover {
+  background: var(--gov-emerald-dark);
+}
+
+/* Summary Metrics */
+.claims-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.claim-metric-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.claim-metric-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.claim-metric-val {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 2px 0;
+}
+
+.claim-metric-hint {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.claim-metric-card--alert .claim-metric-val {
+  color: var(--gov-saffron);
+}
+
+/* Claims List */
+.claims-list-section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.claims-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.claims-list-header h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.claims-count-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--color-bg);
+  color: var(--color-muted);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.claims-card-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.claim-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: all 150ms ease;
+}
+
+.claim-card:hover {
+  border-color: var(--gov-emerald);
+}
+
+.claim-card--rejected {
+  border-color: var(--gov-saffron);
+}
+
+.claim-card__top {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.claim-badge-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.claim-form-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--gov-navy);
+  color: white;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+}
+
+.claim-id-tag {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.claim-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.claim-filed-date {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+.claim-card__amount-group {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.claim-amount-label {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.claim-amount-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.claim-status-pill {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  margin-top: 4px;
+}
+
+.claim-status-pill--disbursed {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.claim-status-pill--in_progress {
+  background: var(--gov-emerald-light);
+  color: var(--gov-emerald);
+}
+
+.claim-status-pill--rejected {
+  background: var(--gov-saffron-light);
+  color: var(--gov-saffron);
+}
+
+/* Bottom Action Strip */
+.claim-card__bottom {
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-bg);
+}
+
+.claim-alert-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.8125rem;
+}
+
+.alert-icon { font-size: 1.25rem; }
+
+.alert-msg {
+  flex: 1;
+  color: var(--gov-saffron);
+}
+
+.btn-fix-action {
+  background: var(--gov-saffron);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.claim-stage-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+}
+
+.stage-num {
+  font-weight: 700;
+  color: var(--gov-emerald);
+  margin-right: var(--space-2);
+}
+
+.stage-desc {
+  color: var(--color-text-secondary);
+}
+
+.btn-view-stepper {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gov-emerald);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .claims-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

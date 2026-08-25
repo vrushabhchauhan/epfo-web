@@ -1,0 +1,90 @@
+﻿.wizard-container {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--color-text);
+}
+
+.wizard-intro {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
+}
+
+.wizard-indicator-wrapper {
+  margin-bottom: var(--space-4);
+}
+
+.wizard-card {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+}
+
+.wizard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.wizard-back-btn,
+.wizard-back-link {
+  background: transparent;
+  border: 0;
+  color: var(--color-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  padding: var(--space-2) var(--space-1);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.wizard-back-btn:hover,
+.wizard-back-btn:focus,
+.wizard-back-link:hover,
+.wizard-back-link:focus {
+  color: var(--color-text);
+}
+
+.wizard-back-btn:focus-visible,
+.wizard-back-link:focus-visible,
+.wizard-continue-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.wizard-continue-btn {
+  background: var(--color-accent);
+  border: 0;
+  border-radius: 8px;
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+  padding: var(--space-3) var(--space-5);
+  transition:
+    filter 150ms ease,
+    opacity 150ms ease;
+}
+
+.wizard-continue-btn:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.wizard-continue-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}

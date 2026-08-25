@@ -1,0 +1,15 @@
+.placeholder-page {
+  color: var(--color-text);
+}
+
+.placeholder-page--public {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: var(--space-6);
+}
+
+.placeholder-page h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
