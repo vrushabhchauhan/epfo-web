@@ -18,6 +18,7 @@ function ClaimsPage() {
   const { member } = useSession()
   const isFresh = member?.totalAccumulation === 0
   const [claimsList, setClaimsList] = useState(() => (isFresh ? [] : defaultClaims))
+  const [_isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     async function loadClaims() {

@@ -20,6 +20,7 @@ function DashboardPage() {
   const member = sessionMember || defaultMember
   const isFresh = member.totalAccumulation === 0
   const [claimsList, setClaimsList] = useState(() => (isFresh ? [] : defaultClaims))
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     async function loadClaims() {
