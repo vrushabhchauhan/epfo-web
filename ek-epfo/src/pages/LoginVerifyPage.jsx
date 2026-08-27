@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
-import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase, isSupabaseConfigured } from '../lib/supabaseClient.js'
+import { verifyOtpCode, generateAndSendOtp, getCloudMemberByEmail, getCloudMember, supabase, isSupabaseConfigured } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
 import './LoginFlow.css'
 
@@ -13,7 +13,7 @@ function LoginVerifyPage() {
   const identifier = location.state?.identifier || targetEmail
   const isCloud = location.state?.isCloud || false
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
-  const [timer, setTimer] = useState(30)
+  const [timer, setTimer] = useState(600)
   const [railMode, setRailMode] = useState(location.state?.mode === 'email' ? 'email' : 'sms')
   const [isVerifying, setIsVerifying] = useState(false)
   const [verifyError, setVerifyError] = useState('')
@@ -101,11 +101,23 @@ function LoginVerifyPage() {
     }
 
     setIsVerifying(true)
-    const fallbackCode = location.state?.fallbackOtp || null
-    const res = await verifyEmailOtp(targetEmail, code, fallbackCode)
-    setIsVerifying(false)
-
+    const res = await verifyOtpCode(targetEmail, code)
+    
     if (res.success) {
+      if (supabase) {
+        // Establish real session
+        const authRes = await supabase.auth.signInWithPassword({
+          email: targetEmail,
+          password: 'Password123!' // Placeholder secure fallback password for real session
+        })
+        if (authRes.error && authRes.error.message.includes('Invalid login credentials')) {
+          await supabase.auth.signUp({
+            email: targetEmail,
+            password: 'Password123!'
+          })
+        }
+      }
+      setIsVerifying(false)
       let cloudUser = await getCloudMemberByEmail(targetEmail)
       if (!cloudUser && identifier && !identifier.includes('@')) {
         cloudUser = await getCloudMember(identifier)
@@ -140,18 +152,18 @@ function LoginVerifyPage() {
 
   async function handleResend(mode) {
     setRailMode(mode)
-    setTimer(30)
+    setTimer(600)
     setVerifyError('')
     if (mode === 'email') {
-      const res = await sendEmailOtp(targetEmail)
+      const res = await generateAndSendOtp(targetEmail)
       if (res.success) {
         navigate('.', {
           replace: true,
           state: {
             ...location.state,
-            fallbackOtp: res.otp || null,
-            rateLimited: res.rateLimited || false,
-            isCloud: isSupabaseConfigured() && !res.simulated,
+            
+            rateLimited: false,
+            isCloud: isSupabaseConfigured(),
           },
         })
       } else {
@@ -169,7 +181,7 @@ function LoginVerifyPage() {
         replace: true,
         state: {
           ...location.state,
-          fallbackOtp: dynamicOtp,
+          
           rateLimited: false,
           isCloud: false,
         },
@@ -190,18 +202,10 @@ function LoginVerifyPage() {
               <span>Signing in as <strong>{location.state.memberName}</strong></span>
             </div>
           )}
-          {location.state?.rateLimited ? (
-            <div className="login-dpi-badge" style={{ background: '#fffbeb', borderColor: '#fde68a', color: '#92400e', padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.8125rem' }}>
-              <span>⚠️ Cloud Email Quota Reached. DEMO OTP is <strong className="number" style={{ letterSpacing: '2px', fontWeight: 700 }}>{location.state.fallbackOtp}</strong></span>
-            </div>
-          ) : isCloud ? (
+          {isCloud ? (
             <div className="login-dpi-badge">
               <span className="dpi-dot" />
               <span>Real OTP dispatched to your Inbox</span>
-            </div>
-          ) : location.state?.fallbackOtp ? (
-            <div className="login-dpi-badge">
-              <span>DEMO MODE: Your verification code is <strong className="number" style={{ letterSpacing: '2px' }}>{location.state.fallbackOtp}</strong></span>
             </div>
           ) : null}
           <p>
@@ -287,3 +291,6 @@ function LoginVerifyPage() {
 }
 
 export default LoginVerifyPage
+
+
+

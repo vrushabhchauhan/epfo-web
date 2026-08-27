@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { registerMemberAccount } from '../../lib/memberRegistry.js'
-import { supabase, verifyEmailOtp } from '../../lib/supabaseClient.js'
+import { supabase, verifyOtpCode, generateAndSendOtp } from '../../lib/supabaseClient.js'
 import './UanActivatePage.css'
 
 function UanActivatePage() {
@@ -16,21 +16,24 @@ function UanActivatePage() {
   const [step, setStep] = useState(1) // 1: form, 2: otp, 3: success
   const [otp, setOtp] = useState('')
   const [password, setPassword] = useState('')
-  const [generatedOtp, setGeneratedOtp] = useState('')
   const [stepError, setStepError] = useState('')
   const [copiedUan, setCopiedUan] = useState(false)
 
-  function handleFormSubmit(e) {
+  async function handleFormSubmit(e) {
     e.preventDefault()
     if (!consent) return
     setStepError('')
     setIsSubmitting(true)
-    setTimeout(() => {
-      setIsSubmitting(false)
-      const randomCode = String(Math.floor(100000 + Math.random() * 900000))
-      setGeneratedOtp(randomCode)
-      setStep(2)
-    }, 700)
+    
+    const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
+    const otpRes = await generateAndSendOtp(cleanEmail)
+    
+    setIsSubmitting(false)
+    if (!otpRes.success) {
+      setStepError(otpRes.error || 'Failed to dispatch verification code.')
+      return
+    }
+    setStep(2)
   }
 
   async function handleOtpSubmit(e) {
@@ -45,7 +48,7 @@ function UanActivatePage() {
     setIsSubmitting(true)
     const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
     
-    const res = await verifyEmailOtp(cleanEmail, otp, generatedOtp)
+    const res = await verifyOtpCode(cleanEmail, otp)
     if (!res.success) {
       setStepError(res.error || 'Invalid verification code. Please check and re-enter.')
       setIsSubmitting(false)
@@ -213,7 +216,7 @@ function UanActivatePage() {
               <span>
                 Aadhaar OTP dispatched to <strong>••••••{mobile.slice(-4)}</strong>.
                 <br />
-                <strong style={{ color: '#065f46' }}>DEMO MODE: your OTP is {generatedOtp}</strong>
+                <strong style={{ color: '#065f46' }}>OTP is valid for 10 minutes.</strong>
               </span>
             </div>
 

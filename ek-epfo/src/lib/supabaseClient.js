@@ -300,3 +300,90 @@ export async function getCloudPublicClaim(claimId) {
     return null
   }
 }
+
+
+export async function generateAndSendOtp(email) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  if (!cleanEmail) return { success: false, error: 'Email is required' };
+  
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const serviceKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_SERVICE_ROLE_KEY) || (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_SERVICE_ROLE_KEY) || '';
+  const client = (isSupabaseConfigured() && serviceKey) ? createClient(supabaseUrl, serviceKey) : supabase;
+	  
+  try {
+    const { error: insertError } = await client.from('otp_codes').insert([{ email: cleanEmail, code }]);
+    if (insertError) throw insertError;
+
+    const brevoApiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BREVO_API_KEY) || (typeof process !== 'undefined' && process.env?.VITE_BREVO_API_KEY) || '';
+    
+    if (!brevoApiKey) {
+      console.warn('Brevo API key missing, OTP not sent');
+      return { success: false, error: 'Brevo API key not configured' };
+    }
+
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': brevoApiKey,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { email: 'no-reply@epfo.gov.in', name: 'EPFO' },
+        to: [{ email: cleanEmail }],
+        subject: 'Your Verification Code',
+        htmlContent: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Brevo API error: ${errText}`);
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error generating and sending OTP:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function verifyOtpCode(email, code) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanCode = String(code || '').trim();
+
+  if (!cleanEmail || !cleanCode) return { success: false, error: 'Email and code are required' };
+
+  const serviceKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_SERVICE_ROLE_KEY) || (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_SERVICE_ROLE_KEY) || '';
+  const client = (isSupabaseConfigured() && serviceKey) ? createClient(supabaseUrl, serviceKey) : supabase;
+
+  try {
+    const { data, error } = await client.from('otp_codes')
+      .select('*')
+      .eq('email', cleanEmail)
+      .eq('code', cleanCode)
+      .eq('used', false)
+      .gte('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      return { success: false, error: 'Invalid or expired verification code.' };
+    }
+
+    const otpRecord = data[0];
+
+    const { error: updateError } = await client.from('otp_codes')
+      .update({ used: true })
+      .eq('id', otpRecord.id);
+
+    if (updateError) throw updateError;
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error verifying OTP:', err.message);
+    return { success: false, error: err.message };
+  }
+}

@@ -143,3 +143,17 @@ create table if not exists public.grievances (
     days_remaining integer default 4,
     appeal_allowed boolean default true
 );
+
+
+﻿-- 11. OTP Codes Table
+create table if not exists public.otp_codes (
+    id uuid default uuid_generate_v4() primary key,
+    email text not null,
+    code varchar(6) not null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    expires_at timestamp with time zone default (timezone('utc'::text, now()) + interval '10 minutes') not null,
+    used boolean default false
+);
+
+alter table public.otp_codes enable row level security;
+-- Only accessible via service_role, so no policies for anon/authenticated are created.

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { sendEmailOtp, isSupabaseConfigured, getCloudMember, getCloudMemberByEmail } from '../lib/supabaseClient.js'
+import { generateAndSendOtp, isSupabaseConfigured, getCloudMember, getCloudMemberByEmail } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier } from '../lib/memberRegistry.js'
 import { systemStatus } from '../data/mockData.js'
 import './LoginFlow.css'
@@ -42,7 +42,7 @@ function LoginEmailPage() {
         ? cleanId
         : (matchedMember?.email || `${cleanId}@member.epfo.gov.in`)
 
-      const res = await sendEmailOtp(targetEmail)
+      const res = await generateAndSendOtp(targetEmail)
       setIsLoading(false)
 
       if (res.success) {
@@ -52,9 +52,9 @@ function LoginEmailPage() {
             email: targetEmail,
             memberName: matchedMember?.name || (isEmail ? cleanId.split('@')[0] : 'Member'),
             mode: isEmail ? 'email' : 'uan',
-            isCloud: isSupabaseConfigured() && !res.simulated,
-            rateLimited: res.rateLimited || false,
-            fallbackOtp: res.otp || null,
+            isCloud: isSupabaseConfigured(),
+            rateLimited: false,
+            
           },
         })
       } else {
@@ -199,7 +199,7 @@ function LoginEmailPage() {
                 setShowRecoveryModal(false)
                 setIsLoading(true)
                 const recoveryEmail = 'ananya.demo@example.com'
-                const res = await sendEmailOtp(recoveryEmail)
+                await generateAndSendOtp(recoveryEmail)
                 setIsLoading(false)
                 navigate('/login/verify', {
                   state: {
@@ -210,7 +210,7 @@ function LoginEmailPage() {
                     phoneMasked: '••••••4821',
                     isCloud: false,
                     rateLimited: false,
-                    fallbackOtp: res.otp || '582914',
+                    
                   },
                 })
               }}
@@ -225,3 +225,6 @@ function LoginEmailPage() {
 }
 
 export default LoginEmailPage
+
+
+
