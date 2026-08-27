@@ -8,7 +8,8 @@ import './GrievancePage.css'
 function GrievancePage() {
   const navigate = useNavigate()
   const { member } = useSession()
-  const [grievanceList, setGrievanceList] = useState(defaultGrievances)
+  const isFresh = member?.totalAccumulation === 0
+  const [grievanceList, setGrievanceList] = useState(() => (isFresh ? [] : defaultGrievances))
   const [showNewModal, setShowNewModal] = useState(false)
   const [category, setCategory] = useState('claim_delay')
   const [desc, setDesc] = useState('')
@@ -17,7 +18,7 @@ function GrievancePage() {
     async function loadGrievances() {
       if (member?.uan) {
         const cloudData = await getCloudGrievances(member.uan)
-        if (cloudData && cloudData.length > 0) {
+        if (cloudData) {
           const formatted = cloudData.map((g) => ({
             id: g.grievance_id,
             category: g.category,
@@ -29,11 +30,13 @@ function GrievancePage() {
             linkedClaimId: g.linked_claim_id || 'N/A',
           }))
           setGrievanceList(formatted)
+        } else if (isFresh) {
+          setGrievanceList([])
         }
       }
     }
     loadGrievances()
-  }, [member?.uan])
+  }, [member?.uan, isFresh])
 
   function handleCreateGrievance(e) {
     e.preventDefault()
@@ -41,7 +44,7 @@ function GrievancePage() {
     const grvId = `GRV-${Math.floor(100000 + Math.random() * 900000)}`
     const newGrv = {
       grievance_id: grvId,
-      uan: member?.uan || '1004829371',
+      uan: member?.uan,
       linked_claim_id: null,
       category: category,
       description: desc,

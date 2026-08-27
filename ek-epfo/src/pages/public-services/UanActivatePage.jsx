@@ -5,34 +5,50 @@ import { supabase } from '../../lib/supabaseClient.js'
 import './UanActivatePage.css'
 
 function UanActivatePage() {
-  const [uan, setUan] = useState('1004829371')
-  const [aadhaar, setAadhaar] = useState('928192819281')
-  const [name, setName] = useState('Ananya Rao')
+  const [uan, setUan] = useState('')
+  const [aadhaar, setAadhaar] = useState('')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [dob, setDob] = useState('1990-04-12')
-  const [mobile, setMobile] = useState('9876544821')
-  const [consent, setConsent] = useState(true)
+  const [dob, setDob] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [consent, setConsent] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [step, setStep] = useState(1) // 1: form, 2: otp, 3: success
-  const [otp, setOtp] = useState('582914')
-  const [password, setPassword] = useState('Epfo@2026')
+  const [otp, setOtp] = useState('')
+  const [password, setPassword] = useState('')
+  const [generatedOtp, setGeneratedOtp] = useState('')
+  const [stepError, setStepError] = useState('')
 
   function handleFormSubmit(e) {
     e.preventDefault()
     if (!consent) return
+    setStepError('')
     setIsSubmitting(true)
     setTimeout(() => {
       setIsSubmitting(false)
+      const randomCode = String(Math.floor(100000 + Math.random() * 900000))
+      setGeneratedOtp(randomCode)
       setStep(2)
     }, 700)
   }
 
   async function handleOtpSubmit(e) {
     e.preventDefault()
-    setIsSubmitting(true)
+    setStepError('')
 
+    if (otp.trim() !== generatedOtp.trim()) {
+      setStepError('Invalid OTP. Please enter the 6-digit verification code displayed on screen.')
+      return
+    }
+
+    if (password.trim().length < 8) {
+      setStepError('Password must be at least 8 characters long.')
+      return
+    }
+
+    setIsSubmitting(true)
     const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
-    const cleanPwd = password.trim() || 'Epfo@2026'
+    const cleanPwd = password.trim()
 
     // Register in persistent member registry and Supabase cloud (never storing password in local objects)
     registerMemberAccount({
@@ -190,8 +206,18 @@ function UanActivatePage() {
           <form className="uan-form" onSubmit={handleOtpSubmit}>
             <div className="form-info-notice success">
               <span className="notice-icon">✓</span>
-              <span>Aadhaar OTP has been dispatched to <strong>••••••{mobile.slice(-4)}</strong>. Set your portal password below.</span>
+              <span>
+                Aadhaar OTP dispatched to <strong>••••••{mobile.slice(-4)}</strong>.
+                <br />
+                <strong style={{ color: '#065f46' }}>DEMO MODE: your OTP is {generatedOtp}</strong>
+              </span>
             </div>
+
+            {stepError && (
+              <div className="auth-error-banner" role="alert" style={{ margin: '0 0 1rem', padding: '0.85rem 1rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', fontSize: '0.875rem' }}>
+                ⚠️ {stepError}
+              </div>
+            )}
 
             <div className="form-group">
               <label htmlFor="act-otp">6-Digit Aadhaar OTP *</label>
@@ -202,19 +228,21 @@ function UanActivatePage() {
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter 6-digit OTP"
                 required
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="act-pwd">Create Portal Password *</label>
+              <label htmlFor="act-pwd">Create Portal Password (Min 8 Characters) *</label>
               <input
                 id="act-pwd"
                 type="password"
                 className="uan-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Must include uppercase, number, and special character"
+                placeholder="Must be at least 8 characters"
+                minLength={8}
                 required
               />
             </div>

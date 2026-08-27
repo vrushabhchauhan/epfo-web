@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { member as defaultMember } from '../data/mockData.js'
 import { SessionContext } from './SessionContextObject.js'
-import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
+import { findMemberByIdentifier, registerMemberAccount, generateUniqueUan } from '../lib/memberRegistry.js'
 import { supabase } from '../lib/supabaseClient.js'
 
 export function SessionProvider({ children }) {
@@ -14,7 +13,7 @@ export function SessionProvider({ children }) {
     }
     return {
       isAuthenticated: false,
-      member: defaultMember,
+      member: null,
       token: null,
       loginTimestamp: null,
     }
@@ -55,11 +54,10 @@ export function SessionProvider({ children }) {
     } else {
       const isEmail = identifier && identifier.includes('@')
       memberData = registerMemberAccount({
-        ...defaultMember,
         ...customProfile,
-        uan: isEmail ? (customProfile.uan || '1004829371') : identifier,
+        uan: isEmail ? (customProfile.uan || generateUniqueUan()) : identifier,
         email: isEmail ? identifier : (customProfile.email || `${identifier}@member.epfo.gov.in`),
-        name: customProfile.name || defaultMember.name,
+        name: customProfile.name || (isEmail ? identifier.split('@')[0] : 'Member'),
       })
     }
 
@@ -91,15 +89,12 @@ export function SessionProvider({ children }) {
   function updateMember(updates) {
     setSession((prev) => ({
       ...prev,
-      member: {
-        ...prev.member,
-        ...updates,
-      },
+      member: prev.member ? { ...prev.member, ...updates } : null,
     }))
   }
 
   return (
-    <SessionContext.Provider value={{ session, member: session.member || defaultMember, isAuthenticated: session.isAuthenticated, login, logout, updateMember }}>
+    <SessionContext.Provider value={{ session, member: session.member, isAuthenticated: session.isAuthenticated, login, logout, updateMember }}>
       {children}
     </SessionContext.Provider>
   )

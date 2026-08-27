@@ -4,10 +4,10 @@ import { getRegisteredMembers } from '../../lib/memberRegistry.js'
 import './KnowUanPage.css'
 
 function KnowUanPage() {
-  const [mobile, setMobile] = useState('9876544821')
+  const [mobile, setMobile] = useState('')
   const [idType, setIdType] = useState('aadhaar')
-  const [idValue, setIdValue] = useState('928192819281')
-  const [dob, setDob] = useState('1990-04-12')
+  const [idValue, setIdValue] = useState('')
+  const [dob, setDob] = useState('')
   const [isSearching, setIsSearching] = useState(false)
   const [foundUan, setFoundUan] = useState(null)
   const [searchError, setSearchError] = useState('')
@@ -27,8 +27,7 @@ function KnowUanPage() {
         (m.phone && m.phone === cleanMobile) ||
         (m.phoneMasked && m.phoneMasked.includes(cleanMobile.slice(-4))) ||
         (m.pan && m.pan.toLowerCase() === cleanId) ||
-        (m.aadhaar && m.aadhaar === cleanId) ||
-        (cleanMobile === '9876544821')
+        (m.aadhaar && m.aadhaar === cleanId)
       )
 
       if (matched) {

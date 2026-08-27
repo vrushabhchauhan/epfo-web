@@ -19,7 +19,7 @@ function DeathClaimStep1Page() {
   const [isVerified, setIsVerified] = useState(Boolean(wizardData.verifiedMemberName))
   const [verifiedMember, setVerifiedMember] = useState(
     wizardData.verifiedMemberName
-      ? { name: wizardData.verifiedMemberName, uan: wizardData.memberUan, est: 'Coral Systems Ltd' }
+      ? { name: wizardData.verifiedMemberName, uan: wizardData.memberUan, est: 'Registered Establishment' }
       : null
   )
   const [isSearching, setIsSearching] = useState(false)
@@ -33,10 +33,12 @@ function DeathClaimStep1Page() {
     setIsSearching(true)
     setTimeout(() => {
       setIsSearching(false)
+      const cleanUan = memberUan.trim()
+      const memberRec = findMemberByIdentifier(cleanUan)
       const found = {
-        name: memberUan === '1004829371' || !memberUan ? 'Ananya Rao' : 'Rajesh K. Sharma',
-        uan: memberUan || '1004829371',
-        est: 'Coral Systems Ltd',
+        name: memberRec ? memberRec.name : 'Registered EPFO Member',
+        uan: cleanUan,
+        est: memberRec?.employers?.[0]?.name || 'Registered Establishment',
         lastContribution: 'Jul 2026',
       }
       setVerifiedMember(found)
@@ -84,7 +86,7 @@ function DeathClaimStep1Page() {
               id="deceased-uan"
               type="text"
               className="lookup-input number"
-              placeholder="e.g. 1004829371"
+              placeholder="Enter 12-digit UAN"
               value={memberUan}
               onChange={(e) => {
                 setMemberUan(e.target.value)
@@ -102,7 +104,7 @@ function DeathClaimStep1Page() {
               {isSearching ? 'Verifying...' : 'Verify Member →'}
             </button>
           </div>
-          <span className="lookup-hint">💡 Try demo UAN <strong>1004829371</strong> to test instant verification.</span>
+          <span className="lookup-hint">💡 CITES 2.01 validates member status against national repository records.</span>
         </div>
 
         {/* Verified Member Card */}

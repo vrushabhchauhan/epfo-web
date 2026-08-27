@@ -15,13 +15,14 @@ function formatINR(val) {
 
 function ClaimsPage() {
   const { member } = useSession()
-  const [claimsList, setClaimsList] = useState(defaultClaims)
+  const isFresh = member?.totalAccumulation === 0
+  const [claimsList, setClaimsList] = useState(() => (isFresh ? [] : defaultClaims))
 
   useEffect(() => {
     async function loadClaims() {
       if (member?.uan) {
         const cloudData = await getCloudClaims(member.uan)
-        if (cloudData && cloudData.length > 0) {
+        if (cloudData) {
           const formatted = cloudData.map((c) => ({
             id: c.claim_id,
             formNumber: c.form_number,
@@ -34,11 +35,13 @@ function ClaimsPage() {
             stages: defaultClaims[0]?.stages || [],
           }))
           setClaimsList(formatted)
+        } else if (isFresh) {
+          setClaimsList([])
         }
       }
     }
     loadClaims()
-  }, [member?.uan])
+  }, [member?.uan, isFresh])
 
   const claims = claimsList
   const disbursedAmount = claims.filter(c => c.status === 'disbursed').reduce((sum, c) => sum + (c.amountDisbursed || c.amountRequested || 0), 0)

@@ -80,7 +80,7 @@ function DeathClaimStep4Page() {
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">Deceased Member</span>
-              <span className="death-review-row__value">{wizardData.verifiedMemberName || 'Ananya Rao'} (UAN: {wizardData.memberUan || '1004829371'})</span>
+              <span className="death-review-row__value">{wizardData.verifiedMemberName || 'Deceased Member'} (UAN: {wizardData.memberUan || 'N/A'})</span>
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">Relationship</span>

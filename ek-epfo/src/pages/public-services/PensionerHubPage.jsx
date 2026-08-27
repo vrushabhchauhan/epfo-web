@@ -22,8 +22,8 @@ const demoPensioner = {
 }
 
 function PensionerHubPage() {
-  const [ppoInput, setPpoInput] = useState('MH/BAN/0019284/PPO')
-  const [pensioner, setPensioner] = useState(demoPensioner)
+  const [ppoInput, setPpoInput] = useState('')
+  const [pensioner, setPensioner] = useState(null)
   const [isSearching, setIsSearching] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
 
@@ -34,6 +34,7 @@ function PensionerHubPage() {
 
   function handlePpoSearch(e) {
     e.preventDefault()
+    if (!ppoInput.trim()) return
     setIsSearching(true)
     setTimeout(() => {
       setIsSearching(false)

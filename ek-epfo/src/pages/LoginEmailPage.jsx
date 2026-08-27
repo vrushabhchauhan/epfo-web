@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { sendEmailOtp, isSupabaseConfigured } from '../lib/supabaseClient.js'
+import { sendEmailOtp, isSupabaseConfigured, getCloudMember, getCloudMemberByEmail } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier } from '../lib/memberRegistry.js'
 import { systemStatus } from '../data/mockData.js'
 import './LoginFlow.css'
 
 function LoginEmailPage() {
   const navigate = useNavigate()
-  const [identifier, setIdentifier] = useState('1004829371')
+  const [identifier, setIdentifier] = useState('')
   const [useEmail, setUseEmail] = useState(false)
   const [showRecoveryModal, setShowRecoveryModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -21,9 +21,13 @@ function LoginEmailPage() {
     const cleanId = identifier.trim()
     if (!cleanId) return
 
-    // 1. If checking UAN, verify if registered in CITES database
-    const matchedMember = findMemberByIdentifier(cleanId)
-    if (!useEmail && !matchedMember && cleanId !== '1004829371') {
+    // 1. Verify if registered in database or registry
+    let matchedMember = findMemberByIdentifier(cleanId)
+    if (!matchedMember && isSupabaseConfigured()) {
+      matchedMember = useEmail ? await getCloudMemberByEmail(cleanId) : await getCloudMember(cleanId)
+    }
+
+    if (!useEmail && !matchedMember) {
       setUnregisteredUan(true)
       setAuthError(`No activated account found for UAN "${cleanId}". Under EPFO statutory rules, you must activate your UAN first or apply for Direct Allotment.`)
       return
@@ -32,7 +36,7 @@ function LoginEmailPage() {
     setIsLoading(true)
     const targetEmail = useEmail
       ? cleanId
-      : (matchedMember?.email || 'ananya.demo@example.com')
+      : (matchedMember?.email || `${cleanId}@member.epfo.gov.in`)
 
     const res = await sendEmailOtp(targetEmail)
     setIsLoading(false)
@@ -46,7 +50,7 @@ function LoginEmailPage() {
           mode: useEmail ? 'email' : 'uan',
           isCloud: isSupabaseConfigured() && !res.simulated,
           rateLimited: res.rateLimited || false,
-          fallbackOtp: res.otp || '582914',
+          fallbackOtp: res.otp || null,
         },
       })
     } else {
@@ -81,7 +85,8 @@ function LoginEmailPage() {
               className="toggle-mode-btn"
               onClick={() => {
                 setUseEmail(!useEmail)
-                setIdentifier(useEmail ? '1004829371' : 'ananya.demo@example.com')
+                setIdentifier('')
+                setAuthError('')
               }}
             >
               {useEmail ? 'Use 10-digit UAN instead' : 'Use Email instead'}

@@ -11,11 +11,23 @@ export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
+// Dynamic OTP generator for demo / SMS simulation / rate-limit fallback
+function generateRandomOtp(email) {
+  const code = String(Math.floor(100000 + Math.random() * 900000))
+  try {
+    sessionStorage.setItem(`pending_otp_${email}`, code)
+  } catch {
+    // Fallback on storage error
+  }
+  return code
+}
+
 // Real Email OTP Auth
 export async function sendEmailOtp(email) {
   if (!isSupabaseConfigured()) {
-    console.warn('Supabase credentials not found. Using simulated OTP delivery.')
-    return { success: true, simulated: true, otp: '582914' }
+    const dynamicOtp = generateRandomOtp(email)
+    console.warn('Supabase credentials not found. Using dynamic random simulated OTP.')
+    return { success: true, simulated: true, otp: dynamicOtp }
   }
 
   try {
@@ -28,8 +40,9 @@ export async function sendEmailOtp(email) {
     if (error) {
       const isRateLimit = error.message?.toLowerCase().includes('rate limit') || error.status === 429
       if (isRateLimit) {
-        console.warn('Supabase cloud email rate limit reached. Activating seamless OTP fallback.')
-        return { success: true, simulated: true, rateLimited: true, otp: '582914' }
+        const dynamicOtp = generateRandomOtp(email)
+        console.warn('Supabase cloud email rate limit reached. Activating dynamic fallback OTP.')
+        return { success: true, simulated: true, rateLimited: true, otp: dynamicOtp }
       }
       throw error
     }
@@ -37,7 +50,8 @@ export async function sendEmailOtp(email) {
   } catch (err) {
     const isRateLimit = err.message?.toLowerCase().includes('rate limit') || err.status === 429
     if (isRateLimit) {
-      return { success: true, simulated: true, rateLimited: true, otp: '582914' }
+      const dynamicOtp = generateRandomOtp(email)
+      return { success: true, simulated: true, rateLimited: true, otp: dynamicOtp }
     }
     console.error('Error sending Supabase OTP:', err.message)
     return { success: false, error: err.message }
@@ -45,7 +59,13 @@ export async function sendEmailOtp(email) {
 }
 
 export async function verifyEmailOtp(email, token) {
-  if (!isSupabaseConfigured() || token === '582914') {
+  const storedOtp = typeof window !== 'undefined' ? sessionStorage.getItem(`pending_otp_${email}`) : null
+  const isDemoMatch = storedOtp && token.trim() === storedOtp.trim()
+
+  if (!isSupabaseConfigured() || isDemoMatch) {
+    if (isDemoMatch) {
+      try { sessionStorage.removeItem(`pending_otp_${email}`) } catch {}
+    }
     return { success: true, simulated: true }
   }
 
@@ -56,12 +76,12 @@ export async function verifyEmailOtp(email, token) {
       type: 'email',
     })
     if (error) {
-      if (token === '582914') return { success: true, simulated: true }
+      if (isDemoMatch) return { success: true, simulated: true }
       throw error
     }
     return { success: true, simulated: false, session: data.session, user: data.user }
   } catch (err) {
-    if (token === '582914') {
+    if (isDemoMatch) {
       return { success: true, simulated: true }
     }
     console.error('Error verifying Supabase OTP:', err.message)
@@ -70,8 +90,8 @@ export async function verifyEmailOtp(email, token) {
 }
 
 // Cloud Database CRUD operations
-export async function getCloudMember(uan = '1004829371') {
-  if (!isSupabaseConfigured()) return null
+export async function getCloudMember(uan) {
+  if (!isSupabaseConfigured() || !uan) return null
   try {
     const { data, error } = await supabase.from('members').select('*').eq('uan', uan).maybeSingle()
     if (error) throw error
@@ -118,12 +138,12 @@ export async function upsertCloudMember(memberRecord) {
     await supabase.from('balances').upsert([
       {
         uan: row.uan,
-        total_accumulation: memberRecord.totalAccumulation || 493600,
-        employee_share_total: memberRecord.employeeShareTotal || 248200,
-        employer_share_total: memberRecord.employerShareTotal || 162400,
-        eps_pension_fund_total: memberRecord.epsPensionFundTotal || 83000,
+        total_accumulation: memberRecord.totalAccumulation ?? 0,
+        employee_share_total: memberRecord.employeeShareTotal ?? 0,
+        employer_share_total: memberRecord.employerShareTotal ?? 0,
+        eps_pension_fund_total: memberRecord.epsPensionFundTotal ?? 0,
         interest_rate_annual: '8.25%',
-        interest_accrued_fy26: 18450,
+        interest_accrued_fy26: memberRecord.interestAccruedFY26 ?? 0,
       }
     ], { onConflict: 'uan' })
 
@@ -134,8 +154,8 @@ export async function upsertCloudMember(memberRecord) {
   }
 }
 
-export async function getCloudClaims(uan = '1004829371') {
-  if (!isSupabaseConfigured()) return null
+export async function getCloudClaims(uan) {
+  if (!isSupabaseConfigured() || !uan) return null
   try {
     const { data, error } = await supabase.from('claims').select('*').eq('uan', uan).order('filed_date', { ascending: false })
     if (error) throw error
@@ -170,8 +190,8 @@ export async function insertCloudGrievance(grievance) {
   }
 }
 
-export async function getCloudGrievances(uan = '1004829371') {
-  if (!isSupabaseConfigured()) return null
+export async function getCloudGrievances(uan) {
+  if (!isSupabaseConfigured() || !uan) return null
   try {
     const { data, error } = await supabase.from('grievances').select('*').eq('uan', uan).order('filed_date', { ascending: false })
     if (error) throw error

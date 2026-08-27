@@ -41,7 +41,7 @@ function NewClaimPage() {
       })
       const claimRecord = {
         claim_id: newClaimId,
-        uan: member.uan || '1004829371',
+        uan: member.uan,
         form_number: 'Form 31',
         claim_type: advancePurpose === 'medical' ? 'Medical Advance' : advancePurpose === 'housing' ? 'Housing Advance' : advancePurpose === 'education' ? 'Education Advance' : 'Marriage Advance',
         amount_requested: numAmount,

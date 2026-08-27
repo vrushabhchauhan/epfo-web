@@ -17,8 +17,12 @@ function DashboardPage() {
   const { member: sessionMember } = useSession()
   const member = sessionMember || defaultMember
   const claims = defaultClaims
-  const activeEmployer = member.employers.find((e) => e.status === 'Active') || member.employers[1]
-  const rejectedClaim = claims.find((c) => c.status === 'rejected')
+  const activeEmployer = member.employers?.[0] || member.employers?.[1] || { name: 'Active Establishment', memberId: 'MH/BAN/0000000', doj: '2026-08-01', status: 'Active' }
+  const rejectedClaim = member.totalAccumulation === 0 ? null : claims.find((c) => c.status === 'rejected')
+
+  const totalBal = member.totalAccumulation !== undefined ? member.totalAccumulation : balance.total
+  const withdrawableBal = member.employeeShareTotal !== undefined ? member.employeeShareTotal : balance.withdrawable
+  const employerLockedBal = member.employerShareTotal !== undefined ? member.employerShareTotal : balance.employerLocked
 
   return (
     <div className="dashboard-grid-layout">
@@ -33,7 +37,7 @@ function DashboardPage() {
           <div className="corpus-hero-row">
             <div className="corpus-total-block">
               <span className="corpus-label">Total Provident Fund Balance</span>
-              <h1 id="balance-heading" className="corpus-amount number">{formatINR(balance.total)}</h1>
+              <h1 id="balance-heading" className="corpus-amount number">{formatINR(totalBal)}</h1>
             </div>
 
             <div className="corpus-actions">
@@ -49,13 +53,13 @@ function DashboardPage() {
           <div className="corpus-split-grid">
             <div className="split-card">
               <span className="split-card__label">Withdrawable Balance</span>
-              <span className="split-card__amount number">{formatINR(balance.withdrawable)}</span>
+              <span className="split-card__amount number">{formatINR(withdrawableBal)}</span>
               <span className="split-card__hint">Available for Form 31 / 19 claim</span>
             </div>
 
             <div className="split-card">
               <span className="split-card__label">Employer Contribution</span>
-              <span className="split-card__amount number">{formatINR(balance.employerLocked)}</span>
+              <span className="split-card__amount number">{formatINR(employerLockedBal)}</span>
               <span className="split-card__hint">Settled upon job transition</span>
             </div>
 

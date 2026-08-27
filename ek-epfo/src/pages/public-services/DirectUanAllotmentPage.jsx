@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { registerMemberAccount } from '../../lib/memberRegistry.js'
+import { registerMemberAccount, generateUniqueUan } from '../../lib/memberRegistry.js'
 import './DirectUanAllotmentPage.css'
 
 function DirectUanAllotmentPage() {
-  const [aadhaar, setAadhaar] = useState('849201928374')
-  const [name, setName] = useState('Rahul Verma')
+  const [aadhaar, setAadhaar] = useState('')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [dob, setDob] = useState('1996-08-15')
+  const [dob, setDob] = useState('')
   const [gender, setGender] = useState('Male')
-  const [mobile, setMobile] = useState('9812345678')
-  const [consent, setConsent] = useState(true)
+  const [mobile, setMobile] = useState('')
+  const [consent, setConsent] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [allottedUan, setAllottedUan] = useState(null)
 
@@ -19,7 +19,7 @@ function DirectUanAllotmentPage() {
     if (!consent) return
     setIsGenerating(true)
     setTimeout(() => {
-      const newUan = `101${Math.floor(100000000 + Math.random() * 900000000)}`
+      const newUan = generateUniqueUan()
       const cleanEmail = email.trim() || `${newUan}@member.epfo.gov.in`
       const memberRecord = registerMemberAccount({
         uan: newUan,
@@ -29,6 +29,12 @@ function DirectUanAllotmentPage() {
         mobile: mobile.trim(),
         email: cleanEmail,
         kycStatus: 'Verified (Aadhaar Direct Allotment)',
+        totalServiceYears: '0 Years (New Workforce Entrant)',
+        totalAccumulation: 0,
+        employeeShareTotal: 0,
+        employerShareTotal: 0,
+        epsPensionFundTotal: 0,
+        interestAccruedFY26: 0,
       })
 
       setIsGenerating(false)

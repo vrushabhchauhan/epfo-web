@@ -10,12 +10,12 @@ function DeathClaimConfirmationPage() {
     return Math.floor(100000 + Math.random() * 900000)
   })
 
-  const memberName = wizardData.verifiedMemberName || 'Ananya Rao'
-  const memberUan = wizardData.memberUan || '1004829371'
-  const nomineeName = wizardData.nomineeName || 'Priya Rao'
-  const relationship = wizardData.relationship || 'Spouse'
-  const bankAccount = wizardData.nomineeBankAccount ? `•••• •••• ${wizardData.nomineeBankAccount.slice(-4)}` : '•••• •••• 4821'
-  const bankIFSC = wizardData.nomineeBankIFSC || 'SBIN0001234'
+  const memberName = wizardData.verifiedMemberName || 'Deceased Member'
+  const memberUan = wizardData.memberUan || 'N/A'
+  const nomineeName = wizardData.nomineeName || 'Applicant Nominee'
+  const relationship = wizardData.relationship || 'Legal Beneficiary'
+  const bankAccount = wizardData.nomineeBankAccount ? `•••• •••• ${wizardData.nomineeBankAccount.slice(-4)}` : '•••• •••• 0000'
+  const bankIFSC = wizardData.nomineeBankIFSC || 'BANK0000000'
   const filedDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
 
   function handlePrintOrDownload() {

@@ -5,27 +5,9 @@ import './PublicClaimTrackPage.css'
 
 function PublicClaimTrackPage() {
   const location = useLocation()
-  const [uan, setUan] = useState('1004829371')
-  const [claimId, setClaimId] = useState(location.state?.claimId || 'CLM1042')
-  const [searchedClaim, setSearchedClaim] = useState(
-    location.state?.claimId
-      ? {
-          id: location.state.claimId,
-          formNumber: 'Form 20 & 5IF',
-          type: 'Composite Nominee Death Claim',
-          amountRequested: 1193600,
-          filedDate: new Date().toISOString().slice(0, 10),
-          status: 'in_progress',
-          currentStage: 1,
-          stages: [
-            { label: 'Submitted Online', date: 'Today', description: 'Nominee claim received under CITES 2.01 Fast-Track.' },
-            { label: 'Document & Nominee e-KYC', date: 'In Progress', description: 'Matching Death Certificate & Aadhaar records.' },
-            { label: 'Field Office Approval', date: 'Pending', description: 'Target SLA: 3 business days.' },
-            { label: 'Disbursed', date: 'Pending', description: 'Funds will be transferred to submitted nominee bank account.' },
-          ],
-        }
-      : null
-  )
+  const [uan, setUan] = useState('')
+  const [claimId, setClaimId] = useState(location.state?.claimId || '')
+  const [searchedClaim, setSearchedClaim] = useState(null)
   const [isSearching, setIsSearching] = useState(false)
   const [notFoundError, setNotFoundError] = useState('')
 

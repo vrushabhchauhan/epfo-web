@@ -1,30 +1,8 @@
-import { member as defaultMember } from '../data/mockData.js'
+import { seedMembers } from '../data/seedData.js'
+import { member as fallbackTemplate } from '../data/mockData.js'
 import { upsertCloudMember } from './supabaseClient.js'
 
 const REGISTRY_STORAGE_KEY = 'ek_epfo_registered_members'
-
-// Default pre-seeded active members
-const defaultRegistry = [
-  {
-    ...defaultMember,
-    uan: '1004829371',
-    email: 'ananya.demo@example.com',
-    name: 'Ananya Rao',
-    phoneMasked: '••••••4821',
-    status: 'active',
-  },
-  {
-    ...defaultMember,
-    uan: '101492810392',
-    email: 'vrushabhpchauhan53@gmail.com',
-    name: 'Vrushabh Chauhan',
-    phoneMasked: '••••••3210',
-    kycStatus: 'Verified (Aadhaar Direct Allotment)',
-    totalServiceYears: '0 Years (New Workforce Entrant)',
-    currentOffice: 'Regional Office Mumbai (Bandra)',
-    status: 'active',
-  },
-]
 
 export function getRegisteredMembers() {
   try {
@@ -38,7 +16,7 @@ export function getRegisteredMembers() {
   } catch {
     // Fallback on storage failure
   }
-  return defaultRegistry
+  return seedMembers
 }
 
 export function saveRegisteredMembers(membersList) {
@@ -63,21 +41,36 @@ export function findMemberByIdentifier(identifier) {
   )
 }
 
+export function generateUniqueUan() {
+  const registry = getRegisteredMembers()
+  let uanCandidate
+  let isUnique = false
+  while (!isUnique) {
+    uanCandidate = `101${Math.floor(100000000 + Math.random() * 900000000)}`
+    if (!registry.some((m) => m.uan === uanCandidate)) {
+      isUnique = true
+    }
+  }
+  return uanCandidate
+}
+
 export function registerMemberAccount(newMemberData = {}) {
   const { password: _discardedPassword, ...safeMemberData } = newMemberData
   const registry = getRegisteredMembers()
-  const cleanUan = safeMemberData.uan ? String(safeMemberData.uan).trim() : `100${Math.floor(1000000 + Math.random() * 9000000)}`
+  const cleanUan = safeMemberData.uan ? String(safeMemberData.uan).trim() : generateUniqueUan()
   
   const existingIdx = registry.findIndex((m) => m.uan === cleanUan || (m.email && m.email.toLowerCase() === (safeMemberData.email || '').toLowerCase()))
   
   const fullRecord = {
-    ...defaultMember,
+    ...fallbackTemplate,
     ...safeMemberData,
     uan: cleanUan,
     name: safeMemberData.name || 'Member',
     email: safeMemberData.email || `${cleanUan}@member.epfo.gov.in`,
-    phoneMasked: safeMemberData.mobile ? `••••••${String(safeMemberData.mobile).slice(-4)}` : (safeMemberData.phoneMasked || defaultMember.phoneMasked),
+    phoneMasked: safeMemberData.mobile ? `••••••${String(safeMemberData.mobile).slice(-4)}` : (safeMemberData.phoneMasked || '••••••0000'),
     kycStatus: safeMemberData.kycStatus || 'Verified (Aadhaar OTP)',
+    totalServiceYears: safeMemberData.totalServiceYears || '0 Years (New Workforce Entrant)',
+    currentOffice: safeMemberData.currentOffice || 'Regional Office Mumbai (Bandra)',
     status: 'active',
     registeredAt: new Date().toISOString(),
   }
