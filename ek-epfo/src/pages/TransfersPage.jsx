@@ -1,27 +1,94 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSession } from '../context/useSession.js'
-import { transfers, member as defaultMember } from '../data/mockData.js'
+import { transfers as defaultTransfers, member as defaultMember } from '../data/mockData.js'
+import { getCloudTransfers, insertCloudTransfer } from '../lib/supabaseClient.js'
 import './TransfersPage.css'
 
 function TransfersPage() {
   const { member: sessionMember } = useSession()
   const member = sessionMember || defaultMember
+  const isFresh = member?.totalAccumulation === 0
+  const [transferList, setTransferList] = useState(() => (isFresh ? [] : defaultTransfers))
   const [nudgeSent, setNudgeSent] = useState(false)
   const [showTransferModal, setShowTransferModal] = useState(false)
   const [transferSubmitted, setTransferSubmitted] = useState(false)
   const [selectedFromEst, setSelectedFromEst] = useState('MH/BAN/0018293/000/0048291')
-  const currentTransfer = transfers[0]
+
+  useEffect(() => {
+    async function loadTransfers() {
+      if (member?.uan) {
+        const cloudList = await getCloudTransfers(member.uan)
+        if (cloudList && cloudList.length > 0) {
+          const formatted = cloudList.map(t => ({
+            id: t.transfer_id,
+            formNumber: t.form_number || 'Form 13',
+            fromEstablishment: t.from_establishment,
+            fromMemberId: t.from_member_id,
+            toEstablishment: t.to_establishment,
+            toMemberId: t.to_member_id,
+            initiatedDate: t.initiated_date,
+            estimatedAmount: Number(t.estimated_amount || 0),
+            status: t.status,
+            currentStep: t.current_step || 2,
+            daysWaiting: t.days_waiting || 1,
+            autoEscalationDueDays: t.auto_escalation_due_days || 2,
+          }))
+          setTransferList(formatted)
+        } else if (isFresh) {
+          setTransferList([])
+        }
+      }
+    }
+    loadTransfers()
+  }, [member?.uan, isFresh])
+
+  const currentTransfer = transferList[0] || (isFresh ? null : defaultTransfers[0])
 
   function handleNudge() {
     setNudgeSent(true)
     setTimeout(() => setNudgeSent(false), 4000)
   }
 
-  function handleTransferSubmit(e) {
+  async function handleTransferSubmit(e) {
     e.preventDefault()
     setShowTransferModal(false)
     setTransferSubmitted(true)
     setTimeout(() => setTransferSubmitted(false), 5000)
+
+    const newTrfId = `TRF-${Math.floor(1000 + Math.random() * 9000)}`
+    const newTrfRecord = {
+      id: newTrfId,
+      formNumber: 'Form 13',
+      fromEstablishment: 'Apex Infra Ltd',
+      fromMemberId: selectedFromEst,
+      toEstablishment: member.employers?.[0]?.name || 'Coral Systems Ltd',
+      toMemberId: member.employers?.[0]?.memberId || 'MH/BAN/0049281/000/0091823',
+      initiatedDate: new Date().toISOString().split('T')[0],
+      estimatedAmount: 75000,
+      status: 'pending_employer',
+      currentStep: 2,
+      daysWaiting: 1,
+      autoEscalationDueDays: 2,
+    }
+
+    setTransferList([newTrfRecord, ...transferList])
+
+    if (member?.uan) {
+      await insertCloudTransfer({
+        transfer_id: newTrfId,
+        uan: member.uan,
+        form_number: 'Form 13',
+        from_establishment: 'Apex Infra Ltd',
+        from_member_id: selectedFromEst,
+        to_establishment: member.employers?.[0]?.name || 'Coral Systems Ltd',
+        to_member_id: member.employers?.[0]?.memberId || 'MH/BAN/0049281/000/0091823',
+        initiated_date: new Date().toISOString().split('T')[0],
+        estimated_amount: 75000,
+        status: 'pending_employer',
+        current_step: 2,
+        days_waiting: 1,
+      })
+    }
   }
 
   return (

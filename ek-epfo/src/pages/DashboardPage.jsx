@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
 import { balance, claims as defaultClaims, member as defaultMember } from '../data/mockData.js'
+import { getCloudClaims } from '../lib/supabaseClient.js'
 import './DashboardPage.css'
 
 function formatINR(val) {
@@ -16,9 +17,37 @@ function DashboardPage() {
   const navigate = useNavigate()
   const { member: sessionMember } = useSession()
   const member = sessionMember || defaultMember
-  const claims = defaultClaims
+  const isFresh = member.totalAccumulation === 0
+  const [claimsList, setClaimsList] = useState(() => (isFresh ? [] : defaultClaims))
+
+  useEffect(() => {
+    async function loadClaims() {
+      if (member?.uan) {
+        const cloudData = await getCloudClaims(member.uan)
+        if (cloudData) {
+          const formatted = cloudData.map((c) => ({
+            id: c.claim_id,
+            formNumber: c.form_number,
+            type: c.claim_type,
+            amountRequested: Number(c.amount_requested),
+            amountDisbursed: c.amount_disbursed ? Number(c.amount_disbursed) : null,
+            filedDate: c.filed_date,
+            status: c.status,
+            currentStage: c.current_stage || 1,
+            stages: defaultClaims[0]?.stages || [],
+          }))
+          setClaimsList(formatted)
+        } else if (isFresh) {
+          setClaimsList([])
+        }
+      }
+    }
+    loadClaims()
+  }, [member?.uan, isFresh])
+
+  const claims = claimsList
   const activeEmployer = member.employers?.[0] || member.employers?.[1] || { name: 'Active Establishment', memberId: 'MH/BAN/0000000', doj: '2026-08-01', status: 'Active' }
-  const rejectedClaim = member.totalAccumulation === 0 ? null : claims.find((c) => c.status === 'rejected')
+  const rejectedClaim = claims.find((c) => c.status === 'rejected')
 
   const totalBal = member.totalAccumulation !== undefined ? member.totalAccumulation : balance.total
   const withdrawableBal = member.employeeShareTotal !== undefined ? member.employeeShareTotal : balance.withdrawable

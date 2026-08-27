@@ -240,3 +240,63 @@ export async function updateCloudClaimStatus(claimId, updates) {
     return { success: false, error: err.message }
   }
 }
+
+export async function getCloudNominees(uan) {
+  if (!isSupabaseConfigured() || !uan) return null
+  try {
+    const { data, error } = await supabase.from('nominees').select('*').eq('uan', uan)
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Cloud nominees fetch fallback:', err.message)
+    return null
+  }
+}
+
+export async function insertCloudNominee(nominee) {
+  if (!isSupabaseConfigured()) return { success: true }
+  try {
+    const { data, error } = await supabase.from('nominees').insert([nominee]).select()
+    if (error) throw error
+    return { success: true, data }
+  } catch (err) {
+    console.error('Cloud nominee insert error:', err.message)
+    return { success: false, error: err.message }
+  }
+}
+
+export async function getCloudTransfers(uan) {
+  if (!isSupabaseConfigured() || !uan) return null
+  try {
+    const { data, error } = await supabase.from('transfers').select('*').eq('uan', uan)
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Cloud transfers fetch fallback:', err.message)
+    return null
+  }
+}
+
+export async function insertCloudTransfer(transfer) {
+  if (!isSupabaseConfigured()) return { success: true }
+  try {
+    const { data, error } = await supabase.from('transfers').insert([transfer]).select()
+    if (error) throw error
+    return { success: true, data }
+  } catch (err) {
+    console.error('Cloud transfer insert error:', err.message)
+    return { success: false, error: err.message }
+  }
+}
+
+export async function getCloudPublicClaim(claimId) {
+  if (!isSupabaseConfigured() || !claimId) return null
+  try {
+    const { data, error } = await supabase.from('claims').select('*').eq('claim_id', claimId.trim()).maybeSingle()
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Cloud public claim search fallback:', err.message)
+    return null
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { claims } from '../../data/mockData.js'
+import { getCloudPublicClaim } from '../../lib/supabaseClient.js'
 import './PublicClaimTrackPage.css'
 
 function PublicClaimTrackPage() {
@@ -11,20 +12,39 @@ function PublicClaimTrackPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [notFoundError, setNotFoundError] = useState('')
 
-  function handleTrack(e) {
+  async function handleTrack(e) {
     e.preventDefault()
     setIsSearching(true)
     setNotFoundError('')
-    setTimeout(() => {
+    const cleanId = claimId.trim().toUpperCase()
+
+    // 1. Check Cloud Database
+    const cloudClaim = await getCloudPublicClaim(cleanId)
+    if (cloudClaim) {
       setIsSearching(false)
-      const cleanId = claimId.trim().toLowerCase()
-      const found = claims.find((c) => c.id.toLowerCase() === cleanId)
-      if (found) {
-        setSearchedClaim(found)
-      } else {
-        setNotFoundError(`No statutory claim found matching Reference ID "${claimId}" for UAN "${uan}". Please verify your Claim Reference ID.`)
-      }
-    }, 600)
+      setSearchedClaim({
+        id: cloudClaim.claim_id,
+        formNumber: cloudClaim.form_number,
+        type: cloudClaim.claim_type,
+        amountRequested: Number(cloudClaim.amount_requested),
+        amountDisbursed: cloudClaim.amount_disbursed ? Number(cloudClaim.amount_disbursed) : null,
+        filedDate: cloudClaim.filed_date,
+        settledDate: cloudClaim.settled_date,
+        status: cloudClaim.status,
+        currentStage: cloudClaim.current_stage || 1,
+        stages: claims[0]?.stages || [],
+      })
+      return
+    }
+
+    // 2. Check Local/Seed Claims
+    const found = claims.find((c) => c.id.toUpperCase() === cleanId)
+    setIsSearching(false)
+    if (found) {
+      setSearchedClaim(found)
+    } else {
+      setNotFoundError(`No statutory claim found matching Reference ID "${claimId}" for UAN "${uan}". Please verify your Claim Reference ID.`)
+    }
   }
 
   return (

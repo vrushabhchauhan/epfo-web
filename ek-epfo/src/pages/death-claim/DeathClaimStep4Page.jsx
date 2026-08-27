@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
+import { insertCloudClaim } from '../../lib/supabaseClient.js'
 import WizardLayout from '../../components/wizard/WizardLayout.jsx'
 import './DeathClaimStep4Page.css'
 
@@ -25,6 +26,19 @@ function DeathClaimStep4Page() {
 
     setIsSubmitting(true)
     setTimeout(() => {
+      const claimRecord = {
+        claim_id: `CLM-DEATH-${Math.floor(1000 + Math.random() * 9000)}`,
+        uan: wizardData.memberUan || '1004829371',
+        form_number: 'Form 20 / 5IF / 10D',
+        claim_type: 'Death & EDLI Statutory Benefit',
+        amount_requested: 700000,
+        filed_date: new Date().toISOString().split('T')[0],
+        status: 'in_progress',
+        current_stage: 1,
+        rejection_summary: `Beneficiary Claim Filed: ${wizardData.claimantName || 'Nominee'}`,
+      }
+      insertCloudClaim(claimRecord).catch(() => {})
+
       setIsSubmitting(false)
       navigate('/claims/new/death/confirmation')
     }, 900)

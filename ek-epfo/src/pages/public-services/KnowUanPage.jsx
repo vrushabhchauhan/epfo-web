@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getRegisteredMembers } from '../../lib/memberRegistry.js'
+import { supabase, isSupabaseConfigured } from '../../lib/supabaseClient.js'
 import './KnowUanPage.css'
 
 function KnowUanPage() {
@@ -12,35 +13,44 @@ function KnowUanPage() {
   const [foundUan, setFoundUan] = useState(null)
   const [searchError, setSearchError] = useState('')
 
-  function handleSearch(e) {
+  async function handleSearch(e) {
     e.preventDefault()
     setIsSearching(true)
     setSearchError('')
-    setTimeout(() => {
-      setIsSearching(false)
-      const cleanMobile = mobile.trim()
-      const cleanId = idValue.trim().toLowerCase()
+    const cleanMobile = mobile.trim()
+    const cleanId = idValue.trim().toLowerCase()
 
-      const allMembers = getRegisteredMembers()
-      const matched = allMembers.find((m) =>
-        (m.mobile && m.mobile === cleanMobile) ||
-        (m.phone && m.phone === cleanMobile) ||
-        (m.phoneMasked && m.phoneMasked.includes(cleanMobile.slice(-4))) ||
-        (m.pan && m.pan.toLowerCase() === cleanId) ||
-        (m.aadhaar && m.aadhaar === cleanId)
-      )
+    const allMembers = getRegisteredMembers()
+    let matched = allMembers.find((m) =>
+      (m.mobile && m.mobile === cleanMobile) ||
+      (m.phone && m.phone === cleanMobile) ||
+      (m.phoneMasked && m.phoneMasked.includes(cleanMobile.slice(-4))) ||
+      (m.pan && m.pan.toLowerCase() === cleanId) ||
+      (m.aadhaar && m.aadhaar === cleanId)
+    )
 
-      if (matched) {
-        setFoundUan({
-          uan: matched.uan,
-          name: matched.name,
-          memberId: matched.employers?.[0]?.memberId || 'MH/BAN/0049281/000/0091823',
-          office: matched.currentOffice || 'Regional Office Mumbai (Bandra)',
-        })
-      } else {
-        setSearchError(`No active UAN found matching mobile "+91 ${cleanMobile}" and ${idType.toUpperCase()} "${idValue}". Please verify your inputs or apply for Direct Allotment.`)
-      }
-    }, 800)
+    if (!matched && isSupabaseConfigured()) {
+      try {
+        const { data: cloudMember } = await supabase
+          .from('members')
+          .select('*')
+          .eq('phone', cleanMobile)
+          .maybeSingle()
+        if (cloudMember) matched = cloudMember
+      } catch {}
+    }
+
+    setIsSearching(false)
+    if (matched) {
+      setFoundUan({
+        uan: matched.uan,
+        name: matched.name,
+        memberId: matched.employers?.[0]?.memberId || 'MH/BAN/0049281/000/0091823',
+        office: matched.currentOffice || 'Regional Office Mumbai (Bandra)',
+      })
+    } else {
+      setSearchError(`No active UAN found matching mobile "+91 ${cleanMobile}" and ${idType.toUpperCase()} "${idValue}". Please verify your inputs or apply for Direct Allotment.`)
+    }
   }
 
   return (

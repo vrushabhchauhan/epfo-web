@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useSession } from '../context/useSession.js'
+import { member as defaultMember } from '../data/mockData.js'
 import './KycCorrectionPage.css'
 
 function KycCorrectionPage() {
+  const { member: sessionMember } = useSession()
+  const member = sessionMember || defaultMember
   const [synced, setSynced] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -46,19 +50,19 @@ function KycCorrectionPage() {
             <span className="record-tag">EPFO Member Record</span>
             <div className="record-field">
               <span className="field-name">Full Name</span>
-              <strong className="field-val">Ananya Rao</strong>
+              <strong className="field-val">{member.name || 'Member'}</strong>
             </div>
             <div className="record-field">
               <span className="field-name">Date of Birth</span>
-              <strong className="field-val number">12 Apr 1990</strong>
+              <strong className="field-val number">{member.dob || '1990-04-12'}</strong>
             </div>
             <div className="record-field">
               <span className="field-name">Father's / Husband's Name</span>
-              <strong className="field-val">M. K. Rao</strong>
+              <strong className="field-val">{member.fatherOrHusbandName || 'M. K. Rao'}</strong>
             </div>
             <div className="record-field">
               <span className="field-name">Gender</span>
-              <strong className="field-val">Female</strong>
+              <strong className="field-val">{member.gender || 'Female'}</strong>
             </div>
           </div>
 
