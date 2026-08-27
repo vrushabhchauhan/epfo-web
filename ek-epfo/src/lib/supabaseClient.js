@@ -142,7 +142,7 @@ export async function getCloudMemberByEmail(email) {
 }
 
 export async function upsertCloudMember(memberRecord) {
-  if (!isSupabaseConfigured() || !memberRecord?.uan) return { success: true }
+  if (!isSupabaseConfigured() || !memberRecord?.uan) return { success: false, error: "Database not configured or missing required parameters." }
   try {
     const row = {
       uan: String(memberRecord.uan).trim(),
@@ -194,7 +194,7 @@ export async function getCloudClaims(uan) {
 }
 
 export async function insertCloudClaim(claim) {
-  if (!isSupabaseConfigured()) return { success: true }
+  if (!isSupabaseConfigured()) return { success: false, error: "Database not configured or missing required parameters." }
   try {
     const { data, error } = await supabase.from('claims').insert([claim]).select()
     if (error) throw error
@@ -206,7 +206,7 @@ export async function insertCloudClaim(claim) {
 }
 
 export async function insertCloudGrievance(grievance) {
-  if (!isSupabaseConfigured()) return { success: true }
+  if (!isSupabaseConfigured()) return { success: false, error: "Database not configured or missing required parameters." }
   try {
     const { data, error } = await supabase.from('grievances').insert([grievance]).select()
     if (error) throw error
@@ -230,7 +230,7 @@ export async function getCloudGrievances(uan) {
 }
 
 export async function updateCloudClaimStatus(claimId, updates) {
-  if (!isSupabaseConfigured()) return { success: true }
+  if (!isSupabaseConfigured()) return { success: false, error: "Database not configured or missing required parameters." }
   try {
     const { data, error } = await supabase.from('claims').update(updates).eq('claim_id', claimId).select()
     if (error) throw error
@@ -254,7 +254,7 @@ export async function getCloudNominees(uan) {
 }
 
 export async function insertCloudNominee(nominee) {
-  if (!isSupabaseConfigured()) return { success: true }
+  if (!isSupabaseConfigured()) return { success: false, error: "Database not configured or missing required parameters." }
   try {
     const { data, error } = await supabase.from('nominees').insert([nominee]).select()
     if (error) throw error
@@ -278,7 +278,7 @@ export async function getCloudTransfers(uan) {
 }
 
 export async function insertCloudTransfer(transfer) {
-  if (!isSupabaseConfigured()) return { success: true }
+  if (!isSupabaseConfigured()) return { success: false, error: "Database not configured or missing required parameters." }
   try {
     const { data, error } = await supabase.from('transfers').insert([transfer]).select()
     if (error) throw error
