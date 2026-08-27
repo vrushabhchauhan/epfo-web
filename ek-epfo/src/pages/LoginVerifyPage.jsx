@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
-import { verifyEmailOtp, sendEmailOtp } from '../lib/supabaseClient.js'
+import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember } from '../lib/supabaseClient.js'
+import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
 import { member } from '../data/mockData.js'
 import './LoginFlow.css'
 
@@ -35,7 +36,22 @@ function LoginVerifyPage() {
       setIsVerifying(false)
 
       if (res.success) {
-        login(identifier)
+        // Fetch or create user record in Supabase cloud
+        let cloudUser = await getCloudMemberByEmail(targetEmail)
+        if (!cloudUser && identifier && !identifier.includes('@')) {
+          cloudUser = await getCloudMember(identifier)
+        }
+
+        const localUser = findMemberByIdentifier(identifier) || findMemberByIdentifier(targetEmail)
+
+        const finalProfile = cloudUser || localUser || registerMemberAccount({
+          uan: `100${Math.floor(1000000 + Math.random() * 9000000)}`,
+          email: targetEmail,
+          name: location.state?.memberName || targetEmail.split('@')[0],
+          kycStatus: 'Verified (Cloud Email OTP)',
+        })
+
+        login(finalProfile.uan || identifier, finalProfile)
         navigate('/dashboard')
       } else {
         setVerifyError(res.error || 'Invalid verification code')
@@ -59,6 +75,11 @@ function LoginVerifyPage() {
             <span>🏛️ Ek EPFO</span>
           </Link>
           <h1>Enter 6-digit verification code</h1>
+          {location.state?.memberName && (
+            <div className="login-member-welcome">
+              <span>Signing in as <strong>{location.state.memberName}</strong></span>
+            </div>
+          )}
           {isCloud ? (
             <div className="login-dpi-badge">
               <span className="dpi-dot" />
@@ -67,9 +88,9 @@ function LoginVerifyPage() {
           ) : null}
           <p>
             {railMode === 'sms' ? (
-              <>Sent via SMS to registered Aadhaar mobile <strong className="number">{member.phoneMasked}</strong></>
+              <>Sent via SMS to registered Aadhaar mobile <strong className="number">{location.state?.phoneMasked || member.phoneMasked}</strong></>
             ) : (
-              <>Sent to verified email address <strong className="number">{member.email}</strong></>
+              <>Sent to verified email address <strong className="number">{targetEmail}</strong></>
             )}
           </p>
         </div>

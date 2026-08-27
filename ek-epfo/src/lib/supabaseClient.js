@@ -65,6 +65,58 @@ export async function getCloudMember(uan = '1004829371') {
   }
 }
 
+export async function getCloudMemberByEmail(email) {
+  if (!isSupabaseConfigured() || !email) return null
+  try {
+    const { data, error } = await supabase.from('members').select('*').eq('email', email.trim().toLowerCase()).maybeSingle()
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Cloud member email fetch fallback:', err.message)
+    return null
+  }
+}
+
+export async function upsertCloudMember(memberRecord) {
+  if (!isSupabaseConfigured() || !memberRecord?.uan) return { success: true }
+  try {
+    const row = {
+      uan: String(memberRecord.uan).trim(),
+      name: memberRecord.name || 'Member',
+      email: memberRecord.email ? memberRecord.email.trim().toLowerCase() : null,
+      phone: memberRecord.phone || memberRecord.mobile || '9876544821',
+      phone_masked: memberRecord.phoneMasked || (memberRecord.mobile ? `••••••${String(memberRecord.mobile).slice(-4)}` : '••••••4821'),
+      dob: memberRecord.dob || '1992-06-15',
+      gender: memberRecord.gender || 'Not specified',
+      kyc_status: memberRecord.kycStatus || 'Verified (Aadhaar OTP)',
+      bank_name: memberRecord.bankName || 'State Bank of India',
+      bank_ifsc: memberRecord.bankIfsc || 'SBIN0001234',
+      bank_account_masked: memberRecord.bankAccountMasked || '•••• •••• 4821',
+    }
+
+    const { data, error } = await supabase.from('members').upsert([row], { onConflict: 'uan' }).select()
+    if (error) throw error
+
+    // Initialize balance record if not present
+    await supabase.from('balances').upsert([
+      {
+        uan: row.uan,
+        total_accumulation: memberRecord.totalAccumulation || 493600,
+        employee_share_total: memberRecord.employeeShareTotal || 248200,
+        employer_share_total: memberRecord.employerShareTotal || 162400,
+        eps_pension_fund_total: memberRecord.epsPensionFundTotal || 83000,
+        interest_rate_annual: '8.25%',
+        interest_accrued_fy26: 18450,
+      }
+    ], { onConflict: 'uan' })
+
+    return { success: true, data }
+  } catch (err) {
+    console.error('Error upserting member to Supabase cloud:', err.message)
+    return { success: false, error: err.message }
+  }
+}
+
 export async function getCloudClaims(uan = '1004829371') {
   if (!isSupabaseConfigured()) return null
   try {

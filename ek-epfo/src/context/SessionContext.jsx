@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { member as defaultMember } from '../data/mockData.js'
 import { SessionContext } from './SessionContextObject.js'
+import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
 
 export function SessionProvider({ children }) {
   const [session, setSession] = useState(() => {
@@ -27,19 +28,24 @@ export function SessionProvider({ children }) {
   }, [session])
 
   function login(identifier, customProfile = {}) {
-    const isEmail = identifier.includes('@')
-    const newMember = {
-      ...defaultMember,
-      ...customProfile,
-      uan: isEmail ? (customProfile.uan || '1004829371') : identifier,
-      email: isEmail ? identifier : (customProfile.email || defaultMember.email),
-      name: customProfile.name || defaultMember.name,
-      loginTime: new Date().toLocaleTimeString(),
+    const existing = findMemberByIdentifier(identifier)
+    let memberData
+    if (existing) {
+      memberData = { ...existing, ...customProfile, loginTime: new Date().toLocaleTimeString() }
+    } else {
+      const isEmail = identifier && identifier.includes('@')
+      memberData = registerMemberAccount({
+        ...defaultMember,
+        ...customProfile,
+        uan: isEmail ? (customProfile.uan || '1004829371') : identifier,
+        email: isEmail ? identifier : (customProfile.email || `${identifier}@member.epfo.gov.in`),
+        name: customProfile.name || defaultMember.name,
+      })
     }
 
     setSession({
       isAuthenticated: true,
-      member: newMember,
+      member: memberData,
       token: `cites_live_jwt_${Date.now()}`,
       loginTimestamp: new Date().toISOString(),
     })

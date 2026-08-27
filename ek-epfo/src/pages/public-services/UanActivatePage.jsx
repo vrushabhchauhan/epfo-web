@@ -1,11 +1,13 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { registerMemberAccount } from '../../lib/memberRegistry.js'
 import './UanActivatePage.css'
 
 function UanActivatePage() {
   const [uan, setUan] = useState('1004829371')
   const [aadhaar, setAadhaar] = useState('928192819281')
   const [name, setName] = useState('Ananya Rao')
+  const [email, setEmail] = useState('')
   const [dob, setDob] = useState('1990-04-12')
   const [mobile, setMobile] = useState('9876544821')
   const [consent, setConsent] = useState(true)
@@ -28,6 +30,17 @@ function UanActivatePage() {
     e.preventDefault()
     setIsSubmitting(true)
     setTimeout(() => {
+      const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
+      // Register in persistent member registry and Supabase cloud
+      registerMemberAccount({
+        uan: uan.trim(),
+        name: name.trim(),
+        dob,
+        mobile: mobile.trim(),
+        email: cleanEmail,
+        kycStatus: 'Verified (Aadhaar OTP)',
+      })
+
       setIsSubmitting(false)
       setStep(3)
     }, 800)
@@ -108,7 +121,7 @@ function UanActivatePage() {
                 />
               </div>
 
-              <div className="form-group full-width">
+              <div className="form-group">
                 <label htmlFor="act-mobile">Aadhaar Linked Mobile Number *</label>
                 <input
                   id="act-mobile"
@@ -119,6 +132,18 @@ function UanActivatePage() {
                   onChange={(e) => setMobile(e.target.value)}
                   placeholder="e.g. 9876543210"
                   required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="act-email">Personal Email Address (For Cloud OTP &amp; Alerts)</label>
+                <input
+                  id="act-email"
+                  type="email"
+                  className="uan-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="e.g. user@gmail.com"
                 />
               </div>
             </div>

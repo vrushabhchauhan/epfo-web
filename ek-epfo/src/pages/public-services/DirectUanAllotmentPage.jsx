@@ -1,10 +1,12 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { registerMemberAccount } from '../../lib/memberRegistry.js'
 import './DirectUanAllotmentPage.css'
 
 function DirectUanAllotmentPage() {
   const [aadhaar, setAadhaar] = useState('849201928374')
   const [name, setName] = useState('Rahul Verma')
+  const [email, setEmail] = useState('')
   const [dob, setDob] = useState('1996-08-15')
   const [gender, setGender] = useState('Male')
   const [mobile, setMobile] = useState('9812345678')
@@ -17,10 +19,22 @@ function DirectUanAllotmentPage() {
     if (!consent) return
     setIsGenerating(true)
     setTimeout(() => {
+      const newUan = `101${Math.floor(100000000 + Math.random() * 900000000)}`
+      const cleanEmail = email.trim() || `${newUan}@member.epfo.gov.in`
+      const memberRecord = registerMemberAccount({
+        uan: newUan,
+        name: name.trim(),
+        dob,
+        gender,
+        mobile: mobile.trim(),
+        email: cleanEmail,
+        kycStatus: 'Verified (Aadhaar Direct Allotment)',
+      })
+
       setIsGenerating(false)
       setAllottedUan({
-        uan: '101984210982',
-        name,
+        uan: memberRecord.uan,
+        name: memberRecord.name,
         dob,
         gender,
         allotmentDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
@@ -102,7 +116,7 @@ function DirectUanAllotmentPage() {
                 </select>
               </div>
 
-              <div className="form-group full-width">
+              <div className="form-group">
                 <label htmlFor="allot-mobile">Aadhaar Linked Mobile Number *</label>
                 <input
                   id="allot-mobile"
@@ -113,6 +127,18 @@ function DirectUanAllotmentPage() {
                   onChange={(e) => setMobile(e.target.value)}
                   placeholder="e.g. 9876543210"
                   required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="allot-email">Personal Email Address (For Cloud OTP &amp; Alerts)</label>
+                <input
+                  id="allot-email"
+                  type="email"
+                  className="uan-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="e.g. rahul@example.com"
                 />
               </div>
             </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { sendEmailOtp, isSupabaseConfigured } from '../lib/supabaseClient.js'
+import { findMemberByIdentifier } from '../lib/memberRegistry.js'
 import { systemStatus } from '../data/mockData.js'
 import './LoginFlow.css'
 
@@ -11,28 +12,43 @@ function LoginEmailPage() {
   const [showRecoveryModal, setShowRecoveryModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [authError, setAuthError] = useState('')
+  const [unregisteredUan, setUnregisteredUan] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
     setAuthError('')
-    if (identifier.trim()) {
-      setIsLoading(true)
-      const targetEmail = useEmail ? identifier : 'ananya.demo@example.com'
-      const res = await sendEmailOtp(targetEmail)
-      setIsLoading(false)
+    setUnregisteredUan(false)
+    const cleanId = identifier.trim()
+    if (!cleanId) return
 
-      if (res.success) {
-        navigate('/login/verify', {
-          state: {
-            identifier,
-            email: targetEmail,
-            mode: useEmail ? 'email' : 'uan',
-            isCloud: isSupabaseConfigured() && !res.simulated,
-          },
-        })
-      } else {
-        setAuthError(res.error || 'Failed to send OTP')
-      }
+    // 1. If checking UAN, verify if registered in CITES database
+    const matchedMember = findMemberByIdentifier(cleanId)
+    if (!useEmail && !matchedMember && cleanId !== '1004829371') {
+      setUnregisteredUan(true)
+      setAuthError(`No activated account found for UAN "${cleanId}". Under EPFO statutory rules, you must activate your UAN first or apply for Direct Allotment.`)
+      return
+    }
+
+    setIsLoading(true)
+    const targetEmail = useEmail
+      ? cleanId
+      : (matchedMember?.email || 'ananya.demo@example.com')
+
+    const res = await sendEmailOtp(targetEmail)
+    setIsLoading(false)
+
+    if (res.success) {
+      navigate('/login/verify', {
+        state: {
+          identifier: cleanId,
+          email: targetEmail,
+          memberName: matchedMember?.name || (useEmail ? cleanId.split('@')[0] : 'Member'),
+          mode: useEmail ? 'email' : 'uan',
+          isCloud: isSupabaseConfigured() && !res.simulated,
+        },
+      })
+    } else {
+      setAuthError(res.error || 'Failed to send OTP')
     }
   }
 
@@ -93,7 +109,17 @@ function LoginEmailPage() {
 
           {authError && (
             <div className="auth-error-banner" role="alert">
-              ⚠️ {authError}
+              <div>⚠️ {authError}</div>
+              {unregisteredUan && (
+                <div className="unreg-uan-cta-group">
+                  <Link to="/uan/activate" className="btn-unreg-cta">
+                    ⚡ Activate UAN Now &rarr;
+                  </Link>
+                  <Link to="/uan/allot" className="btn-unreg-cta btn-unreg-cta--secondary">
+                    🆔 Direct UAN Allotment (Gig Worker) &rarr;
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 

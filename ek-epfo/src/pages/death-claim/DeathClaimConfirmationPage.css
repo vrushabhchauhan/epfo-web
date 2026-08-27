@@ -1,11 +1,3 @@
-.death-confirmation-container {
-  width: 100%;
-  max-width: 680px;
-  margin: 0 auto;
-  padding: var(--space-4);
-  color: var(--color-text);
-}
-
 /* Official Receipt Card */
 .official-receipt-card {
   width: 100%;
@@ -14,7 +6,6 @@
   border-radius: var(--radius-card);
   padding: var(--space-5);
   margin: var(--space-4) 0;
-  text-align: left;
   box-shadow: var(--shadow-md);
   color: #0F172A;
 }
