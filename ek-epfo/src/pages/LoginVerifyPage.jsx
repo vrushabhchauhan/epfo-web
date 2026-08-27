@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useSession } from '../context/useSession.js'
 import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
 import './LoginFlow.css'
@@ -176,7 +175,7 @@ function LoginVerifyPage() {
           ) : isCloud ? (
             <div className="login-dpi-badge">
               <span className="dpi-dot" />
-              <span>Real OTP dispatched to your Inbox via Supabase Cloud</span>
+              <span>Real OTP dispatched to your Inbox via Brevo Cloud Relay</span>
             </div>
           ) : location.state?.fallbackOtp ? (
             <div className="login-dpi-badge">
