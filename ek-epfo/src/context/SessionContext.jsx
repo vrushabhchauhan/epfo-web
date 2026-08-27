@@ -31,12 +31,17 @@ export function SessionProvider({ children }) {
     if (supabase) {
       supabase.auth.getSession().then(({ data: { session: sbSession } }) => {
         if (sbSession?.access_token && !session.isAuthenticated) {
-          const userEmail = sbSession.user.email
-          const localUser = findMemberByIdentifier(userEmail)
-          if (localUser) {
+          const userEmail = sbSession.user?.email
+          const localUser = userEmail ? findMemberByIdentifier(userEmail) : null
+          const user = localUser || (userEmail ? registerMemberAccount({
+            email: userEmail,
+            name: sbSession.user?.user_metadata?.name || userEmail.split('@')[0],
+            kycStatus: 'Verified (Cloud Email OTP)',
+          }) : null)
+          if (user) {
             setSession({
               isAuthenticated: true,
-              member: localUser,
+              member: user,
               token: sbSession.access_token,
               loginTimestamp: new Date().toISOString(),
             })

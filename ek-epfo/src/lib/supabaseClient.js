@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || ''
+const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || ''
 
 export const isSupabaseConfigured = () => {
   return Boolean(supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('https://'))
@@ -34,6 +34,11 @@ export async function sendEmailOtp(email) {
   }
 
   try {
+    try {
+      if (cleanEmail) sessionStorage.removeItem(`pending_otp_${cleanEmail}`)
+      sessionStorage.removeItem('pending_otp_last')
+    } catch {}
+
     const { data, error } = await supabase.auth.signInWithOtp({
       email: cleanEmail,
       options: {
@@ -68,15 +73,21 @@ export async function verifyEmailOtp(email, token, fallbackToken = null) {
     ? (sessionStorage.getItem(`pending_otp_${email}`) || sessionStorage.getItem('pending_otp_last'))
     : null
 
-  const isDemoMatch = (storedOtp && cleanToken === storedOtp.trim()) ||
+  const isDemoMatch = Boolean(
+    (storedOtp && cleanToken === storedOtp.trim()) ||
     (cleanFallback && cleanToken === cleanFallback)
+  )
 
-  if (!isSupabaseConfigured() || isDemoMatch) {
+  if (isDemoMatch) {
     try {
-      if (email) sessionStorage.removeItem(`pending_otp_${email}`)
-      sessionStorage.removeItem('pending_otp_last')
+      if (email && typeof window !== 'undefined') sessionStorage.removeItem(`pending_otp_${email}`)
+      if (typeof window !== 'undefined') sessionStorage.removeItem('pending_otp_last')
     } catch {}
     return { success: true, simulated: true }
+  }
+
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: 'Invalid verification code. Please check and re-enter.' }
   }
 
   try {
@@ -86,14 +97,10 @@ export async function verifyEmailOtp(email, token, fallbackToken = null) {
       type: 'email',
     })
     if (error) {
-      if (isDemoMatch) return { success: true, simulated: true }
       throw error
     }
     return { success: true, simulated: false, session: data.session, user: data.user }
   } catch (err) {
-    if (isDemoMatch) {
-      return { success: true, simulated: true }
-    }
     console.error('Error verifying Supabase OTP:', err.message)
     return { success: false, error: err.message }
   }

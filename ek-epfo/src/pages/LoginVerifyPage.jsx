@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
-import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase } from '../lib/supabaseClient.js'
+import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase, isSupabaseConfigured } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
 import './LoginFlow.css'
 
@@ -141,17 +141,21 @@ function LoginVerifyPage() {
   async function handleResend(mode) {
     setRailMode(mode)
     setTimer(30)
+    setVerifyError('')
     if (mode === 'email') {
       const res = await sendEmailOtp(targetEmail)
-      if (res.otp) {
+      if (res.success) {
         navigate('.', {
           replace: true,
           state: {
             ...location.state,
-            fallbackOtp: res.otp,
+            fallbackOtp: res.otp || null,
             rateLimited: res.rateLimited || false,
+            isCloud: isSupabaseConfigured() && !res.simulated,
           },
         })
+      } else {
+        setVerifyError(res.error || 'Failed to resend verification code.')
       }
     }
   }
@@ -176,7 +180,7 @@ function LoginVerifyPage() {
           ) : isCloud ? (
             <div className="login-dpi-badge">
               <span className="dpi-dot" />
-              <span>Real OTP dispatched to your Inbox via Brevo Cloud Relay</span>
+              <span>Real OTP dispatched to your Inbox</span>
             </div>
           ) : location.state?.fallbackOtp ? (
             <div className="login-dpi-badge">
