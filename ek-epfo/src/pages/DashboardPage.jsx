@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { balance, claims, member } from '../data/mockData.js'
+import { useSession } from '../context/useSession.js'
+import { balance, claims as defaultClaims, member as defaultMember } from '../data/mockData.js'
 import './DashboardPage.css'
 
 function formatINR(val) {
@@ -13,6 +14,9 @@ function formatINR(val) {
 
 function DashboardPage() {
   const navigate = useNavigate()
+  const { member: sessionMember } = useSession()
+  const member = sessionMember || defaultMember
+  const claims = defaultClaims
   const activeEmployer = member.employers.find((e) => e.status === 'Active') || member.employers[1]
   const rejectedClaim = claims.find((c) => c.status === 'rejected')
 
@@ -229,7 +233,7 @@ function DashboardPage() {
               </div>
               <div className="stack-row">
                 <span className="stack-label">Total Service Tenure</span>
-                <span className="stack-val">{member.serviceYears}</span>
+                <span className="stack-val">{member.totalServiceYears || member.serviceYears}</span>
               </div>
               <div className="stack-row">
                 <span className="stack-label">Direct Disbursement Bank</span>

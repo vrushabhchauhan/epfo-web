@@ -1,6 +1,7 @@
-﻿import React, { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { claims, rejectionReasons } from '../data/mockData.js'
+import { updateCloudClaimStatus } from '../lib/supabaseClient.js'
 import './ClaimFixPage.css'
 
 function ClaimFixPage() {
@@ -46,6 +47,11 @@ function ClaimFixPage() {
 
     setIsSubmitting(true)
     setTimeout(() => {
+      updateCloudClaimStatus(claim.id, {
+        status: 'in_progress',
+        current_stage: 3,
+      }).catch(() => {})
+
       setIsSubmitting(false)
       setIsSuccess(true)
     }, 700)

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../data/db.js'
 import './EstablishmentSearchPage.css'
@@ -31,7 +31,13 @@ const demoEstablishments = [
 
 function EstablishmentSearchPage() {
   const [query, setQuery] = useState('')
+  const [toastMsg, setToastMsg] = useState('')
   const [results, setResults] = useState(demoEstablishments)
+
+  function showToast(msg) {
+    setToastMsg(msg)
+    setTimeout(() => setToastMsg(''), 4000)
+  }
 
   function handleSearch(e) {
     e.preventDefault()
@@ -51,6 +57,7 @@ function EstablishmentSearchPage() {
 
   return (
     <div className="est-search-layout">
+      {toastMsg && <div className="toast-banner">{toastMsg}</div>}
       <header className="est-header">
         <Link to="/" className="calc-back-link">&larr; Back to Home</Link>
         <div className="calc-title-row">
@@ -119,7 +126,7 @@ function EstablishmentSearchPage() {
               <button
                 type="button"
                 className="btn-view-ecr"
-                onClick={() => alert(`Showing latest ECR Filing for ${est.name}: Challan Cleared via SBI Gateway.`)}
+                onClick={() => showToast(`✓ Latest ECR Filing for ${est.name}: Verified SBI Challan TRRN-8492019284 reconciled.`)}
               >
                 View ECR Receipt &rarr;
               </button>

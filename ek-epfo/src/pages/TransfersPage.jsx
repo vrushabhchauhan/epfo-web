@@ -1,14 +1,27 @@
 import React, { useState } from 'react'
-import { transfers } from '../data/mockData.js'
+import { useSession } from '../context/useSession.js'
+import { transfers, member as defaultMember } from '../data/mockData.js'
 import './TransfersPage.css'
 
 function TransfersPage() {
+  const { member: sessionMember } = useSession()
+  const member = sessionMember || defaultMember
   const [nudgeSent, setNudgeSent] = useState(false)
+  const [showTransferModal, setShowTransferModal] = useState(false)
+  const [transferSubmitted, setTransferSubmitted] = useState(false)
+  const [selectedFromEst, setSelectedFromEst] = useState('MH/BAN/0018293/000/0048291')
   const currentTransfer = transfers[0]
 
   function handleNudge() {
     setNudgeSent(true)
     setTimeout(() => setNudgeSent(false), 4000)
+  }
+
+  function handleTransferSubmit(e) {
+    e.preventDefault()
+    setShowTransferModal(false)
+    setTransferSubmitted(true)
+    setTimeout(() => setTransferSubmitted(false), 5000)
   }
 
   return (
@@ -22,10 +35,20 @@ function TransfersPage() {
           </p>
         </div>
 
-        <button type="button" className="btn-initiate-transfer">
+        <button
+          type="button"
+          className="btn-initiate-transfer"
+          onClick={() => setShowTransferModal(true)}
+        >
           + Initiate New Form 13 Transfer
         </button>
       </header>
+
+      {transferSubmitted && (
+        <div className="nudge-toast" role="status" style={{ background: '#ecfdf5', borderColor: '#a7f3d0', color: '#065f46' }}>
+          ✓ Form 13 Online Transfer request submitted successfully under UAN <strong className="number">{member.uan}</strong>. 14-day auto-attestation window initiated.
+        </div>
+      )}
 
       {nudgeSent && (
         <div className="nudge-toast" role="status">
@@ -139,6 +162,65 @@ function TransfersPage() {
           </table>
         </div>
       </section>
+
+      {/* Initiate Transfer Modal */}
+      {showTransferModal && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <div className="modal-header">
+              <h2>Initiate Online Form 13 Transfer</h2>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setShowTransferModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleTransferSubmit} className="grv-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+              <div className="config-field">
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '0.35rem' }}>Previous Establishment / Member ID *</label>
+                <select
+                  className="config-select"
+                  style={{ width: '100%', padding: '0.65rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                  value={selectedFromEst}
+                  onChange={(e) => setSelectedFromEst(e.target.value)}
+                >
+                  <option value="MH/BAN/0018293/000/0048291">Sundar Textiles Pvt Ltd (MH/BAN/0018293/000/0048291)</option>
+                  <option value="DL/CPM/0029182/000/0019283">Apex Manufacturing Pvt Ltd (DL/CPM/0029182/000/0019283)</option>
+                </select>
+              </div>
+
+              <div className="config-field">
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '0.35rem' }}>Current Present Establishment (Target Account) *</label>
+                <input
+                  type="text"
+                  className="config-input"
+                  style={{ width: '100%', padding: '0.65rem', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#f8fafc' }}
+                  value="Coral Systems Ltd (MH/BAN/0049281/000/0091823)"
+                  readOnly
+                />
+              </div>
+
+              <div className="config-field">
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '0.35rem' }}>Attestation Mode *</label>
+                <select className="config-select" style={{ width: '100%', padding: '0.65rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                  <option value="present">Through Present Employer (Fast-Track CITES 2.01)</option>
+                  <option value="previous">Through Previous Employer</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="btn-initiate-transfer"
+                style={{ marginTop: '0.75rem', width: '100%', padding: '0.85rem', background: '#003366', color: '#ffffff', borderRadius: '6px', fontWeight: 600, cursor: 'pointer', border: 'none' }}
+              >
+                Submit Form 13 Transfer Request &rarr;
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-﻿// CITES 2.01 Centralized Relational Database Model for Ek-EPFO
+// CITES 2.01 Centralized Relational Database Model for Ek-EPFO
 // Represents the national schema linking Citizens, UANs, Establishments, MIDs, and ECR Ledgers.
 
 export const db = {
@@ -8,16 +8,13 @@ export const db = {
       uan: '1004829371',
       name: 'Ananya Rao',
       email: 'ananya.demo@example.com',
-      phone: '9876544821',
+      phone: '••••••4821',
       phoneMasked: '••••••4821',
       dob: '1990-04-12',
       gender: 'Female',
       fatherOrHusbandName: 'Mukesh K. Rao',
-      pan: 'ABCDE4821K',
       panMasked: '•••••482K',
-      aadhaar: '928192819281',
       aadhaarMasked: '•••• •••• 9281',
-      bankAccount: '10928374821',
       bankAccountMasked: '•••• •••• 4821',
       bankIFSC: 'SBIN0001234',
       bankName: 'State Bank of India',

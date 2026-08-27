@@ -1,19 +1,61 @@
-﻿import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { grievances } from '../data/mockData.js'
+import { useSession } from '../context/useSession.js'
+import { grievances as defaultGrievances } from '../data/mockData.js'
+import { insertCloudGrievance, getCloudGrievances } from '../lib/supabaseClient.js'
 import './GrievancePage.css'
 
 function GrievancePage() {
   const navigate = useNavigate()
+  const { member } = useSession()
+  const [grievanceList, setGrievanceList] = useState(defaultGrievances)
   const [showNewModal, setShowNewModal] = useState(false)
   const [category, setCategory] = useState('claim_delay')
   const [desc, setDesc] = useState('')
 
+  useEffect(() => {
+    async function loadGrievances() {
+      if (member?.uan) {
+        const cloudData = await getCloudGrievances(member.uan)
+        if (cloudData && cloudData.length > 0) {
+          const formatted = cloudData.map((g) => ({
+            id: g.grievance_id,
+            category: g.category,
+            status: g.status,
+            assignedOfficer: g.assigned_officer || 'APFC Regional Office',
+            filedDate: g.filed_date,
+            expectedResolutionDate: g.expected_resolution_date || '2026-09-01',
+            daysRemaining: g.days_remaining || 5,
+            linkedClaimId: g.linked_claim_id || 'N/A',
+          }))
+          setGrievanceList(formatted)
+        }
+      }
+    }
+    loadGrievances()
+  }, [member?.uan])
+
   function handleCreateGrievance(e) {
     e.preventDefault()
     setShowNewModal(false)
-    navigate('/grievance/GRV-849201')
+    const grvId = `GRV-${Math.floor(100000 + Math.random() * 900000)}`
+    const newGrv = {
+      grievance_id: grvId,
+      uan: member?.uan || '1004829371',
+      linked_claim_id: null,
+      category: category,
+      description: desc,
+      filed_date: new Date().toISOString().split('T')[0],
+      status: 'registered',
+      assigned_officer: 'APFC Regional Office',
+      expected_resolution_date: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+      days_remaining: 7,
+    }
+    insertCloudGrievance(newGrv).catch(() => {})
+    navigate(`/grievance/${grvId}`)
   }
+
+  const grievances = grievanceList
 
   return (
     <div className="grievance-layout">

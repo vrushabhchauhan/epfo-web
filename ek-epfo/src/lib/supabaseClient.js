@@ -152,3 +152,27 @@ export async function insertCloudGrievance(grievance) {
     return { success: false, error: err.message }
   }
 }
+
+export async function getCloudGrievances(uan = '1004829371') {
+  if (!isSupabaseConfigured()) return null
+  try {
+    const { data, error } = await supabase.from('grievances').select('*').eq('uan', uan).order('filed_date', { ascending: false })
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Cloud grievances fetch fallback:', err.message)
+    return null
+  }
+}
+
+export async function updateCloudClaimStatus(claimId, updates) {
+  if (!isSupabaseConfigured()) return { success: true }
+  try {
+    const { data, error } = await supabase.from('claims').update(updates).eq('claim_id', claimId).select()
+    if (error) throw error
+    return { success: true, data }
+  } catch (err) {
+    console.error('Cloud claim update error:', err.message)
+    return { success: false, error: err.message }
+  }
+}

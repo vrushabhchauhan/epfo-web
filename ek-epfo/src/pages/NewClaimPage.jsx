@@ -1,6 +1,8 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { balance, member } from '../data/mockData.js'
+import { useSession } from '../context/useSession.js'
+import { balance, member as defaultMember } from '../data/mockData.js'
+import { insertCloudClaim } from '../lib/supabaseClient.js'
 import './NewClaimPage.css'
 
 function formatINR(val) {
@@ -13,6 +15,8 @@ function formatINR(val) {
 
 function NewClaimPage() {
   const navigate = useNavigate()
+  const { member: sessionMember } = useSession()
+  const member = sessionMember || defaultMember
   const [selectedForm, setSelectedForm] = useState('form_31')
   const [advancePurpose, setAdvancePurpose] = useState('medical')
   const [amount, setAmount] = useState('45000')
@@ -28,12 +32,24 @@ function NewClaimPage() {
     setIsSubmitting(true)
     setTimeout(() => {
       setIsSubmitting(false)
+      const newClaimId = `CLM${Math.floor(1100 + Math.random() * 900)}`
       setSubmittedClaim({
-        id: `CLM${Math.floor(1100 + Math.random() * 900)}`,
+        id: newClaimId,
         amount: numAmount,
         form: 'Form 31',
         disbursementDate: 'Estimated within 3 business days',
       })
+      const claimRecord = {
+        claim_id: newClaimId,
+        uan: member.uan || '1004829371',
+        form_number: 'Form 31',
+        claim_type: advancePurpose === 'medical' ? 'Medical Advance' : advancePurpose === 'housing' ? 'Housing Advance' : advancePurpose === 'education' ? 'Education Advance' : 'Marriage Advance',
+        amount_requested: numAmount,
+        filed_date: new Date().toISOString().split('T')[0],
+        status: 'in_progress',
+        current_stage: 1,
+      }
+      insertCloudClaim(claimRecord).catch(() => {})
     }, 800)
   }
 

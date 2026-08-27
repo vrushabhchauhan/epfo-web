@@ -1,6 +1,7 @@
-﻿import React from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { member } from '../data/mockData.js'
+import { useSession } from '../context/useSession.js'
+import { member as defaultMember } from '../data/mockData.js'
 import './ProfilePage.css'
 
 function formatFullDate(dateString) {
@@ -24,6 +25,8 @@ function formatYearMonth(ymString) {
 }
 
 function ProfilePage() {
+  const { member: sessionMember } = useSession()
+  const member = sessionMember || defaultMember
   return (
     <div className="profile-layout">
       {/* Header Row */}
@@ -131,7 +134,7 @@ function ProfilePage() {
           <section className="profile-card" aria-labelledby="employment-history-title">
             <div className="profile-card-header">
               <h2 id="employment-history-title">Service History</h2>
-              <span className="service-tenure number">{member.serviceYears} Total</span>
+              <span className="service-tenure number">{member.totalServiceYears || member.serviceYears} Total</span>
             </div>
 
             <div className="employment-timeline">

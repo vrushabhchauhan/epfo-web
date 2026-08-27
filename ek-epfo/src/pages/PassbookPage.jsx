@@ -1,5 +1,6 @@
-﻿import React, { useState } from 'react'
-import { balance, contributionHistory, member } from '../data/mockData.js'
+import React, { useState } from 'react'
+import { useSession } from '../context/useSession.js'
+import { balance, contributionHistory, member as defaultMember } from '../data/mockData.js'
 import './PassbookPage.css'
 
 function formatINR(val) {
@@ -11,6 +12,8 @@ function formatINR(val) {
 }
 
 function PassbookPage() {
+  const { member: sessionMember } = useSession()
+  const member = sessionMember || defaultMember
   const [downloadSuccess, setDownloadSuccess] = useState(false)
 
   function handleDownload() {

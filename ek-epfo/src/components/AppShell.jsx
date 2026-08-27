@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
 import { systemStatus } from '../data/mockData.js'
 import './AppShell.css'
@@ -77,8 +77,11 @@ const navItems = [
 
 function AppShell() {
   const navigate = useNavigate()
-  const { member, logout } = useSession()
+  const { member, logout, isAuthenticated } = useSession()
   const [showDpiDetails, setShowDpiDetails] = useState(false)
+  if (!isAuthenticated) {
+    return <Navigate to="/login/email" replace />
+  }
 
   function handleSignOut() {
     logout()

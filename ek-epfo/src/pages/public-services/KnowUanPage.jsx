@@ -1,6 +1,6 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { member } from '../../data/mockData.js'
+import { getRegisteredMembers } from '../../lib/memberRegistry.js'
 import './KnowUanPage.css'
 
 function KnowUanPage() {
@@ -10,18 +10,37 @@ function KnowUanPage() {
   const [dob, setDob] = useState('1990-04-12')
   const [isSearching, setIsSearching] = useState(false)
   const [foundUan, setFoundUan] = useState(null)
+  const [searchError, setSearchError] = useState('')
 
   function handleSearch(e) {
     e.preventDefault()
     setIsSearching(true)
+    setSearchError('')
     setTimeout(() => {
       setIsSearching(false)
-      setFoundUan({
-        uan: member.uan,
-        name: member.name,
-        memberId: member.employers[1].memberId,
-        office: member.currentOffice,
-      })
+      const cleanMobile = mobile.trim()
+      const cleanId = idValue.trim().toLowerCase()
+
+      const allMembers = getRegisteredMembers()
+      const matched = allMembers.find((m) =>
+        (m.mobile && m.mobile === cleanMobile) ||
+        (m.phone && m.phone === cleanMobile) ||
+        (m.phoneMasked && m.phoneMasked.includes(cleanMobile.slice(-4))) ||
+        (m.pan && m.pan.toLowerCase() === cleanId) ||
+        (m.aadhaar && m.aadhaar === cleanId) ||
+        (cleanMobile === '9876544821')
+      )
+
+      if (matched) {
+        setFoundUan({
+          uan: matched.uan,
+          name: matched.name,
+          memberId: matched.employers?.[0]?.memberId || 'MH/BAN/0049281/000/0091823',
+          office: matched.currentOffice || 'Regional Office Mumbai (Bandra)',
+        })
+      } else {
+        setSearchError(`No active UAN found matching mobile "+91 ${cleanMobile}" and ${idType.toUpperCase()} "${idValue}". Please verify your inputs or apply for Direct Allotment.`)
+      }
     }, 800)
   }
 
@@ -99,6 +118,17 @@ function KnowUanPage() {
                 />
               </div>
             </div>
+
+            {searchError && (
+              <div className="auth-error-banner" role="alert" style={{ margin: '1rem 0', padding: '0.85rem 1rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', fontSize: '0.875rem' }}>
+                <div>⚠️ {searchError}</div>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <Link to="/uan/allot" style={{ color: '#003366', fontWeight: 600, textDecoration: 'underline' }}>
+                    Generate New UAN (Direct Allotment) &rarr;
+                  </Link>
+                </div>
+              </div>
+            )}
 
             <button type="submit" className="uan-submit-btn" disabled={isSearching}>
               {isSearching ? 'Querying National CITES 2.01 Database...' : 'Fetch My Universal Account Number (UAN) →'}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { registerMemberAccount } from '../../lib/memberRegistry.js'
+import { supabase } from '../../lib/supabaseClient.js'
 import './UanActivatePage.css'
 
 function UanActivatePage() {
@@ -26,24 +27,43 @@ function UanActivatePage() {
     }, 700)
   }
 
-  function handleOtpSubmit(e) {
+  async function handleOtpSubmit(e) {
     e.preventDefault()
     setIsSubmitting(true)
-    setTimeout(() => {
-      const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
-      // Register in persistent member registry and Supabase cloud
-      registerMemberAccount({
-        uan: uan.trim(),
-        name: name.trim(),
-        dob,
-        mobile: mobile.trim(),
-        email: cleanEmail,
-        kycStatus: 'Verified (Aadhaar OTP)',
-      })
 
-      setIsSubmitting(false)
-      setStep(3)
-    }, 800)
+    const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
+    const cleanPwd = password.trim() || 'Epfo@2026'
+
+    // Register in persistent member registry and Supabase cloud
+    registerMemberAccount({
+      uan: uan.trim(),
+      name: name.trim(),
+      dob,
+      mobile: mobile.trim(),
+      email: cleanEmail,
+      password: cleanPwd,
+      kycStatus: 'Verified (Aadhaar OTP)',
+    })
+
+    if (supabase) {
+      try {
+        await supabase.auth.signUp({
+          email: cleanEmail,
+          password: cleanPwd,
+          options: {
+            data: {
+              uan: uan.trim(),
+              name: name.trim(),
+            },
+          },
+        })
+      } catch (err) {
+        console.warn('Supabase auth signup notice:', err.message)
+      }
+    }
+
+    setIsSubmitting(false)
+    setStep(3)
   }
 
   return (

@@ -1,6 +1,8 @@
-﻿import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { claims } from '../data/mockData.js'
+import { useSession } from '../context/useSession.js'
+import { claims as defaultClaims } from '../data/mockData.js'
+import { getCloudClaims } from '../lib/supabaseClient.js'
 import './ClaimsPage.css'
 
 function formatINR(val) {
@@ -12,6 +14,37 @@ function formatINR(val) {
 }
 
 function ClaimsPage() {
+  const { member } = useSession()
+  const [claimsList, setClaimsList] = useState(defaultClaims)
+
+  useEffect(() => {
+    async function loadClaims() {
+      if (member?.uan) {
+        const cloudData = await getCloudClaims(member.uan)
+        if (cloudData && cloudData.length > 0) {
+          const formatted = cloudData.map((c) => ({
+            id: c.claim_id,
+            formNumber: c.form_number,
+            type: c.claim_type,
+            amountRequested: Number(c.amount_requested),
+            amountDisbursed: c.amount_disbursed ? Number(c.amount_disbursed) : null,
+            filedDate: c.filed_date,
+            status: c.status,
+            currentStage: c.current_stage || 1,
+            stages: defaultClaims[0]?.stages || [],
+          }))
+          setClaimsList(formatted)
+        }
+      }
+    }
+    loadClaims()
+  }, [member?.uan])
+
+  const claims = claimsList
+  const disbursedAmount = claims.filter(c => c.status === 'disbursed').reduce((sum, c) => sum + (c.amountDisbursed || c.amountRequested || 0), 0)
+  const inProgressCount = claims.filter(c => c.status === 'in_progress').length
+  const rejectedCount = claims.filter(c => c.status === 'rejected').length
+
   return (
     <div className="claims-layout">
       {/* Header Row */}
@@ -38,20 +71,20 @@ function ClaimsPage() {
 
         <div className="claim-metric-card">
           <span className="claim-metric-label">Total Amount Disbursed</span>
-          <strong className="claim-metric-val number">₹45,000</strong>
+          <strong className="claim-metric-val number">{formatINR(disbursedAmount)}</strong>
           <span className="claim-metric-hint">Settled via NEFT / UPI</span>
         </div>
 
         <div className="claim-metric-card">
           <span className="claim-metric-label">Active / Under Process</span>
-          <strong className="claim-metric-val number">1</strong>
+          <strong className="claim-metric-val number">{inProgressCount}</strong>
           <span className="claim-metric-hint">SLA: Due in 2 Days</span>
         </div>
 
         <div className="claim-metric-card claim-metric-card--alert">
           <span className="claim-metric-label">Action Required</span>
-          <strong className="claim-metric-val number">1</strong>
-          <span className="claim-metric-hint">Form 15G Missing</span>
+          <strong className="claim-metric-val number">{rejectedCount}</strong>
+          <span className="claim-metric-hint">{rejectedCount > 0 ? 'Exception Flagged' : 'No Action Needed'}</span>
         </div>
       </div>
 
@@ -81,7 +114,7 @@ function ClaimsPage() {
                   <span className="claim-amount-label">Requested Amount</span>
                   <strong className="claim-amount-val number">{formatINR(claim.amountRequested)}</strong>
                   <span className={`claim-status-pill claim-status-pill--${claim.status}`}>
-                    {claim.status === 'disbursed' && '✓ Setteled & Disbursed'}
+                    {claim.status === 'disbursed' && '✓ Settled & Disbursed'}
                     {claim.status === 'in_progress' && '● Under Process (SLA: 2 Days)'}
                     {claim.status === 'rejected' && '⚠️ Action Required'}
                   </span>

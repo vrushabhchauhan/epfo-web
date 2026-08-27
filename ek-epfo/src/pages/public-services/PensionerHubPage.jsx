@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './PensionerHubPage.css'
 
@@ -25,6 +25,12 @@ function PensionerHubPage() {
   const [ppoInput, setPpoInput] = useState('MH/BAN/0019284/PPO')
   const [pensioner, setPensioner] = useState(demoPensioner)
   const [isSearching, setIsSearching] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
+
+  function showToast(msg) {
+    setToastMsg(msg)
+    setTimeout(() => setToastMsg(''), 4500)
+  }
 
   function handlePpoSearch(e) {
     e.preventDefault()
@@ -37,6 +43,11 @@ function PensionerHubPage() {
 
   return (
     <div className="pensioner-layout">
+      {toastMsg && (
+        <div style={{ margin: '0 0 1rem', padding: '0.85rem 1.25rem', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '8px', color: '#065f46', fontWeight: 500, fontSize: '0.875rem' }}>
+          {toastMsg}
+        </div>
+      )}
       <header className="pensioner-header">
         <Link to="/" className="calc-back-link">&larr; Back to Home</Link>
         <div className="calc-title-row">
@@ -113,7 +124,7 @@ function PensionerHubPage() {
           <button
             type="button"
             className="btn-submit-dlc"
-            onClick={() => alert('Jeevan Pramaan FaceRD App integration launched. Submit DLC via Android / iOS FaceRD.')}
+            onClick={() => showToast('✓ Jeevan Pramaan FaceRD App integration initiated. Complete facial biometric scan on registered device.')}
           >
             📱 Submit Annual Life Certificate via Face Authentication &rarr;
           </button>

@@ -27,14 +27,21 @@ function PublicClaimTrackPage() {
       : null
   )
   const [isSearching, setIsSearching] = useState(false)
+  const [notFoundError, setNotFoundError] = useState('')
 
   function handleTrack(e) {
     e.preventDefault()
     setIsSearching(true)
+    setNotFoundError('')
     setTimeout(() => {
       setIsSearching(false)
-      const found = claims.find((c) => c.id.toLowerCase() === claimId.trim().toLowerCase()) || claims[0]
-      setSearchedClaim(found)
+      const cleanId = claimId.trim().toLowerCase()
+      const found = claims.find((c) => c.id.toLowerCase() === cleanId)
+      if (found) {
+        setSearchedClaim(found)
+      } else {
+        setNotFoundError(`No statutory claim found matching Reference ID "${claimId}" for UAN "${uan}". Please verify your Claim Reference ID.`)
+      }
     }, 600)
   }
 
@@ -82,6 +89,17 @@ function PublicClaimTrackPage() {
                 />
               </div>
             </div>
+
+            {notFoundError && (
+              <div className="auth-error-banner" role="alert" style={{ margin: '1rem 0', padding: '0.85rem 1rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', fontSize: '0.875rem' }}>
+                <div>⚠️ {notFoundError}</div>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <Link to="/login/email" style={{ color: '#003366', fontWeight: 600, textDecoration: 'underline' }}>
+                    Sign In to Member Portal to View All Claims &rarr;
+                  </Link>
+                </div>
+              </div>
+            )}
 
             <button type="submit" className="uan-submit-btn" disabled={isSearching}>
               {isSearching ? 'Querying CITES 2.01 Settlement Engine...' : 'Track Claim Status →'}
