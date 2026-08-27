@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
 import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
@@ -157,12 +157,13 @@ function LoginVerifyPage() {
   }
 
   return (
-    <div className="login-flow-container">
+    <div className="login-layout">
       <div className="login-card">
-        <div className="login-card-header">
-          <span className="login-emblem">🏛️</span>
-          <h2>Ek EPFO</h2>
-          <h3>Enter 6-digit verification code</h3>
+        <div className="login-card__header">
+          <Link to="/" className="login-card__logo">
+            <span>🏛️ Ek EPFO</span>
+          </Link>
+          <h1>Enter 6-digit verification code</h1>
           {location.state?.memberName && (
             <div className="login-member-welcome">
               <span>Signing in as <strong>{location.state.memberName}</strong></span>
