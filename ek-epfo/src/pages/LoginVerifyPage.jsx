@@ -80,12 +80,20 @@ function LoginVerifyPage() {
               <span>Signing in as <strong>{location.state.memberName}</strong></span>
             </div>
           )}
-          {isCloud ? (
+          {location.state?.rateLimited ? (
+            <div className="login-dpi-badge" style={{ background: '#fffbeb', borderColor: '#fde68a', color: '#92400e', padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.8125rem' }}>
+              <span>⚠️ Cloud Email Quota Reached. Use fallback OTP: <strong className="number" style={{ letterSpacing: '2px', fontWeight: 700 }}>{location.state.fallbackOtp || '582914'}</strong></span>
+            </div>
+          ) : isCloud ? (
             <div className="login-dpi-badge">
               <span className="dpi-dot" />
               <span>Real OTP dispatched to your Inbox via Supabase Cloud</span>
             </div>
-          ) : null}
+          ) : (
+            <div className="login-dpi-badge">
+              <span>Demo OTP: <strong className="number" style={{ letterSpacing: '2px' }}>582914</strong></span>
+            </div>
+          )}
           <p>
             {railMode === 'sms' ? (
               <>Sent via SMS to registered Aadhaar mobile <strong className="number">{location.state?.phoneMasked || member.phoneMasked}</strong></>

@@ -45,6 +45,8 @@ function LoginEmailPage() {
           memberName: matchedMember?.name || (useEmail ? cleanId.split('@')[0] : 'Member'),
           mode: useEmail ? 'email' : 'uan',
           isCloud: isSupabaseConfigured() && !res.simulated,
+          rateLimited: res.rateLimited || false,
+          fallbackOtp: res.otp || '582914',
         },
       })
     } else {
