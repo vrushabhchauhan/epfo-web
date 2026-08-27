@@ -63,23 +63,27 @@ export function findMemberByIdentifier(identifier) {
   )
 }
 
-export function registerMemberAccount(newMemberData) {
+export function registerMemberAccount(newMemberData = {}) {
+  const { password: _discardedPassword, ...safeMemberData } = newMemberData
   const registry = getRegisteredMembers()
-  const cleanUan = newMemberData.uan ? String(newMemberData.uan).trim() : `100${Math.floor(1000000 + Math.random() * 9000000)}`
+  const cleanUan = safeMemberData.uan ? String(safeMemberData.uan).trim() : `100${Math.floor(1000000 + Math.random() * 9000000)}`
   
-  const existingIdx = registry.findIndex((m) => m.uan === cleanUan || (m.email && m.email.toLowerCase() === (newMemberData.email || '').toLowerCase()))
+  const existingIdx = registry.findIndex((m) => m.uan === cleanUan || (m.email && m.email.toLowerCase() === (safeMemberData.email || '').toLowerCase()))
   
   const fullRecord = {
     ...defaultMember,
-    ...newMemberData,
+    ...safeMemberData,
     uan: cleanUan,
-    name: newMemberData.name || 'Member',
-    email: newMemberData.email || `${cleanUan}@member.epfo.gov.in`,
-    phoneMasked: newMemberData.mobile ? `••••••${String(newMemberData.mobile).slice(-4)}` : defaultMember.phoneMasked,
-    kycStatus: 'Verified (Aadhaar OTP)',
+    name: safeMemberData.name || 'Member',
+    email: safeMemberData.email || `${cleanUan}@member.epfo.gov.in`,
+    phoneMasked: safeMemberData.mobile ? `••••••${String(safeMemberData.mobile).slice(-4)}` : (safeMemberData.phoneMasked || defaultMember.phoneMasked),
+    kycStatus: safeMemberData.kycStatus || 'Verified (Aadhaar OTP)',
     status: 'active',
     registeredAt: new Date().toISOString(),
   }
+
+  // Strictly ensure no password field can ever exist in local storage objects
+  delete fullRecord.password
 
   let updatedRegistry
   if (existingIdx >= 0) {

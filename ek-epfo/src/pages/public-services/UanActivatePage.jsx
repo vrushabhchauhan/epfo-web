@@ -34,14 +34,13 @@ function UanActivatePage() {
     const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
     const cleanPwd = password.trim() || 'Epfo@2026'
 
-    // Register in persistent member registry and Supabase cloud
+    // Register in persistent member registry and Supabase cloud (never storing password in local objects)
     registerMemberAccount({
       uan: uan.trim(),
       name: name.trim(),
       dob,
       mobile: mobile.trim(),
       email: cleanEmail,
-      password: cleanPwd,
       kycStatus: 'Verified (Aadhaar OTP)',
     })
 

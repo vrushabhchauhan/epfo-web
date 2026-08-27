@@ -238,14 +238,15 @@ create policy "Member Read Own Profile" on public.members
     for select using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
     );
 
 create policy "Member Upsert Profile" on public.members
     for all using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
+    ) with check (
+        uan in (select uan from public.members where email = auth.jwt() ->> 'email')
+        or auth.role() = 'service_role'
     );
 
 -- 3. Identity-Scoped Policy on Balances
@@ -253,14 +254,15 @@ create policy "Member Read Balances" on public.balances
     for select using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
     );
 
 create policy "Member Upsert Balances" on public.balances
     for all using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
+    ) with check (
+        uan in (select uan from public.members where email = auth.jwt() ->> 'email')
+        or auth.role() = 'service_role'
     );
 
 -- 4. Identity-Scoped Policy on Member Accounts
@@ -268,7 +270,6 @@ create policy "Member Read Accounts" on public.member_accounts
     for select using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
     );
 
 -- 5. Identity-Scoped Policy on ECR Ledgers
@@ -276,7 +277,6 @@ create policy "Member Read Ledgers" on public.ecr_ledgers
     for select using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
     );
 
 -- 6. Identity-Scoped Policy on Nominees
@@ -284,7 +284,6 @@ create policy "Member Read Nominees" on public.nominees
     for select using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
     );
 
 -- 7. Identity-Scoped Policy on Claims
@@ -292,7 +291,9 @@ create policy "Member Manage Claims" on public.claims
     for all using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
+    ) with check (
+        uan in (select uan from public.members where email = auth.jwt() ->> 'email')
+        or auth.role() = 'service_role'
     );
 
 -- 8. Identity-Scoped Policy on Transfers
@@ -300,7 +301,9 @@ create policy "Member Manage Transfers" on public.transfers
     for all using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
+    ) with check (
+        uan in (select uan from public.members where email = auth.jwt() ->> 'email')
+        or auth.role() = 'service_role'
     );
 
 -- 9. Identity-Scoped Policy on Grievances
@@ -308,5 +311,7 @@ create policy "Member Manage Grievances" on public.grievances
     for all using (
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
-        or auth.role() = 'anon'
+    ) with check (
+        uan in (select uan from public.members where email = auth.jwt() ->> 'email')
+        or auth.role() = 'service_role'
     );

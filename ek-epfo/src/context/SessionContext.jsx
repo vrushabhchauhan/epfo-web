@@ -66,7 +66,7 @@ export function SessionProvider({ children }) {
     setSession({
       isAuthenticated: true,
       member: memberData,
-      token: customProfile.accessToken || `cites_live_jwt_${Date.now()}`,
+      token: customProfile.accessToken || null, // Real Supabase JWT access token (or null if offline/demo simulation)
       loginTimestamp: new Date().toISOString(),
     })
   }

@@ -51,7 +51,21 @@ function LoginVerifyPage() {
           kycStatus: 'Verified (Cloud Email OTP)',
         })
 
-        login(finalProfile.uan || identifier, finalProfile)
+        // Extract real Supabase JWT token if available
+        let realAccessToken = res.session?.access_token || null
+        if (!realAccessToken && supabase) {
+          try {
+            const { data } = await supabase.auth.getSession()
+            realAccessToken = data.session?.access_token || null
+          } catch {
+            // Offline fallback
+          }
+        }
+
+        login(finalProfile.uan || identifier, {
+          ...finalProfile,
+          accessToken: realAccessToken,
+        })
         navigate('/dashboard')
       } else {
         setVerifyError(res.error || 'Invalid verification code')
