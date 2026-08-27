@@ -1,5 +1,6 @@
 {
   "buildCommand": "cd ek-epfo && npm run build",
+  "installCommand": "cd ek-epfo && npm install",
   "outputDirectory": "ek-epfo/dist",
   "framework": "vite",
   "rewrites": [
