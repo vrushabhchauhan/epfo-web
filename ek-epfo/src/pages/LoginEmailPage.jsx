@@ -54,7 +54,13 @@ function LoginEmailPage() {
         },
       })
     } else {
-      setAuthError(res.error || 'Failed to send OTP')
+      let friendlyError = res.error
+      if (!friendlyError || friendlyError.toLowerCase().includes('rate limit') || friendlyError.toLowerCase().includes('over_email_send_rate_limit')) {
+        friendlyError = "We couldn't send the verification email right now due to delivery limits. Please try again in a few minutes."
+      } else if (friendlyError.toLowerCase().includes('fetch') || friendlyError.toLowerCase().includes('network') || friendlyError.toLowerCase().includes('load failed')) {
+        friendlyError = "Unable to connect to the authentication service. Please verify your internet connection and try again."
+      }
+      setAuthError(friendlyError)
     }
   }
 
