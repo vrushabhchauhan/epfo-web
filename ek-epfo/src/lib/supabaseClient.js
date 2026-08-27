@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || ''
-const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || ''
+const supabaseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) || (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_URL) || ''
+const supabaseAnonKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY) || (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_ANON_KEY) || ''
 
 export const isSupabaseConfigured = () => {
   return Boolean(supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('https://'))
@@ -28,7 +28,7 @@ function generateRandomOtp(email) {
 // Real Email OTP Auth
 export async function sendEmailOtp(email) {
   const cleanEmail = (email || '').trim().toLowerCase()
-  const isSyntheticDemo = cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
+  const isSyntheticDemo = !cleanEmail || !cleanEmail.includes('@') || cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
 
   if (!isSupabaseConfigured() || isSyntheticDemo) {
     const dynamicOtp = generateRandomOtp(cleanEmail)
@@ -94,6 +94,10 @@ export async function verifyEmailOtp(email, token, fallbackToken = null) {
   const isSyntheticDemo = cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
   if (!isSupabaseConfigured() || isSyntheticDemo) {
     return { success: false, error: 'Invalid verification code. Please check and re-enter.' }
+  }
+
+  if (!cleanToken || cleanToken.length !== 6) {
+    return { success: false, error: 'Please enter a valid 6-digit verification code.' }
   }
 
   try {

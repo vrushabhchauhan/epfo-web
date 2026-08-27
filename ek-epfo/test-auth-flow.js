@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { sendEmailOtp, verifyEmailOtp } from './src/lib/supabaseClient.js'
+import { sendEmailOtp, verifyEmailOtp, isSupabaseConfigured } from './src/lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from './src/lib/memberRegistry.js'
 
 console.log('--- Starting Authentication Test Suite ---')
@@ -54,8 +54,9 @@ console.log('✓ Test 6 passed')
 
 // 7. New User Registration
 console.log('Test 7: Dynamic User Registration with Email')
+const uniqueTestEmail = `newuser.test.${Date.now()}@example.com`
 const newMember = registerMemberAccount({
-  email: 'newuser.test@example.com',
+  email: uniqueTestEmail,
   name: 'New Test Member',
   kycStatus: 'Verified (Cloud Email OTP)',
 })
@@ -72,12 +73,32 @@ assert.strictEqual(emptyRes.simulated, true)
 const nullTokenVer = await verifyEmailOtp('ananya.demo@example.com', null, '123456')
 assert.strictEqual(nullTokenVer.success, false, 'Null token should fail')
 
+const shortTokenVer = await verifyEmailOtp('ananya.demo@example.com', '123', '123456')
+assert.strictEqual(shortTokenVer.success, false, 'Short token should fail')
+
 const paddedTokenVer = await verifyEmailOtp('ananya.demo@example.com', '  654321  ', '654321')
 assert.strictEqual(paddedTokenVer.success, true, 'Padded token should be trimmed and succeed')
 
 const mixedCaseDomain = await sendEmailOtp('user@Member.EPFO.gov.in')
 assert.strictEqual(mixedCaseDomain.simulated, true, 'Mixed case synthetic domain should be recognized')
 
-console.log('✓ Test 8 passed: all edge cases verified')
+// 9. Real email format routing
+console.log('Test 9: Real email address routing test')
+const realRes = await sendEmailOtp('test_user_eval_102@custom-domain.org')
+assert.strictEqual(realRes.success, true, 'Real email flow should resolve successfully')
+if (isSupabaseConfigured()) {
+  if (realRes.rateLimited) {
+    assert(realRes.otp && realRes.otp.length === 6, 'Rate limit fallback should provide a 6-digit OTP')
+    console.log('✓ Test 9 passed (Rate limit fallback OTP generated:', realRes.otp + ')')
+  } else {
+    assert.strictEqual(realRes.simulated, false, 'Non-rate-limited real email should be dispatched via cloud')
+    console.log('✓ Test 9 passed (Real cloud dispatch completed)')
+  }
+} else {
+  assert.strictEqual(realRes.simulated, true, 'Unconfigured environment should fall back to simulation')
+  console.log('✓ Test 9 passed (Offline simulation fallback)')
+}
+
+console.log('✓ All 9 test suites passed successfully')
 
 console.log('\n--- ALL AUTH SUITE TESTS PASSED SUCCESSFULLY ---')

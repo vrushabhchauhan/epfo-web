@@ -57,9 +57,18 @@ export function generateUniqueUan() {
 export function registerMemberAccount(newMemberData = {}) {
   const { password: _discardedPassword, ...safeMemberData } = newMemberData
   const registry = getRegisteredMembers()
-  const cleanUan = safeMemberData.uan ? String(safeMemberData.uan).trim() : generateUniqueUan()
-  
-  const existingIdx = registry.findIndex((m) => m.uan === cleanUan || (m.email && m.email.toLowerCase() === (safeMemberData.email || '').toLowerCase()))
+  const cleanEmail = (safeMemberData.email || '').trim().toLowerCase()
+  const existingIdx = registry.findIndex(
+    (m) =>
+      (safeMemberData.uan && m.uan === String(safeMemberData.uan).trim()) ||
+      (cleanEmail && m.email && m.email.toLowerCase() === cleanEmail)
+  )
+
+  const cleanUan = safeMemberData.uan
+    ? String(safeMemberData.uan).trim()
+    : existingIdx >= 0
+    ? registry[existingIdx].uan
+    : generateUniqueUan()
   
   const fullRecord = {
     ...fallbackTemplate,
