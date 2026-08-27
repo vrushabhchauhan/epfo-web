@@ -1,0 +1,11 @@
+﻿{
+  "buildCommand": "cd ek-epfo && npm run build",
+  "outputDirectory": "ek-epfo/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
