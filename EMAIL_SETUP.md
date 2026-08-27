@@ -28,8 +28,8 @@ This guide documents how to configure **Brevo (formerly Sendinblue)** as a custo
 
 ### Step C: Brevo SMTP Settings (Active Configuration)
 - **SMTP Server (Host)**: `smtp-relay.brevo.com`
-- **Port**: `2525` (Recommended over 587 for Supabase Cloud to avoid ISP filtering)
-- **Login / Username**: `b6e071001@smtp-brevo.com`
+- **Port**: `587`
+- **Login / Username**: `vrushabhpchauhan53@gmail.com`
 - **Sender Email**: `vrushabhpchauhan53@gmail.com`
 - **Sender Name**: `Ek-EPFO Member Services`
 - **Daily Quota**: `300 emails/day` (Free Tier Active)
@@ -38,13 +38,14 @@ This guide documents how to configure **Brevo (formerly Sendinblue)** as a custo
 
 ## 3. Live Automated Supabase Configuration Status
 
-The project (`zeswhdxfovzmcdwqxmhz`) has been configured via Supabase Management API with:
+The project (`zeswhdxfovzmcdwqxmhz`) and QA Sandbox (`vmiikhbveduhkfcrtrew`) are configured via Supabase Management API with:
 - `smtp_host`: `smtp-relay.brevo.com`
-- `smtp_port`: `2525`
-- `rate_limit_email_sent`: `300 emails/hour`
+- `smtp_port`: `587`
+- `smtp_user`: `vrushabhpchauhan53@gmail.com`
 - `smtp_sender_name`: `Ek-EPFO Member Services`
 - `smtp_admin_email`: `vrushabhpchauhan53@gmail.com`
-- Delivery Status: **Verified (200 OK — Direct Inbox Dispatch Active)**
+- `mailer_subjects_magic_link`: `Your 6-Digit Verification Code: {{ .Token }}`
+- Delivery Status: **Verified (HTTP 200 OK — Direct 6-Digit Numeric OTP Delivery Active)**
 
 ---
 
