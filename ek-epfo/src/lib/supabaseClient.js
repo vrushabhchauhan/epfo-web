@@ -311,7 +311,8 @@ export async function generateAndSendOtp(email) {
   const client = (isSupabaseConfigured() && serviceKey) ? createClient(supabaseUrl, serviceKey) : supabase;
 	  
   try {
-    const { error: insertError } = await client.from('otp_codes').insert([{ email: cleanEmail, code }]);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+    const { error: insertError } = await client.from('otp_codes').insert([{ email: cleanEmail, code, expires_at: expiresAt, used: false }]);
     if (insertError) throw insertError;
 
     const brevoApiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BREVO_API_KEY) || (typeof process !== 'undefined' && process.env?.VITE_BREVO_API_KEY) || '';
@@ -329,7 +330,7 @@ export async function generateAndSendOtp(email) {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        sender: { email: 'no-reply@epfo.gov.in', name: 'EPFO' },
+        sender: { email: 'vrushabhpchauhan53@gmail.com', name: 'Ek-EPFO Member Services' },
         to: [{ email: cleanEmail }],
         subject: 'Your Verification Code',
         htmlContent: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`
@@ -338,7 +339,8 @@ export async function generateAndSendOtp(email) {
 
     if (!response.ok) {
       const errText = await response.text();
-      throw new Error(`Brevo API error: ${errText}`);
+      console.error('Brevo API Error:', errText);
+      throw new Error('Failed to send verification email due to service configuration or limits. Please try again later.');
     }
 
     return { success: true };
