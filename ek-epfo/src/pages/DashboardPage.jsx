@@ -65,6 +65,7 @@ function DashboardPage() {
 
           <div className="corpus-hero-row">
             <div className="corpus-total-block">
+              <div className="corpus-greeting" style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.5rem" }}>Welcome back, {member.name || "Member"}!</div>
               <span className="corpus-label">Total Provident Fund Balance</span>
               <h1 id="balance-heading" className="corpus-amount number">{formatINR(totalBal)}</h1>
             </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
 import WizardLayout from '../../components/wizard/WizardLayout.jsx'
@@ -20,7 +20,7 @@ function DeathClaimStep2Page() {
   const navigate = useNavigate()
   const { wizardData, updateWizardData } = useDeathClaimWizard()
 
-  const [nomineeName, setNomineeName] = useState(wizardData.nomineeName || 'Priya Rao')
+  const [nomineeName, setNomineeName] = useState(wizardData.nomineeName || '')
   const [bankAccount, setBankAccount] = useState(wizardData.nomineeBankAccount || '')
   const [confirmAccount, setConfirmAccount] = useState(wizardData.nomineeBankAccount || '')
   const [ifsc, setIfsc] = useState(wizardData.nomineeBankIFSC || '')

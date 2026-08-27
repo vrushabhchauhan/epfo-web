@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { registerMemberAccount } from '../../lib/memberRegistry.js'
-import { supabase } from '../../lib/supabaseClient.js'
+import { supabase, verifyEmailOtp } from '../../lib/supabaseClient.js'
 import './UanActivatePage.css'
 
 function UanActivatePage() {
@@ -36,11 +36,6 @@ function UanActivatePage() {
     e.preventDefault()
     setStepError('')
 
-    if (otp.trim() !== generatedOtp.trim()) {
-      setStepError('Invalid OTP. Please enter the 6-digit verification code displayed on screen.')
-      return
-    }
-
     if (password.trim().length < 8) {
       setStepError('Password must be at least 8 characters long.')
       return
@@ -48,6 +43,14 @@ function UanActivatePage() {
 
     setIsSubmitting(true)
     const cleanEmail = email.trim() || `${uan.trim()}@member.epfo.gov.in`
+    
+    const res = await verifyEmailOtp(cleanEmail, otp, generatedOtp)
+    if (!res.success) {
+      setStepError(res.error || 'Invalid verification code. Please check and re-enter.')
+      setIsSubmitting(false)
+      return
+    }
+
     const cleanPwd = password.trim()
 
     // Register in persistent member registry and Supabase cloud (never storing password in local objects)
