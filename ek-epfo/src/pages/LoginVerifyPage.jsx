@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useSession } from '../context/useSession.js'
 import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
 import './LoginFlow.css'
