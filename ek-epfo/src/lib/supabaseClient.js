@@ -25,15 +25,17 @@ function generateRandomOtp(email) {
 
 // Real Email OTP Auth
 export async function sendEmailOtp(email) {
-  if (!isSupabaseConfigured()) {
-    const dynamicOtp = generateRandomOtp(email)
-    console.warn('Supabase credentials not found. Using dynamic random simulated OTP.')
-    return { success: true, simulated: true, otp: dynamicOtp }
+  const cleanEmail = (email || '').trim()
+  const isSyntheticDemo = cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
+
+  if (!isSupabaseConfigured() || isSyntheticDemo) {
+    const dynamicOtp = generateRandomOtp(cleanEmail)
+    return { success: true, simulated: true, otp: dynamicOtp, rateLimited: false }
   }
 
   try {
     const { data, error } = await supabase.auth.signInWithOtp({
-      email,
+      email: cleanEmail,
       options: {
         shouldCreateUser: true,
       },
@@ -41,7 +43,7 @@ export async function sendEmailOtp(email) {
     if (error) {
       const isRateLimit = error.message?.toLowerCase().includes('rate limit') || error.status === 429
       if (isRateLimit) {
-        const dynamicOtp = generateRandomOtp(email)
+        const dynamicOtp = generateRandomOtp(cleanEmail)
         console.warn('Supabase cloud email rate limit reached. Activating dynamic fallback OTP.')
         return { success: true, simulated: true, rateLimited: true, otp: dynamicOtp }
       }
@@ -51,7 +53,7 @@ export async function sendEmailOtp(email) {
   } catch (err) {
     const isRateLimit = err.message?.toLowerCase().includes('rate limit') || err.status === 429
     if (isRateLimit) {
-      const dynamicOtp = generateRandomOtp(email)
+      const dynamicOtp = generateRandomOtp(cleanEmail)
       return { success: true, simulated: true, rateLimited: true, otp: dynamicOtp }
     }
     console.error('Error sending Supabase OTP:', err.message)

@@ -21,46 +21,54 @@ function LoginEmailPage() {
     const cleanId = identifier.trim()
     if (!cleanId) return
 
-    // 1. Verify if registered in database or registry
-    let matchedMember = findMemberByIdentifier(cleanId)
-    if (!matchedMember && isSupabaseConfigured()) {
-      matchedMember = useEmail ? await getCloudMemberByEmail(cleanId) : await getCloudMember(cleanId)
-    }
-
-    if (!useEmail && !matchedMember) {
-      setUnregisteredUan(true)
-      setAuthError(`No activated account found for UAN "${cleanId}". Under EPFO statutory rules, you must activate your UAN first or apply for Direct Allotment.`)
-      return
-    }
+    const isEmail = useEmail || cleanId.includes('@')
 
     setIsLoading(true)
-    const targetEmail = useEmail
-      ? cleanId
-      : (matchedMember?.email || `${cleanId}@member.epfo.gov.in`)
-
-    const res = await sendEmailOtp(targetEmail)
-    setIsLoading(false)
-
-    if (res.success) {
-      navigate('/login/verify', {
-        state: {
-          identifier: cleanId,
-          email: targetEmail,
-          memberName: matchedMember?.name || (useEmail ? cleanId.split('@')[0] : 'Member'),
-          mode: useEmail ? 'email' : 'uan',
-          isCloud: isSupabaseConfigured() && !res.simulated,
-          rateLimited: res.rateLimited || false,
-          fallbackOtp: res.otp || null,
-        },
-      })
-    } else {
-      let friendlyError = res.error
-      if (!friendlyError || friendlyError.toLowerCase().includes('rate limit') || friendlyError.toLowerCase().includes('over_email_send_rate_limit')) {
-        friendlyError = "We couldn't send the verification email right now due to delivery limits. Please try again in a few minutes."
-      } else if (friendlyError.toLowerCase().includes('fetch') || friendlyError.toLowerCase().includes('network') || friendlyError.toLowerCase().includes('load failed')) {
-        friendlyError = "Unable to connect to the authentication service. Please verify your internet connection and try again."
+    try {
+      // 1. Verify if registered in database or registry
+      let matchedMember = findMemberByIdentifier(cleanId)
+      if (!matchedMember && isSupabaseConfigured()) {
+        matchedMember = isEmail ? await getCloudMemberByEmail(cleanId) : await getCloudMember(cleanId)
       }
-      setAuthError(friendlyError)
+
+      if (!isEmail && !matchedMember) {
+        setIsLoading(false)
+        setUnregisteredUan(true)
+        setAuthError(`No activated account found for UAN "${cleanId}". Under EPFO statutory rules, you must activate your UAN first or apply for Direct Allotment.`)
+        return
+      }
+
+      const targetEmail = isEmail
+        ? cleanId
+        : (matchedMember?.email || `${cleanId}@member.epfo.gov.in`)
+
+      const res = await sendEmailOtp(targetEmail)
+      setIsLoading(false)
+
+      if (res.success) {
+        navigate('/login/verify', {
+          state: {
+            identifier: cleanId,
+            email: targetEmail,
+            memberName: matchedMember?.name || (isEmail ? cleanId.split('@')[0] : 'Member'),
+            mode: isEmail ? 'email' : 'uan',
+            isCloud: isSupabaseConfigured() && !res.simulated,
+            rateLimited: res.rateLimited || false,
+            fallbackOtp: res.otp || null,
+          },
+        })
+      } else {
+        let friendlyError = res.error
+        if (!friendlyError || friendlyError.toLowerCase().includes('rate limit') || friendlyError.toLowerCase().includes('over_email_send_rate_limit')) {
+          friendlyError = "We couldn't send the verification email right now due to delivery limits. Please try again in a few minutes."
+        } else if (friendlyError.toLowerCase().includes('fetch') || friendlyError.toLowerCase().includes('network') || friendlyError.toLowerCase().includes('load failed')) {
+          friendlyError = "Unable to connect to the authentication service. Please verify your internet connection and try again."
+        }
+        setAuthError(friendlyError)
+      }
+    } catch (err) {
+      setIsLoading(false)
+      setAuthError(err.message || 'An error occurred while sending verification code. Please try again.')
     }
   }
 
