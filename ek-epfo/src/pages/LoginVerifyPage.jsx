@@ -157,6 +157,23 @@ function LoginVerifyPage() {
       } else {
         setVerifyError(res.error || 'Failed to resend verification code.')
       }
+    } else {
+      const dynamicOtp = String(Math.floor(100000 + Math.random() * 900000))
+      try {
+        if (typeof window !== 'undefined') {
+          if (targetEmail) sessionStorage.setItem(`pending_otp_${targetEmail.toLowerCase()}`, dynamicOtp)
+          sessionStorage.setItem('pending_otp_last', dynamicOtp)
+        }
+      } catch {}
+      navigate('.', {
+        replace: true,
+        state: {
+          ...location.state,
+          fallbackOtp: dynamicOtp,
+          rateLimited: false,
+          isCloud: false,
+        },
+      })
     }
   }
 

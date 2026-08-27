@@ -195,9 +195,24 @@ function LoginEmailPage() {
             <button
               type="button"
               className="digilocker-auth-btn"
-              onClick={() => {
+              onClick={async () => {
                 setShowRecoveryModal(false)
-                navigate('/login/verify')
+                setIsLoading(true)
+                const recoveryEmail = 'ananya.demo@example.com'
+                const res = await sendEmailOtp(recoveryEmail)
+                setIsLoading(false)
+                navigate('/login/verify', {
+                  state: {
+                    identifier: '1004829371',
+                    email: recoveryEmail,
+                    memberName: 'Ananya Rao (DigiLocker Recovered)',
+                    mode: 'sms',
+                    phoneMasked: '••••••4821',
+                    isCloud: false,
+                    rateLimited: false,
+                    fallbackOtp: res.otp || '582914',
+                  },
+                })
               }}
             >
               Authenticate via DigiLocker (Demo) &rarr;

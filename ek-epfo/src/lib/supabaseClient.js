@@ -15,8 +15,10 @@ export const supabase = isSupabaseConfigured()
 function generateRandomOtp(email) {
   const code = String(Math.floor(100000 + Math.random() * 900000))
   try {
-    if (email) sessionStorage.setItem(`pending_otp_${email}`, code)
-    sessionStorage.setItem('pending_otp_last', code)
+    if (typeof window !== 'undefined') {
+      if (email) sessionStorage.setItem(`pending_otp_${email}`, code)
+      sessionStorage.setItem('pending_otp_last', code)
+    }
   } catch {
     // Fallback on storage error
   }
@@ -25,7 +27,7 @@ function generateRandomOtp(email) {
 
 // Real Email OTP Auth
 export async function sendEmailOtp(email) {
-  const cleanEmail = (email || '').trim()
+  const cleanEmail = (email || '').trim().toLowerCase()
   const isSyntheticDemo = cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
 
   if (!isSupabaseConfigured() || isSyntheticDemo) {
@@ -35,8 +37,10 @@ export async function sendEmailOtp(email) {
 
   try {
     try {
-      if (cleanEmail) sessionStorage.removeItem(`pending_otp_${cleanEmail}`)
-      sessionStorage.removeItem('pending_otp_last')
+      if (typeof window !== 'undefined') {
+        if (cleanEmail) sessionStorage.removeItem(`pending_otp_${cleanEmail}`)
+        sessionStorage.removeItem('pending_otp_last')
+      }
     } catch {}
 
     const { data, error } = await supabase.auth.signInWithOtp({
@@ -67,10 +71,11 @@ export async function sendEmailOtp(email) {
 }
 
 export async function verifyEmailOtp(email, token, fallbackToken = null) {
+  const cleanEmail = (email || '').trim().toLowerCase()
   const cleanToken = String(token || '').trim()
   const cleanFallback = String(fallbackToken || '').trim()
   const storedOtp = typeof window !== 'undefined'
-    ? (sessionStorage.getItem(`pending_otp_${email}`) || sessionStorage.getItem('pending_otp_last'))
+    ? (sessionStorage.getItem(`pending_otp_${cleanEmail}`) || sessionStorage.getItem('pending_otp_last'))
     : null
 
   const isDemoMatch = Boolean(
@@ -80,19 +85,20 @@ export async function verifyEmailOtp(email, token, fallbackToken = null) {
 
   if (isDemoMatch) {
     try {
-      if (email && typeof window !== 'undefined') sessionStorage.removeItem(`pending_otp_${email}`)
+      if (cleanEmail && typeof window !== 'undefined') sessionStorage.removeItem(`pending_otp_${cleanEmail}`)
       if (typeof window !== 'undefined') sessionStorage.removeItem('pending_otp_last')
     } catch {}
     return { success: true, simulated: true }
   }
 
-  if (!isSupabaseConfigured()) {
+  const isSyntheticDemo = cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
+  if (!isSupabaseConfigured() || isSyntheticDemo) {
     return { success: false, error: 'Invalid verification code. Please check and re-enter.' }
   }
 
   try {
     const { data, error } = await supabase.auth.verifyOtp({
-      email,
+      email: cleanEmail,
       token: cleanToken,
       type: 'email',
     })
