@@ -1,4 +1,4 @@
-﻿# Custom SMTP Email Delivery Setup (Brevo + Supabase)
+# Custom SMTP Email Delivery Setup (Brevo + Supabase)
 
 This guide documents how to configure **Brevo (formerly Sendinblue)** as a custom SMTP provider for the **Ek-EPFO** Supabase backend. This replaces Supabase’s default free-tier rate limit (3–4 emails/hour) with Brevo’s free tier (**300 emails/day**), enabling real OTP delivery for users and hackathon judges.
 
@@ -26,31 +26,25 @@ This guide documents how to configure **Brevo (formerly Sendinblue)** as a custo
    - **From Email**: Enter your verified email (e.g. `vrushabhpchauhan53@gmail.com` or your custom domain email).
 4. Check your inbox for the verification email from Brevo and click the verification link.
 
-### Step C: Retrieve Brevo SMTP Credentials
-1. In the Brevo Dashboard, click your profile icon &rarr; **SMTP & API Keys** (or go to **Transactional** &rarr; **Settings** &rarr; **Configuration**).
-2. Under the **SMTP** tab, note the following credentials:
-   - **SMTP Server (Host)**: `smtp-relay.brevo.com`
-   - **Port**: `587`
-   - **Login / Username**: Your Brevo login email
-   - **SMTP Key / Master Password**: Click **Generate a new SMTP key**, name it `epfo-supabase`, and copy the generated password/key.
+### Step C: Brevo SMTP Settings (Active Configuration)
+- **SMTP Server (Host)**: `smtp-relay.brevo.com`
+- **Port**: `2525` (Recommended over 587 for Supabase Cloud to avoid ISP filtering)
+- **Login / Username**: `b6e071001@smtp-brevo.com`
+- **Sender Email**: `vrushabhpchauhan53@gmail.com`
+- **Sender Name**: `Ek-EPFO Member Services`
+- **Daily Quota**: `300 emails/day` (Free Tier Active)
 
 ---
 
-## 3. Step-by-Step Supabase Dashboard Setup
+## 3. Live Automated Supabase Configuration Status
 
-1. Open your **[Supabase Project Dashboard](https://supabase.com/dashboard)** (Project: `zeswhdxfovzmcdwqxmhz`).
-2. In the left navigation sidebar, go to **Project Settings** (gear icon) &rarr; **Authentication**.
-3. Scroll down to the **SMTP Settings** section.
-4. Toggle **Enable Custom SMTP** to **ON**.
-5. Fill in the parameters from Brevo:
-   - **Sender Email**: The exact email verified in Brevo Step B (e.g. `vrushabhpchauhan53@gmail.com`)
-   - **Sender Name**: `Ek-EPFO Member Services`
-   - **Host**: `smtp-relay.brevo.com`
-   - **Port Number**: `587`
-   - **Username**: Your Brevo SMTP login
-   - **Password**: Your Brevo SMTP key / master password
-   - **Encryption**: `TLS` / `STARTTLS` (Standard port 587)
-6. Click **Save**.
+The project (`zeswhdxfovzmcdwqxmhz`) has been configured via Supabase Management API with:
+- `smtp_host`: `smtp-relay.brevo.com`
+- `smtp_port`: `2525`
+- `rate_limit_email_sent`: `300 emails/hour`
+- `smtp_sender_name`: `Ek-EPFO Member Services`
+- `smtp_admin_email`: `vrushabhpchauhan53@gmail.com`
+- Delivery Status: **Verified (200 OK — Direct Inbox Dispatch Active)**
 
 ---
 
