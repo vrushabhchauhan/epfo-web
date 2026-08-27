@@ -203,6 +203,13 @@ function LandingPage() {
 
   return (
     <div className="landing-layout">
+      <style>{`
+        input:focus, select:focus, button:focus, a:focus, textarea:focus {
+          outline: 3px solid #0056b3 !important;
+          outline-offset: 2px !important;
+        }
+      `}</style>
+      <a href="#main-content" className="skip-to-content-link" style={{ position: "absolute", left: "-9999px", zIndex: 999, padding: "1rem", background: "#000", color: "#fff" }}>Skip to main content</a>
       {/* Gov Top Banner */}
       <div className="gov-topstrip">
         <div className="gov-topstrip__inner">
@@ -239,7 +246,7 @@ function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="landing-hero" aria-labelledby="hero-title">
+      <main id="main-content"><section className="landing-hero" aria-labelledby="hero-title">
         <div className="landing-hero__inner">
           <div className="landing-hero__badge">
             <span className="badge-pulse" />
@@ -450,6 +457,7 @@ function LandingPage() {
           </div>
         </div>
       </footer>
+    </main>
     </div>
   )
 }

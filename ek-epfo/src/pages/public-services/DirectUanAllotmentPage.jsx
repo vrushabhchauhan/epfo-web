@@ -13,6 +13,7 @@ function DirectUanAllotmentPage() {
   const [consent, setConsent] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [allottedUan, setAllottedUan] = useState(null)
+  const [copiedUan, setCopiedUan] = useState(false)
 
   function handleAllot(e) {
     e.preventDefault()
@@ -181,7 +182,7 @@ function DirectUanAllotmentPage() {
               <div className="uan-card-body">
                 <div className="uan-card-left">
                   <span className="card-label">Universal Account Number</span>
-                  <strong className="card-uan-num number">{allottedUan.uan}</strong>
+                  <strong className="card-uan-num number" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>{allottedUan.uan} <button type="button" onClick={() => { navigator.clipboard.writeText(allottedUan.uan); setCopiedUan(true); setTimeout(() => setCopiedUan(false), 2000); }} aria-label="Copy UAN" className="copy-btn" style={{ fontSize: '0.8rem', padding: '0.1rem 0.4rem', cursor: 'pointer' }}>Copy</button>{copiedUan && <span className="copy-tooltip" style={{ color: '#16a34a', fontSize: '0.8rem' }}>Copied!</span>}</strong>
                   <span className="card-member-name">{allottedUan.name}</span>
                   <span className="card-member-meta">DOB: {allottedUan.dob} &bull; Gender: {allottedUan.gender}</span>
                 </div>

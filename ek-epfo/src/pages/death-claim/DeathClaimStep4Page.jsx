@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
 import { insertCloudClaim } from '../../lib/supabaseClient.js'
@@ -6,11 +6,11 @@ import WizardLayout from '../../components/wizard/WizardLayout.jsx'
 import './DeathClaimStep4Page.css'
 
 function maskAccountNumber(account) {
-  if (!account) return '•••• •••• ••••'
+  if (!account) return 'â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢'
   const clean = account.trim()
-  if (clean.length <= 4) return `•••• ${clean}`
+  if (clean.length <= 4) return `â€¢â€¢â€¢â€¢ ${clean}`
   const last4 = clean.slice(-4)
-  return `•••• •••• ${last4}`
+  return `â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ ${last4}`
 }
 
 function DeathClaimStep4Page() {
@@ -68,17 +68,17 @@ function DeathClaimStep4Page() {
             <div className="statutory-benefits-grid">
               <div className="stat-benefit-card">
                 <span className="s-form">Form 20</span>
-                <strong className="s-val number">₹4,93,600</strong>
+                <strong className="s-val number">â‚¹4,93,600</strong>
                 <span className="s-desc">100% EPF Accumulation + Accrued Interest</span>
               </div>
               <div className="stat-benefit-card stat-benefit-card--highlight">
                 <span className="s-form">Form 5IF</span>
-                <strong className="s-val number">₹7,00,000</strong>
+                <strong className="s-val number">â‚¹7,00,000</strong>
                 <span className="s-desc">EDLI Life Insurance Assurance Benefit</span>
               </div>
               <div className="stat-benefit-card">
                 <span className="s-form">Form 10D</span>
-                <strong className="s-val number">₹2,410 / mo</strong>
+                <strong className="s-val number">â‚¹2,410 / mo</strong>
                 <span className="s-desc">Monthly Lifetime Widow/Family Pension</span>
               </div>
             </div>
@@ -116,7 +116,7 @@ function DeathClaimStep4Page() {
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">Nominee name</span>
-              <span className="death-review-row__value">{wizardData.nomineeName || '—'}</span>
+              <span className="death-review-row__value">{wizardData.nomineeName || 'â€”'}</span>
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">Bank account number</span>
@@ -124,7 +124,7 @@ function DeathClaimStep4Page() {
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">IFSC code</span>
-              <span className="death-review-row__value number">{wizardData.nomineeBankIFSC || '—'}</span>
+              <span className="death-review-row__value number">{wizardData.nomineeBankIFSC || 'â€”'}</span>
             </div>
           </section>
 
@@ -143,7 +143,7 @@ function DeathClaimStep4Page() {
                 </svg>
               </span>
               <span className="death-review-doc-text">
-                <strong>Death certificate</strong> — {docs.deathCertificate || 'Uploaded'}
+                <strong>Death certificate</strong> â€” {docs.deathCertificate || 'Uploaded'}
               </span>
             </div>
             <div className="death-review-doc-item">
@@ -153,7 +153,7 @@ function DeathClaimStep4Page() {
                 </svg>
               </span>
               <span className="death-review-doc-text">
-                <strong>Nominee ID proof</strong> — {docs.nomineeId || 'Uploaded'}
+                <strong>Nominee ID proof</strong> â€” {docs.nomineeId || 'Uploaded'}
               </span>
             </div>
             {wizardData.additionalNotes ? (
@@ -185,3 +185,4 @@ function DeathClaimStep4Page() {
 }
 
 export default DeathClaimStep4Page
+

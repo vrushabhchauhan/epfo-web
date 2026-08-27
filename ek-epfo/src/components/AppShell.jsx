@@ -159,7 +159,7 @@ function AppShell() {
             </div>
           </div>
 
-          <button
+          <button aria-label="Sign out to landing page"
             type="button"
             className="topbar-action-link"
             onClick={handleSignOut}

@@ -4,13 +4,14 @@ import { balance, contributionHistory, member as defaultMember } from '../data/m
 import './PassbookPage.css'
 
 function formatINR(val) {
+  if (val === undefined || val === null) return '';
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(val)
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(val).replace(/\u20B9\s*/, '\u20B9\u00A0');
 }
-
 function PassbookPage() {
   const { member: sessionMember } = useSession()
   const member = sessionMember || defaultMember
@@ -29,6 +30,8 @@ function PassbookPage() {
 
   return (
     <div className="passbook-layout">
+      <style>{`@media print { .app-sidebar, header, .no-print, button, a.action-link, .passbook-export-btn { display: none !important; } .app-main { margin: 0 !important; padding: 0 !important; width: 100% !important; } .page-passbook, .page-claim-detail { background: white !important; } }`}</style>
+
       {/* Page Header */}
       <header className="passbook-header-row">
         <div>
@@ -39,7 +42,7 @@ function PassbookPage() {
         </div>
 
         <div className="passbook-header-actions">
-          <button type="button" className="passbook-export-btn" onClick={handleDownload}>
+          <button type="button" aria-label="Download Statement PDF" className="passbook-export-btn" onClick={handleDownload}>
             📥 Download Statement (PDF)
           </button>
         </div>
@@ -81,7 +84,7 @@ function PassbookPage() {
         <div className="summary-card">
           <span className="summary-card__label">Employer Share + Pension Fund</span>
           <strong className="summary-card__val number">{formatINR(employerLockedBal + pensionCreditBal)}</strong>
-          <span className="summary-card__sub">₹{pensionCreditBal.toLocaleString()} in EPS Scheme</span>
+          <span className="summary-card__sub">{formatINR(pensionCreditBal)} in EPS Scheme</span>
         </div>
       </div>
 

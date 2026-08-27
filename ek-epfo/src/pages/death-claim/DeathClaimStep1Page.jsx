@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
 import WizardLayout from '../../components/wizard/WizardLayout.jsx'
@@ -64,7 +64,7 @@ function DeathClaimStep1Page() {
   return (
     <WizardLayout
       currentStep={1}
-      intro="We're sorry for your loss. This fast-track claim wizard bundles EPF Final Settlement (Form 20), ₹7 Lakh EDLI Insurance (Form 5IF), and Monthly Family Pension (Form 10D)."
+      intro="We're sorry for your loss. This fast-track claim wizard bundles EPF Final Settlement (Form 20), â‚¹7 Lakh EDLI Insurance (Form 5IF), and Monthly Family Pension (Form 10D)."
       backTo="/"
       backLabel="Back to Home"
       onContinue={handleContinue}
@@ -101,16 +101,16 @@ function DeathClaimStep1Page() {
               onClick={handleVerifyMember}
               disabled={isSearching || !memberUan.trim()}
             >
-              {isSearching ? 'Verifying...' : 'Verify Member →'}
+              {isSearching ? 'Verifying...' : 'Verify Member â†’'}
             </button>
           </div>
-          <span className="lookup-hint">💡 CITES 2.01 validates member status against national repository records.</span>
+          <span className="lookup-hint">ðŸ’¡ CITES 2.01 validates member status against national repository records.</span>
         </div>
 
         {/* Verified Member Card */}
         {isVerified && verifiedMember && (
           <div className="verified-member-banner" role="status">
-            <div className="verified-badge">✓ CITES Record Verified</div>
+            <div className="verified-badge">âœ“ CITES Record Verified</div>
             <div className="verified-details-row">
               <div>
                 <span className="v-label">Deceased Member</span>
@@ -179,3 +179,4 @@ function DeathClaimStep1Page() {
 }
 
 export default DeathClaimStep1Page
+

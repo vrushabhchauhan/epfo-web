@@ -71,6 +71,8 @@ function HelpModal({ body, onClose, title }) {
 
   return (
     <div className="help-modal-backdrop" onMouseDown={onClose}>
+      <style>{`@media print { .app-sidebar, header, .no-print, button, a.action-link, .passbook-export-btn { display: none !important; } .app-main { margin: 0 !important; padding: 0 !important; width: 100% !important; } .page-passbook, .page-claim-detail { background: white !important; } }`}</style>
+
       <section
         aria-labelledby="help-modal-title"
         aria-modal="true"

@@ -6,13 +6,14 @@ import { getCloudClaims } from '../lib/supabaseClient.js'
 import './DashboardPage.css'
 
 function formatINR(val) {
+  if (val === undefined || val === null) return '';
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(val)
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(val).replace(/\u20B9\s*/, '\u20B9\u00A0');
 }
-
 function DashboardPage() {
   const navigate = useNavigate()
   const { member: sessionMember } = useSession()
@@ -22,8 +23,11 @@ function DashboardPage() {
 
   useEffect(() => {
     async function loadClaims() {
+      setIsLoading(true)
       if (member?.uan) {
         const cloudData = await getCloudClaims(member.uan)
+
+        setIsLoading(false)
         if (cloudData) {
           const formatted = cloudData.map((c) => ({
             id: c.claim_id,
@@ -226,6 +230,16 @@ function DashboardPage() {
             </div>
 
             <div className="claims-summary-list">
+
+        {isLoading && (
+          <div className="skeleton-shimmer" style={{ padding: '1rem', background: '#f8fafc', borderRadius: '8px', marginBottom: '1rem' }}>
+            <div style={{ height: '20px', background: '#e2e8f0', borderRadius: '4px', width: '30%', marginBottom: '1rem', animation: 'pulse 1.5s infinite' }}></div>
+            <div style={{ height: '40px', background: '#e2e8f0', borderRadius: '4px', width: '100%', marginBottom: '0.5rem', animation: 'pulse 1.5s infinite' }}></div>
+            <div style={{ height: '40px', background: '#e2e8f0', borderRadius: '4px', width: '100%', animation: 'pulse 1.5s infinite' }}></div>
+            <style>{'\\@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }'}</style>
+          </div>
+        )}
+      
               {claims.map((claim) => (
                 <div className="claim-summary-item" key={claim.id}>
                   <div className="claim-summary-item__header">

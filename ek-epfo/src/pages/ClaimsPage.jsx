@@ -6,13 +6,14 @@ import { getCloudClaims } from '../lib/supabaseClient.js'
 import './ClaimsPage.css'
 
 function formatINR(val) {
+  if (val === undefined || val === null) return '';
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(val)
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(val).replace(/\u20B9\s*/, '\u20B9\u00A0');
 }
-
 function ClaimsPage() {
   const { member } = useSession()
   const isFresh = member?.totalAccumulation === 0
@@ -20,8 +21,11 @@ function ClaimsPage() {
 
   useEffect(() => {
     async function loadClaims() {
+      setIsLoading(true)
       if (member?.uan) {
         const cloudData = await getCloudClaims(member.uan)
+
+        setIsLoading(false)
         if (cloudData) {
           const formatted = cloudData.map((c) => ({
             id: c.claim_id,

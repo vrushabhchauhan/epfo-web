@@ -11,6 +11,7 @@ function PublicClaimTrackPage() {
   const [searchedClaim, setSearchedClaim] = useState(null)
   const [isSearching, setIsSearching] = useState(false)
   const [notFoundError, setNotFoundError] = useState('')
+  const [copiedClaim, setCopiedClaim] = useState(false)
 
   async function handleTrack(e) {
     e.preventDefault()
@@ -111,7 +112,7 @@ function PublicClaimTrackPage() {
           <div className="track-result-box">
             <div className="track-header-row">
               <div>
-                <span className="track-claim-id number">Claim ID: {searchedClaim.id}</span>
+                <span className="track-claim-id number" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>Claim ID: {searchedClaim.id} <button type="button" onClick={() => { navigator.clipboard.writeText(searchedClaim.id); setCopiedClaim(true); setTimeout(() => setCopiedClaim(false), 2000); }} aria-label="Copy Claim ID" className="copy-btn" style={{ fontSize: '0.8rem', padding: '0.1rem 0.4rem', cursor: 'pointer' }}>Copy</button>{copiedClaim && <span className="copy-tooltip" style={{ color: '#16a34a', fontSize: '0.8rem' }}>Copied!</span>}</span>
                 <h2>{searchedClaim.type} ({searchedClaim.formNumber})</h2>
                 <span className="track-filed-date">
                   Filed on {searchedClaim.filedDate} &bull; Requested: <strong className="number">₹{searchedClaim.amountRequested.toLocaleString('en-IN')}</strong>

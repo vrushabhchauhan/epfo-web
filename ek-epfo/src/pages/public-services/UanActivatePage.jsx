@@ -18,6 +18,7 @@ function UanActivatePage() {
   const [password, setPassword] = useState('')
   const [generatedOtp, setGeneratedOtp] = useState('')
   const [stepError, setStepError] = useState('')
+  const [copiedUan, setCopiedUan] = useState(false)
 
   function handleFormSubmit(e) {
     e.preventDefault()
@@ -261,7 +262,7 @@ function UanActivatePage() {
             <div className="success-circle">✓</div>
             <h2>UAN Successfully Activated!</h2>
             <p>
-              Your Universal Account Number <strong className="number">{uan}</strong> is now active in the CITES 2.01 national database. You can now sign in to view your passbook and manage claims.
+              Your Universal Account Number <strong className="number" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>{uan} <button type="button" onClick={() => { navigator.clipboard.writeText(uan); setCopiedUan(true); setTimeout(() => setCopiedUan(false), 2000); }} aria-label="Copy UAN" className="copy-btn" style={{ fontSize: '0.8rem', padding: '0.1rem 0.4rem', cursor: 'pointer' }}>Copy</button>{copiedUan && <span className="copy-tooltip" style={{ color: '#16a34a', fontSize: '0.8rem' }}>Copied!</span>}</strong> is now active in the CITES 2.01 national database. You can now sign in to view your passbook and manage claims.
             </p>
 
             <div className="success-actions">

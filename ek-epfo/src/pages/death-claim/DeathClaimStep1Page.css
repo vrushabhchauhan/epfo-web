@@ -1,4 +1,4 @@
-.death-step1-content {
+﻿.death-step1-content {
   color: var(--color-text);
 }
 
@@ -182,11 +182,14 @@
 
 .relationship-card__radio-input {
   position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
-  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .relationship-card__indicator {
@@ -232,3 +235,5 @@
 .relationship-card--selected .relationship-card__label {
   font-weight: 600;
 }
+
+

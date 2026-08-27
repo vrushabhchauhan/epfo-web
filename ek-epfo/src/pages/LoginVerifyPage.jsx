@@ -227,6 +227,8 @@ function LoginVerifyPage() {
                 onChange={(e) => handleOtpChange(idx, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                 autoFocus={idx === 0}
+                aria-label={`Digit ${idx + 1} of 6`}
+                onPaste={handleOtpPaste}
               />
             ))}
           </div>
@@ -253,7 +255,7 @@ function LoginVerifyPage() {
 
           <div className="anti-lock-timer">
             {timer > 0 ? (
-              <span className="timer-text">Resend available in <strong className="number">00:{timer < 10 ? `0${timer}` : timer}</strong> (Soft cooldown)</span>
+              <span className="timer-text" aria-live="polite">Resend available in <strong className="number">00:{timer < 10 ? `0${timer}` : timer}</strong> (Soft cooldown)</span>
             ) : (
               <button
                 type="button"

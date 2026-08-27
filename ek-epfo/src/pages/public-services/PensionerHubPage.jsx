@@ -82,6 +82,8 @@ function PensionerHubPage() {
       </form>
 
       {/* Pensioner Hero Card */}
+      {pensioner && (
+      <>
       <div className="pensioner-hero-grid">
         <div className="pensioner-info-card">
           <div className="info-card-top">
@@ -162,6 +164,8 @@ function PensionerHubPage() {
           </tbody>
         </table>
       </section>
+      </>
+      )}
     </div>
   )
 }

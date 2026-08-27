@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
 import './DeathClaimConfirmationPage.css'
@@ -14,7 +14,7 @@ function DeathClaimConfirmationPage() {
   const memberUan = wizardData.memberUan || 'N/A'
   const nomineeName = wizardData.nomineeName || 'Applicant Nominee'
   const relationship = wizardData.relationship || 'Legal Beneficiary'
-  const bankAccount = wizardData.nomineeBankAccount ? `•••• •••• ${wizardData.nomineeBankAccount.slice(-4)}` : '•••• •••• 0000'
+  const bankAccount = wizardData.nomineeBankAccount ? `â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ ${wizardData.nomineeBankAccount.slice(-4)}` : 'â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ 0000'
   const bankIFSC = wizardData.nomineeBankIFSC || 'BANK0000000'
   const filedDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
 
@@ -39,14 +39,14 @@ function DeathClaimConfirmationPage() {
         {/* Official Statutory Acknowledgment Receipt Card */}
         <div className="official-receipt-card" id="printable-receipt">
           <div className="receipt-gov-header">
-            <div className="emblem-box">🏛️</div>
+            <div className="emblem-box">ðŸ›ï¸</div>
             <div className="header-titles">
               <strong>EMPLOYEES' PROVIDENT FUND ORGANISATION</strong>
               <span>MINISTRY OF LABOUR &amp; EMPLOYMENT, GOVT. OF INDIA</span>
               <span className="receipt-type-pill">CITES 2.01 STATUTORY COMPOSITE CLAIM RECEIPT</span>
             </div>
             <div className="qr-box">
-              <span className="qr-sim">▣ QR VERIFIED</span>
+              <span className="qr-sim">â–£ QR VERIFIED</span>
             </div>
           </div>
 
@@ -87,22 +87,22 @@ function DeathClaimConfirmationPage() {
             <div className="t-row">
               <span>EPF Scheme, 1952 (Final Accumulation)</span>
               <span className="number">Form 20</span>
-              <span className="number text-right font-bold">₹4,93,600</span>
+              <span className="number text-right font-bold">â‚¹4,93,600</span>
             </div>
             <div className="t-row highlight-row">
               <span>EDLI Assurance Scheme, 1976 (Life Insurance)</span>
               <span className="number">Form 5IF</span>
-              <span className="number text-right font-bold text-saffron">₹7,00,000</span>
+              <span className="number text-right font-bold text-saffron">â‚¹7,00,000</span>
             </div>
             <div className="t-row">
               <span>EPS Scheme, 1995 (Monthly Family Pension)</span>
               <span className="number">Form 10D</span>
-              <span className="number text-right font-bold">₹2,410 / month</span>
+              <span className="number text-right font-bold">â‚¹2,410 / month</span>
             </div>
           </div>
 
           <div className="receipt-security-footer">
-            <span>🔒 Digitally Signed &bull; CITES 2.01 National Core Gateway &bull; Reference SHA256: 8f92a1...48b</span>
+            <span>ðŸ”’ Digitally Signed &bull; CITES 2.01 National Core Gateway &bull; Reference SHA256: 8f92a1...48b</span>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ function DeathClaimConfirmationPage() {
             className="death-confirm-btn death-confirm-btn--primary"
             onClick={handlePrintOrDownload}
           >
-            🖨️ Download / Print Acknowledgment Receipt (PDF) &rarr;
+            ðŸ–¨ï¸ Download / Print Acknowledgment Receipt (PDF) &rarr;
           </button>
 
           <Link
@@ -120,7 +120,7 @@ function DeathClaimConfirmationPage() {
             to="/claims/track-public"
             state={{ claimId: `DC-${refNumber}` }}
           >
-            📍 Track Live Processing Status &rarr;
+            ðŸ“ Track Live Processing Status &rarr;
           </Link>
 
           <Link className="death-confirm-home-link" to="/">
@@ -133,3 +133,4 @@ function DeathClaimConfirmationPage() {
 }
 
 export default DeathClaimConfirmationPage
+

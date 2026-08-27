@@ -34,3 +34,6 @@
   border-radius: 999px;
   transition: width 200ms ease;
 }
+
+.wizard-progress-track:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+

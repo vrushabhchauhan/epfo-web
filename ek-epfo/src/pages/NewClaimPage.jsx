@@ -6,13 +6,14 @@ import { insertCloudClaim } from '../lib/supabaseClient.js'
 import './NewClaimPage.css'
 
 function formatINR(val) {
+  if (val === undefined || val === null) return '';
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(val)
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(val).replace(/\u20B9\s*/, '\u20B9\u00A0');
 }
-
 function NewClaimPage() {
   const navigate = useNavigate()
   const { member: sessionMember } = useSession()

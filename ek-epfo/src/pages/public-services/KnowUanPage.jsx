@@ -12,6 +12,7 @@ function KnowUanPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [foundUan, setFoundUan] = useState(null)
   const [searchError, setSearchError] = useState('')
+  const [copiedUan, setCopiedUan] = useState(false)
 
   async function handleSearch(e) {
     e.preventDefault()
@@ -151,7 +152,7 @@ function KnowUanPage() {
 
             <div className="uan-display-badge">
               <span className="badge-title">Your 12-Digit UAN Number</span>
-              <strong className="uan-number-hero number">{foundUan.uan}</strong>
+              <strong className="uan-number-hero number" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>{foundUan.uan} <button type="button" onClick={() => { navigator.clipboard.writeText(foundUan.uan); setCopiedUan(true); setTimeout(() => setCopiedUan(false), 2000); }} aria-label="Copy UAN" className="copy-btn" style={{ fontSize: '0.8rem', padding: '0.1rem 0.4rem', cursor: 'pointer' }}>Copy</button>{copiedUan && <span className="copy-tooltip" style={{ color: '#16a34a', fontSize: '0.8rem' }}>Copied!</span>}</strong>
               <span className="badge-subtitle">Member: {foundUan.name} &bull; {foundUan.office}</span>
             </div>
 
