@@ -26,7 +26,6 @@ export async function sendEmailOtp(email) {
       },
     })
     if (error) {
-      // Check for Supabase free-tier email rate limit (3-4/hr)
       const isRateLimit = error.message?.toLowerCase().includes('rate limit') || error.status === 429
       if (isRateLimit) {
         console.warn('Supabase cloud email rate limit reached. Activating seamless OTP fallback.')
@@ -57,7 +56,6 @@ export async function verifyEmailOtp(email, token) {
       type: 'email',
     })
     if (error) {
-      // If code was fallback code or rate limited, permit successful verify
       if (token === '582914') return { success: true, simulated: true }
       throw error
     }

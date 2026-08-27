@@ -3,7 +3,7 @@ import { upsertCloudMember } from './supabaseClient.js'
 
 const REGISTRY_STORAGE_KEY = 'ek_epfo_registered_members'
 
-// Default pre-seeded active member
+// Default pre-seeded active members
 const defaultRegistry = [
   {
     ...defaultMember,
@@ -11,6 +11,17 @@ const defaultRegistry = [
     email: 'ananya.demo@example.com',
     name: 'Ananya Rao',
     phoneMasked: '••••••4821',
+    status: 'active',
+  },
+  {
+    ...defaultMember,
+    uan: '101492810392',
+    email: 'vrushabhpchauhan53@gmail.com',
+    name: 'Vrushabh Chauhan',
+    phoneMasked: '••••••3210',
+    kycStatus: 'Verified (Aadhaar Direct Allotment)',
+    totalServiceYears: '0 Years (New Workforce Entrant)',
+    currentOffice: 'Regional Office Mumbai (Bandra)',
     status: 'active',
   },
 ]
