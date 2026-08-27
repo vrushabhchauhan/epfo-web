@@ -82,6 +82,9 @@ assert.strictEqual(paddedTokenVer.success, true, 'Padded token should be trimmed
 const mixedCaseDomain = await sendEmailOtp('user@Member.EPFO.gov.in')
 assert.strictEqual(mixedCaseDomain.simulated, true, 'Mixed case synthetic domain should be recognized')
 
+const nonEmailVer = await verifyEmailOtp('1004829371', '000000', '123456')
+assert.strictEqual(nonEmailVer.success, false, 'Non-email identifier with wrong code should fail gracefully')
+
 // 9. Real email format routing
 console.log('Test 9: Real email address routing test')
 const realRes = await sendEmailOtp('test_user_eval_102@custom-domain.org')

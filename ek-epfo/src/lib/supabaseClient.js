@@ -91,7 +91,7 @@ export async function verifyEmailOtp(email, token, fallbackToken = null) {
     return { success: true, simulated: true }
   }
 
-  const isSyntheticDemo = cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
+  const isSyntheticDemo = !cleanEmail || !cleanEmail.includes('@') || cleanEmail.endsWith('@member.epfo.gov.in') || cleanEmail.endsWith('@example.com')
   if (!isSupabaseConfigured() || isSyntheticDemo) {
     return { success: false, error: 'Invalid verification code. Please check and re-enter.' }
   }
