@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useRef } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSession } from '../context/useSession.js'
-import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember } from '../lib/supabaseClient.js'
+import { verifyEmailOtp, sendEmailOtp, getCloudMemberByEmail, getCloudMember, supabase } from '../lib/supabaseClient.js'
 import { findMemberByIdentifier, registerMemberAccount } from '../lib/memberRegistry.js'
-import { member } from '../data/mockData.js'
 import './LoginFlow.css'
 
 function LoginVerifyPage() {
@@ -18,6 +17,7 @@ function LoginVerifyPage() {
   const [railMode, setRailMode] = useState(location.state?.mode === 'email' ? 'email' : 'sms')
   const [isVerifying, setIsVerifying] = useState(false)
   const [verifyError, setVerifyError] = useState('')
+  const inputRefs = useRef([])
 
   useEffect(() => {
     if (!targetEmail) {
@@ -32,6 +32,65 @@ function LoginVerifyPage() {
     }
   }, [timer])
 
+  function handleOtpChange(index, value) {
+    const cleanVal = value.replace(/\D/g, '')
+    if (!cleanVal) {
+      const next = [...otp]
+      next[index] = ''
+      setOtp(next)
+      return
+    }
+
+    if (cleanVal.length > 1) {
+      const digits = cleanVal.slice(0, 6).split('')
+      const next = [...otp]
+      digits.forEach((d, i) => {
+        if (index + i < 6) next[index + i] = d
+      })
+      setOtp(next)
+      const nextFocus = Math.min(index + digits.length, 5)
+      inputRefs.current[nextFocus]?.focus()
+      return
+    }
+
+    const next = [...otp]
+    next[index] = cleanVal
+    setOtp(next)
+
+    if (cleanVal && index < 5) {
+      inputRefs.current[index + 1]?.focus()
+    }
+  }
+
+  function handleOtpKeyDown(index, e) {
+    if (e.key === 'Backspace') {
+      if (!otp[index] && index > 0) {
+        const next = [...otp]
+        next[index - 1] = ''
+        setOtp(next)
+        inputRefs.current[index - 1]?.focus()
+      }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs.current[index - 1]?.focus()
+    } else if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus()
+    }
+  }
+
+  function handleOtpPaste(e) {
+    e.preventDefault()
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    if (!pasted) return
+    const digits = pasted.split('')
+    const next = ['', '', '', '', '', '']
+    digits.forEach((d, i) => {
+      if (i < 6) next[i] = d
+    })
+    setOtp(next)
+    const nextFocus = Math.min(digits.length, 5)
+    inputRefs.current[nextFocus]?.focus()
+  }
+
   async function handleVerify(e) {
     e.preventDefault()
     setVerifyError('')
@@ -42,11 +101,11 @@ function LoginVerifyPage() {
     }
 
     setIsVerifying(true)
-    const res = await verifyEmailOtp(targetEmail, code)
+    const fallbackCode = location.state?.fallbackOtp || null
+    const res = await verifyEmailOtp(targetEmail, code, fallbackCode)
     setIsVerifying(false)
 
     if (res.success) {
-      // Fetch or create user record in Supabase cloud
       let cloudUser = await getCloudMemberByEmail(targetEmail)
       if (!cloudUser && identifier && !identifier.includes('@')) {
         cloudUser = await getCloudMember(identifier)
@@ -60,14 +119,12 @@ function LoginVerifyPage() {
         kycStatus: 'Verified (Cloud Email OTP)',
       })
 
-      // Extract real Supabase JWT token if available
       let realAccessToken = res.session?.access_token || null
       if (!realAccessToken && supabase) {
         try {
           const { data } = await supabase.auth.getSession()
           realAccessToken = data.session?.access_token || null
         } catch {
-          // Offline fallback
         }
       }
 
@@ -100,13 +157,12 @@ function LoginVerifyPage() {
   }
 
   return (
-    <div className="login-layout">
+    <div className="login-flow-container">
       <div className="login-card">
-        <div className="login-card__header">
-          <Link to="/" className="login-card__logo">
-            <span>🏛️ Ek EPFO</span>
-          </Link>
-          <h1>Enter 6-digit verification code</h1>
+        <div className="login-card-header">
+          <span className="login-emblem">🏛️</span>
+          <h2>Ek EPFO</h2>
+          <h3>Enter 6-digit verification code</h3>
           {location.state?.memberName && (
             <div className="login-member-welcome">
               <span>Signing in as <strong>{location.state.memberName}</strong></span>
@@ -136,20 +192,19 @@ function LoginVerifyPage() {
         </div>
 
         <form className="login-form" onSubmit={handleVerify}>
-          <div className="otp-boxes-container">
+          <div className="otp-boxes-container" onPaste={handleOtpPaste}>
             {otp.map((digit, idx) => (
               <input
                 key={idx}
+                ref={(el) => (inputRefs.current[idx] = el)}
                 type="text"
+                inputMode="numeric"
                 maxLength={1}
                 className="otp-box number"
                 value={digit}
-                onChange={(e) => {
-                  const val = e.target.value
-                  const next = [...otp]
-                  next[idx] = val
-                  setOtp(next)
-                }}
+                onChange={(e) => handleOtpChange(idx, e.target.value)}
+                onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                autoFocus={idx === 0}
               />
             ))}
           </div>
@@ -161,7 +216,7 @@ function LoginVerifyPage() {
                 className="switch-rail-btn"
                 onClick={() => handleResend('email')}
               >
-                ⚡ Didn't receive SMS? Send code to email ({member.email})
+                ⚡ Didn't receive SMS? Send code to email ({targetEmail || 'Registered Email'})
               </button>
             ) : (
               <button
@@ -169,7 +224,7 @@ function LoginVerifyPage() {
                 className="switch-rail-btn"
                 onClick={() => handleResend('sms')}
               >
-                ⚡ Switch back to SMS OTP ({member.phoneMasked})
+                ⚡ Switch back to SMS OTP ({location.state?.phoneMasked || '••••••0000'})
               </button>
             )}
           </div>

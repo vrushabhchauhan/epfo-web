@@ -15,7 +15,8 @@ export const supabase = isSupabaseConfigured()
 function generateRandomOtp(email) {
   const code = String(Math.floor(100000 + Math.random() * 900000))
   try {
-    sessionStorage.setItem(`pending_otp_${email}`, code)
+    if (email) sessionStorage.setItem(`pending_otp_${email}`, code)
+    sessionStorage.setItem('pending_otp_last', code)
   } catch {
     // Fallback on storage error
   }
@@ -58,21 +59,28 @@ export async function sendEmailOtp(email) {
   }
 }
 
-export async function verifyEmailOtp(email, token) {
-  const storedOtp = typeof window !== 'undefined' ? sessionStorage.getItem(`pending_otp_${email}`) : null
-  const isDemoMatch = storedOtp && token.trim() === storedOtp.trim()
+export async function verifyEmailOtp(email, token, fallbackToken = null) {
+  const cleanToken = String(token || '').trim()
+  const cleanFallback = String(fallbackToken || '').trim()
+  const storedOtp = typeof window !== 'undefined'
+    ? (sessionStorage.getItem(`pending_otp_${email}`) || sessionStorage.getItem('pending_otp_last'))
+    : null
+
+  const isDemoMatch = (storedOtp && cleanToken === storedOtp.trim()) ||
+    (cleanFallback && cleanToken === cleanFallback)
 
   if (!isSupabaseConfigured() || isDemoMatch) {
-    if (isDemoMatch) {
-      try { sessionStorage.removeItem(`pending_otp_${email}`) } catch {}
-    }
+    try {
+      if (email) sessionStorage.removeItem(`pending_otp_${email}`)
+      sessionStorage.removeItem('pending_otp_last')
+    } catch {}
     return { success: true, simulated: true }
   }
 
   try {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
-      token,
+      token: cleanToken,
       type: 'email',
     })
     if (error) {
