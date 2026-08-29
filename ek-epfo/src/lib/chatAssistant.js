@@ -1,6 +1,6 @@
 const faqRules = [
   {
-    pattern: /(uan|universal account number).*(activate|activation|first[- ]time)/i,
+    pattern: /(?=.*(uan|universal account number))(?=.*(activate|activation|first[- ]time))/i,
     response:
       'To activate your UAN, start from the secure UAN activation flow, complete Aadhaar OTP verification, and create a strong password. If you are unsure which step to take, use the UAN activation page from the public services section.',
   },
@@ -16,8 +16,10 @@ const faqRules = [
   },
   {
     pattern: /(grievance|complaint|escalate|epfigms|helpdesk)/i,
-    response:
-      'For grievances, first raise the complaint through the grievance redressal route and keep the claim or service reference details ready. For unresolved issues, the portal provides escalation and helpline guidance for official follow-up.',
+    response: {
+      text: 'For grievances, first raise the complaint through the grievance redressal route and keep the claim or service reference details ready. For unresolved issues, the portal provides escalation and helpline guidance for official follow-up.',
+      options: ['Track Status', 'Escalate Issue']
+    },
   },
   {
     pattern: /(pension|eps|retirement|calculator)/i,
@@ -33,12 +35,7 @@ const faqRules = [
     pattern: /(death|family.*claim|edli|nominee)/i,
     response:
       'Family and death claims are handled through the dedicated death claim wizard. It collects beneficiary information and walks you through the required forms and evidence steps for PF and EDLI claim processing.',
-  },
-  {
-    pattern: /(how do i|what is|where do i|can you explain)/i,
-    response:
-      'I can explain the general EPFO process and route you to the right service. I can help with UAN activation, claim entry, grievance steps, pension guidance, and public service navigation.',
-  },
+  }
 ]
 
 const refusalPatterns = [

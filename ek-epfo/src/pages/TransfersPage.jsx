@@ -8,7 +8,7 @@ function TransfersPage() {
   const { member: sessionMember } = useSession()
   const member = sessionMember || defaultMember
   const isFresh = member?.totalAccumulation === 0
-  const [transferList, setTransferList] = useState(() => (isFresh ? [] : defaultTransfers))
+  const [transferList, setTransferList] = useState(() => (isFresh ? [] : defaultTransfers.map(t => ({ ...t, fromEstablishment: t.fromEstablishment || t.fromEmployer, toEstablishment: t.toEstablishment || t.toEmployer, estimatedAmount: t.estimatedAmount || t.amountEstimated }))))
   const [nudgeSent, setNudgeSent] = useState(false)
   const [showTransferModal, setShowTransferModal] = useState(false)
   const [transferSubmitted, setTransferSubmitted] = useState(false)
@@ -42,7 +42,7 @@ function TransfersPage() {
     loadTransfers()
   }, [member?.uan, isFresh])
 
-  const currentTransfer = transferList[0] || (isFresh ? null : defaultTransfers[0])
+  const currentTransfer = transferList[0] || null
 
   function handleNudge() {
     setNudgeSent(true)
@@ -135,7 +135,7 @@ function TransfersPage() {
       </div>
 
       {/* Active Transfer Card with 4-Stage Stepper */}
-      <section className="transfer-pipeline-card" aria-labelledby="active-transfer-title">
+      {currentTransfer && (<section className="transfer-pipeline-card" aria-labelledby="active-transfer-title">
         <div className="pipeline-card-header">
           <div className="pipeline-header-left">
             <span className="pipeline-form-badge">Form 13</span>
@@ -149,7 +149,7 @@ function TransfersPage() {
         <div className="pipeline-parties-grid">
           <div className="party-box">
             <span className="party-label">From (Previous Account)</span>
-            <strong className="party-name">{currentTransfer.fromEmployer}</strong>
+            <strong className="party-name">{currentTransfer.fromEstablishment}</strong>
             <span className="party-id number">Member ID: {currentTransfer.fromMemberId}</span>
           </div>
 
@@ -160,7 +160,7 @@ function TransfersPage() {
 
           <div className="party-box">
             <span className="party-label">To (Active Account)</span>
-            <strong className="party-name">{currentTransfer.toEmployer}</strong>
+            <strong className="party-name">{currentTransfer.toEstablishment}</strong>
             <span className="party-id number">Member ID: {currentTransfer.toMemberId}</span>
           </div>
         </div>
@@ -202,6 +202,7 @@ function TransfersPage() {
           </button>
         </div>
       </section>
+      )}
 
       {/* Historical Transfer Records */}
       <section className="transfer-history-card" aria-labelledby="history-title">
@@ -218,6 +219,21 @@ function TransfersPage() {
               </tr>
             </thead>
             <tbody>
+              {transferList.map(t => (
+                <tr key={t.id}>
+                  <td className="number font-semibold">{t.id}</td>
+                  <td>{t.fromEstablishment}</td>
+                  <td>{t.toEstablishment}</td>
+                  <td className="number">₹{t.estimatedAmount?.toLocaleString("en-IN") || "0"}</td>
+                  <td>
+                    {t.status === "completed" ? (
+                      <span className="badge-cleared">✓ Completed</span>
+                    ) : (
+                      <span style={{ color: "#d97706", fontWeight: 500, textTransform: "capitalize" }}>{t.status?.replace("_", " ")}</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
               <tr>
                 <td className="number font-semibold">TRF-4821</td>
                 <td>Apex Manufacturing Pvt Ltd</td>

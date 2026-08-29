@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { useSession } from '../context/useSession.js'
 import { getAssistantReply } from '../lib/chatAssistant.js'
+import { createSupportTicket } from '../lib/supabaseClient.js'
 import './ChatWidget.css'
 
 const starterMessages = [
@@ -11,7 +12,7 @@ const starterMessages = [
 ]
 
 function ChatWidget() {
-  const { isAuthenticated } = useSession()
+  const { isAuthenticated, member } = useSession()
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState(starterMessages)
@@ -28,10 +29,32 @@ function ChatWidget() {
 
     const userMessage = { role: 'user', text: trimmed }
     const reply = getAssistantReply(trimmed, { isAuthenticated })
-    const assistantMessage = { role: 'assistant', text: reply }
+    const replyText = typeof reply === 'object' ? reply.text : reply
+    const replyOptions = typeof reply === 'object' ? reply.options : undefined
+    const assistantMessage = { role: 'assistant', text: replyText, options: replyOptions }
 
     setMessages((current) => [...current, userMessage, assistantMessage])
     setInput('')
+  }
+
+  const handleOptionClick = async (option) => {
+    const userMessage = { role: 'user', text: option }
+    
+    if (option === 'Escalate Issue') {
+      const assistantMessage = { role: 'assistant', text: 'Escalating to field office...' }
+      setMessages((current) => [...current, userMessage, assistantMessage])
+      try {
+        await createSupportTicket(member?.uan || null, 'grievance_escalation')
+      } catch (err) {
+        console.error('Failed to escalate grievance:', err)
+      }
+    } else {
+      const reply = getAssistantReply(option, { isAuthenticated })
+      const replyText = typeof reply === 'object' ? reply.text : reply
+      const replyOptions = typeof reply === 'object' ? reply.options : undefined
+      const assistantMessage = { role: 'assistant', text: replyText, options: replyOptions }
+      setMessages((current) => [...current, userMessage, assistantMessage])
+    }
   }
 
   return (
@@ -61,9 +84,25 @@ function ChatWidget() {
 
           <div className="chat-widget__messages" aria-live="polite">
             {messages.map((message, index) => (
-              <div key={`${message.role}-${index}`} className={`chat-bubble chat-bubble--${message.role}`}>
-                {message.text}
-              </div>
+              <React.Fragment key={`${message.role}-${index}`}>
+                <div className={`chat-bubble chat-bubble--${message.role}`}>
+                  {message.text}
+                </div>
+                {message.options && message.options.length > 0 && (
+                  <div className="chat-options">
+                    {message.options.map((opt, i) => (
+                      <button 
+                        key={i} 
+                        type="button"
+                        className="chat-option-btn" 
+                        onClick={() => handleOptionClick(opt)}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
 

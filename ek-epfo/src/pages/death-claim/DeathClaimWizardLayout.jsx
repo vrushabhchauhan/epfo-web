@@ -1,16 +1,20 @@
 import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, Navigate } from 'react-router-dom'
 import { DeathClaimWizardProvider } from '../../context/DeathClaimWizardProvider.jsx'
+import { useSession } from '../../context/useSession.js'
 import './DeathClaimWizardLayout.css'
 
 function DeathClaimWizardLayout() {
+  const { isAuthenticated } = useSession()
+  if (!isAuthenticated) return <Navigate to="/login/email" replace />
+
   return (
     <DeathClaimWizardProvider>
       <div className="death-wizard-shell">
         <header className="death-wizard-topbar">
           <div className="death-wizard-topbar__inner">
             <Link to="/" className="death-wizard-brand">
-              <span className="emblem">🏛️</span>
+              <span className="emblem">???</span>
               <div>
                 <strong>Ek EPFO</strong>
                 <span>Beneficiary &amp; Nominee Fast-Track Rail (CITES 2.01)</span>

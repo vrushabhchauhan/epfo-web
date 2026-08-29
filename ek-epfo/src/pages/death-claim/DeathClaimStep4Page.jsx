@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
 import { insertCloudClaim } from '../../lib/supabaseClient.js'
@@ -6,42 +6,46 @@ import WizardLayout from '../../components/wizard/WizardLayout.jsx'
 import './DeathClaimStep4Page.css'
 
 function maskAccountNumber(account) {
-  if (!account) return '•••• •••• ••••'
-  const clean = account.trim()
-  if (clean.length <= 4) return `•••• ${clean}`
-  const last4 = clean.slice(-4)
-  return `•••• •••• ${last4}`
+  if (!account) return '**** **** ****';
+  const clean = account.trim();
+  if (clean.length <= 4) return `****${clean}`;
+  const last4 = clean.slice(-4);
+  return `********${last4}`;
 }
 
 function DeathClaimStep4Page() {
   const navigate = useNavigate()
-  const { wizardData } = useDeathClaimWizard()
+  const { wizardData, resetWizardData } = useDeathClaimWizard()
   const [confirmed, setConfirmed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const docs = wizardData.uploadedDocuments || {}
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!confirmed || isSubmitting) return
 
     setIsSubmitting(true)
-    setTimeout(() => {
-      const claimRecord = {
-        claim_id: `CLM-DEATH-${Math.floor(1000 + Math.random() * 9000)}`,
-        uan: wizardData.memberUan || '1004829371',
-        form_number: 'Form 20 / 5IF / 10D',
-        claim_type: 'Death & EDLI Statutory Benefit',
-        amount_requested: 700000,
-        filed_date: new Date().toISOString().split('T')[0],
-        status: 'in_progress',
-        current_stage: 1,
-        rejection_summary: `Beneficiary Claim Filed: ${wizardData.claimantName || 'Nominee'}`,
-      }
-      insertCloudClaim(claimRecord).catch(() => {})
+    
+    const claimRecord = {
+      claim_id: `CLM-DEATH-${Date.now()}`,
+      uan: wizardData.memberUan || '1004829371',
+      form_number: 'Form 20 / 5IF / 10D',
+      claim_type: 'Death & EDLI Statutory Benefit',
+      amount_requested: 700000,
+      filed_date: new Date().toISOString().split('T')[0],
+      status: 'in_progress',
+      current_stage: 1,
+      rejection_summary: `Beneficiary Claim Filed: ${wizardData.relationship || 'Spouse'}`,
+    }
+    
+    try {
+      await insertCloudClaim(claimRecord)
+    } catch (error) {
+      console.error(error)
+    }
 
-      setIsSubmitting(false)
-      navigate('/claims/new/death/confirmation')
-    }, 900)
+    setIsSubmitting(false)
+    navigate('/claims/new/death/confirmation')
   }
 
   return (
@@ -116,7 +120,7 @@ function DeathClaimStep4Page() {
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">Nominee name</span>
-              <span className="death-review-row__value">{wizardData.nomineeName || '—'}</span>
+              <span className="death-review-row__value">{wizardData.nomineeName || '-'}</span>
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">Bank account number</span>
@@ -124,7 +128,7 @@ function DeathClaimStep4Page() {
             </div>
             <div className="death-review-row">
               <span className="death-review-row__label">IFSC code</span>
-              <span className="death-review-row__value number">{wizardData.nomineeBankIFSC || '—'}</span>
+              <span className="death-review-row__value number">{wizardData.nomineeBankIFSC || '-'}</span>
             </div>
           </section>
 
@@ -143,7 +147,7 @@ function DeathClaimStep4Page() {
                 </svg>
               </span>
               <span className="death-review-doc-text">
-                <strong>Death certificate</strong> — {docs.deathCertificate || 'Uploaded'}
+                <strong>Death certificate</strong>  {docs.deathCertificate || 'Uploaded'}
               </span>
             </div>
             <div className="death-review-doc-item">
@@ -153,7 +157,7 @@ function DeathClaimStep4Page() {
                 </svg>
               </span>
               <span className="death-review-doc-text">
-                <strong>Nominee ID proof</strong> — {docs.nomineeId || 'Uploaded'}
+                <strong>Nominee ID proof</strong>  {docs.nomineeId || 'Uploaded'}
               </span>
             </div>
             {wizardData.additionalNotes ? (
@@ -185,4 +189,3 @@ function DeathClaimStep4Page() {
 }
 
 export default DeathClaimStep4Page
-

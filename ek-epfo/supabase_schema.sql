@@ -157,3 +157,11 @@ create table if not exists public.otp_codes (
 
 alter table public.otp_codes enable row level security;
 -- Only accessible via service_role, so no policies for anon/authenticated are created.
+
+-- 12. Support Tickets Table
+create table if not exists public.support_tickets (
+    ticket_id uuid default gen_random_uuid() primary key,
+    member_id text,
+    issue_type text not null,
+    created_at timestamp default now()
+);

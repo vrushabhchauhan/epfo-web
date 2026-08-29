@@ -149,3 +149,11 @@ create policy "Member Manage Grievances" on public.grievances
         uan in (select uan from public.members where email = auth.jwt() ->> 'email')
         or auth.role() = 'service_role'
     );
+
+-- Support Tickets
+alter table public.support_tickets enable row level security;
+
+drop policy if exists "Support Tickets Insert" on public.support_tickets;
+
+create policy "Support Tickets Insert" on public.support_tickets
+    for insert with check (true);

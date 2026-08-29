@@ -28,30 +28,31 @@ function NewClaimPage() {
   const numAmount = parseInt(amount, 10) || 0
   const isOver50k = numAmount > 50000
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setIsSubmitting(true)
-    setTimeout(() => {
-      setIsSubmitting(false)
-      const newClaimId = `CLM${Math.floor(1100 + Math.random() * 900)}`
-      setSubmittedClaim({
-        id: newClaimId,
-        amount: numAmount,
-        form: 'Form 31',
-        disbursementDate: 'Estimated within 3 business days',
-      })
-      const claimRecord = {
-        claim_id: newClaimId,
-        uan: member.uan,
-        form_number: 'Form 31',
-        claim_type: advancePurpose === 'medical' ? 'Medical Advance' : advancePurpose === 'housing' ? 'Housing Advance' : advancePurpose === 'education' ? 'Education Advance' : 'Marriage Advance',
-        amount_requested: numAmount,
-        filed_date: new Date().toISOString().split('T')[0],
-        status: 'in_progress',
-        current_stage: 1,
-      }
-      insertCloudClaim(claimRecord).catch(() => {})
-    }, 800)
+    
+    const newClaimId = `CLM${Math.floor(1100 + Math.random() * 900)}`
+    const claimRecord = {
+      claim_id: newClaimId,
+      uan: member.uan,
+      form_number: 'Form 31',
+      claim_type: advancePurpose === 'medical' ? 'Medical Advance' : advancePurpose === 'housing' ? 'Housing Advance' : advancePurpose === 'education' ? 'Education Advance' : 'Marriage Advance',
+      amount_requested: numAmount,
+      filed_date: new Date().toISOString().split('T')[0],
+      status: 'in_progress',
+      current_stage: 1,
+    }
+    
+    await insertCloudClaim(claimRecord)
+    
+    setIsSubmitting(false)
+    setSubmittedClaim({
+      id: newClaimId,
+      amount: numAmount,
+      form: 'Form 31',
+      disbursementDate: 'Estimated within 3 business days',
+    })
   }
 
   if (submittedClaim) {
@@ -261,3 +262,4 @@ function NewClaimPage() {
 }
 
 export default NewClaimPage
+
