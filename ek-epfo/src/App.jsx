@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppShell from './components/AppShell.jsx'
+import ChatWidget from './components/ChatWidget.jsx'
 import ClaimDetailPage from './pages/ClaimDetailPage.jsx'
 import ClaimFixPage from './pages/ClaimFixPage.jsx'
 import ClaimsPage from './pages/ClaimsPage.jsx'
@@ -76,6 +77,7 @@ function App() {
           <Route path="/profile/kyc" element={<KycCorrectionPage />} />
         </Route>
         </Routes>
+        <ChatWidget />
       </BrowserRouter>
     </SessionProvider>
   )
