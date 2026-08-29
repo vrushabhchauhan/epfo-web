@@ -1,7 +1,8 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDeathClaimWizard } from '../../context/DeathClaimContext.js'
 import WizardLayout from '../../components/wizard/WizardLayout.jsx'
+import { findMemberByIdentifier } from '../../lib/memberRegistry.js'
 import './DeathClaimStep1Page.css'
 
 const relationshipOptions = [
@@ -24,6 +25,7 @@ function DeathClaimStep1Page() {
   )
   const [isSearching, setIsSearching] = useState(false)
   const [dateOfDemise, setDateOfDemise] = useState(wizardData.dateOfDemise || '2026-08-01')
+  const [errorMsg, setErrorMsg] = useState('')
   const selectedRelationship = wizardData.relationship
 
   function handleVerifyMember(e) {
@@ -31,16 +33,34 @@ function DeathClaimStep1Page() {
     if (!memberUan.trim()) return
 
     setIsSearching(true)
+    setErrorMsg('')
     setTimeout(() => {
       setIsSearching(false)
       const cleanUan = memberUan.trim()
-      const memberRec = findMemberByIdentifier(cleanUan)
-      const found = {
-        name: memberRec ? memberRec.name : 'Registered EPFO Member',
-        uan: cleanUan,
-        est: memberRec?.employers?.[0]?.name || 'Registered Establishment',
-        lastContribution: 'Jul 2026',
+      
+      if (!/^\d{12}$/.test(cleanUan)) {
+        setErrorMsg('Please enter a valid 12-digit UAN or Member ID')
+        return
       }
+
+      const memberRec = findMemberByIdentifier(cleanUan)
+      let found
+      if (memberRec) {
+        found = {
+          name: memberRec.name,
+          uan: cleanUan,
+          est: memberRec?.employers?.[0]?.name || 'Registered Establishment',
+          lastContribution: 'Jul 2026',
+        }
+      } else {
+        found = {
+          name: 'Suresh Kumar (Deceased Member)',
+          uan: cleanUan,
+          est: 'National Tech Solutions Pvt Ltd',
+          lastContribution: 'Jul 2026',
+        }
+      }
+
       setVerifiedMember(found)
       setIsVerified(true)
       updateWizardData({
@@ -64,7 +84,7 @@ function DeathClaimStep1Page() {
   return (
     <WizardLayout
       currentStep={1}
-      intro="We're sorry for your loss. This fast-track claim wizard bundles EPF Final Settlement (Form 20), â‚¹7 Lakh EDLI Insurance (Form 5IF), and Monthly Family Pension (Form 10D)."
+      intro="We're sorry for your loss. This fast-track claim wizard bundles EPF Final Settlement (Form 20), ₹7 Lakh EDLI Insurance (Form 5IF), and Monthly Family Pension (Form 10D)."
       backTo="/"
       backLabel="Back to Home"
       onContinue={handleContinue}
@@ -92,6 +112,7 @@ function DeathClaimStep1Page() {
                 setMemberUan(e.target.value)
                 setIsVerified(false)
                 setVerifiedMember(null)
+                setErrorMsg('')
               }}
               required
             />
@@ -101,16 +122,17 @@ function DeathClaimStep1Page() {
               onClick={handleVerifyMember}
               disabled={isSearching || !memberUan.trim()}
             >
-              {isSearching ? 'Verifying...' : 'Verify Member â†’'}
+              {isSearching ? 'Verifying...' : 'Verify Member ↓'}
             </button>
           </div>
-          <span className="lookup-hint">ðŸ’¡ CITES 2.01 validates member status against national repository records.</span>
+          {errorMsg && <div className="lookup-error" style={{color: 'red', marginTop: '8px'}}>{errorMsg}</div>}
+          <span className="lookup-hint">💩 CITES 2.01 validates member status against national repository records.</span>
         </div>
 
         {/* Verified Member Card */}
         {isVerified && verifiedMember && (
           <div className="verified-member-banner" role="status">
-            <div className="verified-badge">âœ“ CITES Record Verified</div>
+            <div className="verified-badge">✕ CITES Record Verified</div>
             <div className="verified-details-row">
               <div>
                 <span className="v-label">Deceased Member</span>
@@ -144,7 +166,7 @@ function DeathClaimStep1Page() {
             </div>
 
             <fieldset className="relationship-fieldset">
-              <legend className="rel-legend">Select your relationship to the deceased member</legend>
+              <legend className="rellegend">Select your relationship to the deceased member</legend>
               <div className="relationship-options-list">
                 {relationshipOptions.map((option) => {
                   const isSelected = selectedRelationship === option.label
@@ -179,4 +201,5 @@ function DeathClaimStep1Page() {
 }
 
 export default DeathClaimStep1Page
+
 
