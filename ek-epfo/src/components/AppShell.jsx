@@ -94,7 +94,7 @@ function AppShell() {
       <header className="app-topbar">
         <div className="app-topbar__left">
           <Link to="/dashboard" className="app-brand">
-            <span className="app-brand__emblem" aria-hidden="true">🏛️</span>
+            <img src="/epfo-logo.png" alt="EPFO Logo" className="app-brand__logo" style={{ height: '44px', width: 'auto', objectFit: 'contain' }} />
             <div className="app-brand__text">
               <span className="app-brand__title">Ek EPFO</span>
               <span className="app-brand__tag">CITES 2.01 Unified Portal</span>

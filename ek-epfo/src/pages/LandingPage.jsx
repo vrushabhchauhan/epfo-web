@@ -227,7 +227,7 @@ function LandingPage() {
       <header className="landing-nav">
         <div className="landing-nav__inner">
           <Link to="/" className="landing-logo">
-            <span className="landing-logo__emblem">🏛️</span>
+            <img src="/epfo-logo.png" alt="EPFO Logo" style={{ height: '44px', width: 'auto', objectFit: 'contain' }} />
             <div className="landing-logo__titles">
               <span className="landing-logo__name">Ek EPFO</span>
               <span className="landing-logo__tag">National Unified Citizen Portal (CITES 2.01)</span>
