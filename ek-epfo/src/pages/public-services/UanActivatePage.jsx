@@ -18,6 +18,14 @@ function UanActivatePage() {
   const [password, setPassword] = useState('')
   const [stepError, setStepError] = useState('')
   const [copiedUan, setCopiedUan] = useState(false)
+  // TEMPORARY DEMO SAFEGUARD:
+  // When Resend returns HTTP 403 sandbox restriction, sandboxData holds the demo OTP code.
+  // NOTE: Remove once a custom verified sending domain is configured in Resend.
+  const [sandboxData, setSandboxData] = useState({
+    sandboxMode: false,
+    otp: null,
+    message: null,
+  })
 
   async function handleFormSubmit(e) {
     e.preventDefault()
@@ -30,9 +38,21 @@ function UanActivatePage() {
     
     setIsSubmitting(false)
     if (!otpRes.success) {
+      setSandboxData({ sandboxMode: false, otp: null, message: null })
       setStepError(otpRes.error || 'Failed to dispatch verification code.')
       return
     }
+
+    if (otpRes.sandboxMode) {
+      setSandboxData({
+        sandboxMode: true,
+        otp: otpRes.otp,
+        message: otpRes.message,
+      })
+    } else {
+      setSandboxData({ sandboxMode: false, otp: null, message: null })
+    }
+
     setStep(2)
   }
 
@@ -217,14 +237,33 @@ function UanActivatePage() {
 
         {step === 2 && (
           <form className="uan-form" onSubmit={handleOtpSubmit}>
-            <div className="form-info-notice success">
-              <span className="notice-icon">✓</span>
-              <span>
-                Aadhaar OTP dispatched to <strong>••••••{mobile.slice(-4)}</strong>.
-                <br />
-                <strong style={{ color: '#065f46' }}>OTP is valid for 10 minutes.</strong>
-              </span>
-            </div>
+            {/* TEMPORARY DEMO SAFEGUARD BANNER: Displayed ONLY for Resend unverified domain 403 sandbox restriction */}
+            {sandboxData.sandboxMode && sandboxData.otp ? (
+              <div className="sandbox-demo-banner" role="alert">
+                <div className="sandbox-demo-banner__header">
+                  <span className="sandbox-demo-banner__badge">⚠️ DEMO SAFEGUARD</span>
+                  <span className="sandbox-demo-banner__title">Email Delivery Sandboxed</span>
+                </div>
+                <div className="sandbox-demo-banner__text">
+                  DEMO MODE: Email delivery is sandboxed for this hackathon build. Your verification code is:
+                  <div className="sandbox-demo-banner__code-box">
+                    <strong className="sandbox-demo-banner__code">{sandboxData.otp}</strong>
+                  </div>
+                  <span className="sandbox-demo-banner__subtext">
+                    In production this would be delivered via email to {email.trim() || `${uan.trim()}@member.epfo.gov.in`}.
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="form-info-notice success">
+                <span className="notice-icon">✓</span>
+                <span>
+                  Aadhaar OTP dispatched to <strong>••••••{mobile.slice(-4)}</strong>.
+                  <br />
+                  <strong style={{ color: '#065f46' }}>OTP is valid for 10 minutes.</strong>
+                </span>
+              </div>
+            )}
 
             {stepError && (
               <div className="auth-error-banner" role="alert" style={{ margin: '0 0 1rem', padding: '0.85rem 1rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', fontSize: '0.875rem' }}>

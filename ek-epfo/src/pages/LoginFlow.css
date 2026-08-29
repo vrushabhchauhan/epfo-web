@@ -145,6 +145,75 @@
   text-decoration: underline;
 }
 
+/* DEMO SAFEGUARD WARNING BANNER (Temporary Hackathon Sandbox Mode) */
+.sandbox-demo-banner {
+  background: #fffbeb;
+  border: 2px solid #f59e0b;
+  border-radius: var(--radius-sm, 8px);
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  color: #78350f;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+  margin-bottom: var(--space-4, 16px);
+}
+
+.sandbox-demo-banner__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.sandbox-demo-banner__badge {
+  background: #f59e0b;
+  color: #78350f;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.sandbox-demo-banner__title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.sandbox-demo-banner__text {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #78350f;
+  margin: 0;
+}
+
+.sandbox-demo-banner__code-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  padding: 4px 10px;
+  background: #fef3c7;
+  border: 1.5px dashed #d97706;
+  border-radius: 6px;
+}
+
+.sandbox-demo-banner__code {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #92400e;
+}
+
+.sandbox-demo-banner__subtext {
+  display: block;
+  font-size: 0.75rem;
+  color: #a16207;
+  margin-top: 4px;
+}
+
 .auth-error-banner {
   background: var(--gov-saffron-light);
   border: 1px solid var(--gov-saffron);

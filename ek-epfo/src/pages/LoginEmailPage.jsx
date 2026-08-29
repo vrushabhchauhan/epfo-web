@@ -54,7 +54,9 @@ function LoginEmailPage() {
             mode: isEmail ? 'email' : 'uan',
             isCloud: isSupabaseConfigured(),
             rateLimited: false,
-            
+            sandboxMode: Boolean(res.sandboxMode),
+            sandboxOtp: res.otp || null,
+            sandboxMessage: res.message || null,
           },
         })
       } else {
@@ -199,7 +201,7 @@ function LoginEmailPage() {
                 setShowRecoveryModal(false)
                 setIsLoading(true)
                 const recoveryEmail = 'ananya.demo@example.com'
-                await generateAndSendOtp(recoveryEmail)
+                const recRes = await generateAndSendOtp(recoveryEmail)
                 setIsLoading(false)
                 navigate('/login/verify', {
                   state: {
@@ -210,7 +212,9 @@ function LoginEmailPage() {
                     phoneMasked: '••••••4821',
                     isCloud: false,
                     rateLimited: false,
-                    
+                    sandboxMode: Boolean(recRes?.sandboxMode),
+                    sandboxOtp: recRes?.otp || null,
+                    sandboxMessage: recRes?.message || null,
                   },
                 })
               }}

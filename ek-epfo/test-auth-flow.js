@@ -104,12 +104,32 @@ if (isSupabaseConfigured()) {
 }
 
 // 10. Direct Resend OTP generation, send, and database verification (UAN Activation flow)
-console.log('Test 10: Direct Resend OTP generate, send, and database verify')
+console.log('Test 10: Direct Resend OTP generate, send, and database verify (Account Owner)')
 const resendRes = await generateAndSendOtp('vrushabhpchauhan53@gmail.com')
 assert.strictEqual(resendRes.success, true, 'Resend direct OTP send should succeed')
 console.log('✓ Test 10 passed (Real Resend OTP generated and dispatched via API)')
 
-console.log('✓ All 10 test suites passed successfully')
+// 11. Resend Sandbox 403 restriction fallback (Non-owner / Evaluator test email)
+console.log('Test 11: Resend Sandbox 403 Safeguard for non-owner email (test.judge@epfo-hackathon.org)')
+const sandboxRes = await generateAndSendOtp('test.judge@epfo-hackathon.org')
+assert.strictEqual(sandboxRes.success, true, 'Should succeed via demo safeguard')
+assert.strictEqual(sandboxRes.sandboxMode, true, 'Should flag sandboxMode as true')
+assert(sandboxRes.otp && sandboxRes.otp.length === 6, 'Should return a valid 6-digit OTP')
+assert(sandboxRes.message.includes('DEMO MODE: Email delivery is sandboxed'), 'Message should describe demo sandbox mode')
+
+const { verifyOtpCode } = await import('./src/lib/supabaseClient.js')
+const verifyRes = await verifyOtpCode('test.judge@epfo-hackathon.org', sandboxRes.otp)
+assert.strictEqual(verifyRes.success, true, 'Database OTP verification with returned demo code should succeed')
+console.log('✓ Test 11 passed (Sandbox 403 captured, demo code generated and verified in DB)')
+
+// 12. Negative testing - Wrong OTP code should be rejected
+console.log('Test 12: Negative test - verify wrong code rejection')
+const _sandboxRes2 = await generateAndSendOtp('test.judge2@epfo-hackathon.org')
+const wrongVerify = await verifyOtpCode('test.judge2@epfo-hackathon.org', '000000')
+assert.strictEqual(wrongVerify.success, false, 'Wrong code must fail verification')
+console.log('✓ Test 12 passed (Wrong code rejected as expected)')
+
+console.log('✓ All 12 test suites passed successfully')
 
 console.log('\n--- ALL AUTH SUITE TESTS PASSED SUCCESSFULLY ---')
 

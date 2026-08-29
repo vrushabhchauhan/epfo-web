@@ -17,6 +17,15 @@ function LoginVerifyPage() {
   const [railMode, setRailMode] = useState(location.state?.mode === 'email' ? 'email' : 'sms')
   const [isVerifying, setIsVerifying] = useState(false)
   const [verifyError, setVerifyError] = useState('')
+
+  // TEMPORARY DEMO SAFEGUARD:
+  // When Resend returns HTTP 403 sandbox restriction, sandboxData holds the demo OTP code.
+  // NOTE: Remove once a custom verified sending domain is configured in Resend.
+  const [sandboxData, setSandboxData] = useState({
+    sandboxMode: Boolean(location.state?.sandboxMode),
+    otp: location.state?.sandboxOtp || null,
+    message: location.state?.sandboxMessage || null,
+  })
   const inputRefs = useRef([])
 
   useEffect(() => {
@@ -157,16 +166,28 @@ function LoginVerifyPage() {
     if (mode === 'email') {
       const res = await generateAndSendOtp(targetEmail)
       if (res.success) {
+        if (res.sandboxMode) {
+          setSandboxData({
+            sandboxMode: true,
+            otp: res.otp,
+            message: res.message,
+          })
+        } else {
+          setSandboxData({ sandboxMode: false, otp: null, message: null })
+        }
         navigate('.', {
           replace: true,
           state: {
             ...location.state,
-            
             rateLimited: false,
             isCloud: isSupabaseConfigured(),
+            sandboxMode: Boolean(res.sandboxMode),
+            sandboxOtp: res.otp || null,
+            sandboxMessage: res.message || null,
           },
         })
       } else {
+        setSandboxData({ sandboxMode: false, otp: null, message: null })
         setVerifyError(res.error || 'Failed to resend verification code.')
       }
     } else {
@@ -177,13 +198,16 @@ function LoginVerifyPage() {
           sessionStorage.setItem('pending_otp_last', dynamicOtp)
         }
       } catch {}
+      setSandboxData({ sandboxMode: false, otp: null, message: null })
       navigate('.', {
         replace: true,
         state: {
           ...location.state,
-          
           rateLimited: false,
           isCloud: false,
+          sandboxMode: false,
+          sandboxOtp: null,
+          sandboxMessage: null,
         },
       })
     }
@@ -202,7 +226,7 @@ function LoginVerifyPage() {
               <span>Signing in as <strong>{location.state.memberName}</strong></span>
             </div>
           )}
-          {isCloud ? (
+          {isCloud && !sandboxData.sandboxMode ? (
             <div className="login-dpi-badge">
               <span className="dpi-dot" />
               <span>Real OTP dispatched to your Inbox</span>
@@ -216,6 +240,25 @@ function LoginVerifyPage() {
             )}
           </p>
         </div>
+
+        {/* TEMPORARY DEMO SAFEGUARD BANNER: Displayed ONLY for Resend unverified domain 403 sandbox restriction */}
+        {sandboxData.sandboxMode && sandboxData.otp && (
+          <div className="sandbox-demo-banner" role="alert">
+            <div className="sandbox-demo-banner__header">
+              <span className="sandbox-demo-banner__badge">⚠️ DEMO SAFEGUARD</span>
+              <span className="sandbox-demo-banner__title">Email Delivery Sandboxed</span>
+            </div>
+            <div className="sandbox-demo-banner__text">
+              DEMO MODE: Email delivery is sandboxed for this hackathon build. Your verification code is:
+              <div className="sandbox-demo-banner__code-box">
+                <strong className="sandbox-demo-banner__code">{sandboxData.otp}</strong>
+              </div>
+              <span className="sandbox-demo-banner__subtext">
+                In production this would be delivered via email to {targetEmail}.
+              </span>
+            </div>
+          </div>
+        )}
 
         <form className="login-form" onSubmit={handleVerify}>
           <div className="otp-boxes-container" onPaste={handleOtpPaste}>
@@ -291,6 +334,3 @@ function LoginVerifyPage() {
 }
 
 export default LoginVerifyPage
-
-
-

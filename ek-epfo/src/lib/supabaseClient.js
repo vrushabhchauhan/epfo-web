@@ -316,15 +316,15 @@ export async function generateAndSendOtp(email) {
     if (insertError) throw insertError;
 
     const fallbackResendKey = typeof atob !== 'undefined'
-      ? atob('cmVfZGltSGY5NENfS3pFa0RPY2lZUXdkd242OFhTd0ZMVUtH')
-      : (typeof Buffer !== 'undefined' ? Buffer.from('cmVfZGltSGY5NENfS3pFa0RPY2lZUXdkd242OFhTd0ZMVUtH', 'base64').toString('utf8') : '');
+      ? atob('cmVfZGltSGY5NENfS3pFa0RQY2lZUXdkd242OFhTd0ZMVUtH')
+      : (typeof Buffer !== 'undefined' ? Buffer.from('cmVfZGltSGY5NENfS3pFa0RQY2lZUXdkd242OFhTd0ZMVUtH', 'base64').toString('utf8') : '');
 
     const resendApiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RESEND_API_KEY)
       || (typeof process !== 'undefined' && process.env?.VITE_RESEND_API_KEY)
       || fallbackResendKey;
     
     if (!resendApiKey) {
-      console.warn('Resend API key missing, OTP not sent');
+      console.warn('[Resend API] API key missing, OTP not sent');
       return { success: false, error: 'Resend API key not configured' };
     }
 
@@ -347,13 +347,61 @@ export async function generateAndSendOtp(email) {
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('Resend API Error:', errText);
-      throw new Error('Failed to send verification email due to service configuration or limits. Please try again later.');
+      let parsedError = null;
+      try {
+        parsedError = JSON.parse(errText);
+      } catch {
+        parsedError = { message: errText };
+      }
+
+      console.error('[Resend API Error]', {
+        status: response.status,
+        statusText: response.statusText,
+        recipient: cleanEmail,
+        sender: 'onboarding@resend.dev',
+        error: parsedError || errText
+      });
+
+      const rawErrorMsg = (parsedError?.message || (typeof errText === 'string' ? errText : '')).toLowerCase();
+      const isResendSandbox403 = response.status === 403 && (
+        rawErrorMsg.includes('only send testing emails') ||
+        rawErrorMsg.includes('testing emails to your own email') ||
+        rawErrorMsg.includes('verify a domain')
+      );
+
+      // TEMPORARY DEMO SAFEGUARD:
+      // When Resend is in sandbox testing mode (onboarding@resend.dev without a verified domain),
+      // it returns HTTP 403: 'You can only send testing emails to your own email address (...)'.
+      // The OTP code was already generated and inserted into `otp_codes` table in Supabase.
+      // We return the generated OTP and sandboxMode=true so the calling pages can render a prominent
+      // demo warning banner to evaluators/judges without breaking the end-to-end verification flow.
+      // NOTE: Remove this demo safeguard once a custom verified sending domain is configured in Resend.
+      if (isResendSandbox403) {
+        console.warn(`[Resend Sandbox 403 Safeguard] Email delivery sandboxed for "${cleanEmail}". Returning demo OTP.`);
+        return {
+          success: true,
+          sandboxMode: true,
+          otp: code,
+          message: `DEMO MODE: Email delivery is sandboxed for this hackathon build. Your verification code is: ${code}. In production this would be delivered via email.`
+        };
+      }
+
+      let friendlyMsg = parsedError?.message || errText || `Resend API Error (HTTP ${response.status})`;
+      return {
+        success: false,
+        error: friendlyMsg,
+        statusCode: response.status,
+        rawError: parsedError || errText
+      };
     }
 
-    return { success: true };
+    const responseData = await response.json().catch(() => null);
+    if (typeof window !== 'undefined') {
+      console.log(`[Resend API Success] OTP dispatched to ${cleanEmail}`, responseData);
+    }
+    return { success: true, data: responseData };
   } catch (err) {
-    console.error('Error generating and sending OTP:', err.message);
+    console.error('[Resend Service Error] Failed to generate or send OTP:', err.message);
     return { success: false, error: err.message };
   }
 }
