@@ -322,7 +322,10 @@ export async function generateAndSendOtp(email) {
       return { success: false, error: 'Resend API key not configured' };
     }
 
-    const response = await fetch('https://api.resend.com/emails', {
+    const isBrowser = typeof window !== 'undefined';
+    const resendUrl = isBrowser ? '/api/resend/emails' : 'https://api.resend.com/emails';
+
+    const response = await fetch(resendUrl, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + resendApiKey,
