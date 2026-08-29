@@ -1,10 +1,27 @@
 import { createClient } from '@supabase/supabase-js'
+import fs from 'fs'
+import path from 'path'
 
-const QA_URL = 'https://vmiikhbveduhkfcrtrew.supabase.co'
-const QA_ANON_KEY = 'sb_publishable_LcM0Efk7Zc4Ch-DuOOvuQw_ILtD8tFS'
-const QA_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtaWlraGJ2ZWR1aGtmY3J0cmV3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzgyNjYyMywiZXhwIjoyMTAzNDAyNjIzfQ.4CDqiYZ1v-QoP3YtKIPJP7-FzLMYPI8BiHn3ALlVM5E'
+// Helper to load .env or .env.qa if running standalone
+function loadEnv() {
+  const envPaths = [path.resolve(process.cwd(), '.env.qa'), path.resolve(process.cwd(), '.env'), path.resolve(process.cwd(), '../.env.qa')]
+  for (const p of envPaths) {
+    if (fs.existsSync(p)) {
+      const lines = fs.readFileSync(p, 'utf8').split('\n')
+      for (const line of lines) {
+        const [k, ...v] = line.trim().split('=')
+        if (k && v.length) process.env[k.trim()] = v.join('=').trim()
+      }
+    }
+  }
+}
+loadEnv()
 
-const admin = createClient(QA_URL, QA_SERVICE_KEY)
+const QA_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://vmiikhbveduhkfcrtrew.supabase.co'
+const QA_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || ''
+const QA_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+
+const admin = QA_SERVICE_KEY ? createClient(QA_URL, QA_SERVICE_KEY) : null
 const anon = createClient(QA_URL, QA_ANON_KEY)
 
 const results = []
