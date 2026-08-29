@@ -1,4 +1,4 @@
-﻿# Ek-EPFO Comprehensive QA & Security Audit Report (Re-Audit Certification)
+# Ek-EPFO Comprehensive QA & Security Audit Report (Re-Audit Certification)
 
 **Project Name**: Ek-EPFO (Unified Member & Citizen Statutory Portal)  
 **Audit Date**: August 27, 2026  
@@ -79,7 +79,7 @@ Following a complete security and functional hardening cycle, the Ek-EPFO codeba
   - Seamless integration of National Centralized Ledger guarantees, 14-day employer auto-escalation rules, and CPPS pan-India pension reconciliation.
 - **Documentation**:
   - `DEMO_CREDENTIALS.md`: Clear instructions and sample logins for judges.
-  - `EMAIL_SETUP.md`: Full setup guide for Brevo Custom SMTP relay (300 emails/day).
+  - `EMAIL_SETUP.md`: Full setup guide for Resend REST API email delivery (3,000 emails/month).
   - `.env.example`: Secure environment configuration guide.
 
 ---

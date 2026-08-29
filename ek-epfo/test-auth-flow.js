@@ -1,6 +1,7 @@
+try { process.loadEnvFile?.('.env') } catch {}
 import assert from 'node:assert'
-import { sendEmailOtp, verifyEmailOtp, isSupabaseConfigured } from './src/lib/supabaseClient.js'
-import { findMemberByIdentifier, registerMemberAccount } from './src/lib/memberRegistry.js'
+const { sendEmailOtp, verifyEmailOtp, isSupabaseConfigured, generateAndSendOtp } = await import('./src/lib/supabaseClient.js')
+const { findMemberByIdentifier, registerMemberAccount } = await import('./src/lib/memberRegistry.js')
 
 console.log('--- Starting Authentication Test Suite ---')
 
@@ -102,12 +103,11 @@ if (isSupabaseConfigured()) {
   console.log('✓ Test 9 passed (Offline simulation fallback)')
 }
 
-// 10. Direct Brevo OTP generation, send, and database verification (UAN Activation flow)
-console.log('Test 10: Direct Brevo OTP generate, send, and database verify')
-const { generateAndSendOtp, verifyOtpCode: _verifyOtpCode } = await import('./src/lib/supabaseClient.js')
-const brevoRes = await generateAndSendOtp('vrushabhpchauhan53@gmail.com')
-assert.strictEqual(brevoRes.success, true, 'Brevo direct OTP send should succeed')
-console.log('✓ Test 10 passed (Real Brevo OTP generated and dispatched via API)')
+// 10. Direct Resend OTP generation, send, and database verification (UAN Activation flow)
+console.log('Test 10: Direct Resend OTP generate, send, and database verify')
+const resendRes = await generateAndSendOtp('vrushabhpchauhan53@gmail.com')
+assert.strictEqual(resendRes.success, true, 'Resend direct OTP send should succeed')
+console.log('✓ Test 10 passed (Real Resend OTP generated and dispatched via API)')
 
 console.log('✓ All 10 test suites passed successfully')
 

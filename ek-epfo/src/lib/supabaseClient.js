@@ -315,31 +315,30 @@ export async function generateAndSendOtp(email) {
     const { error: insertError } = await client.from('otp_codes').insert([{ email: cleanEmail, code, expires_at: expiresAt, used: false }]);
     if (insertError) throw insertError;
 
-    const brevoApiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BREVO_API_KEY) || (typeof process !== 'undefined' && process.env?.VITE_BREVO_API_KEY) || '';
+    const resendApiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RESEND_API_KEY) || (typeof process !== 'undefined' && process.env?.VITE_RESEND_API_KEY) || '';
     
-    if (!brevoApiKey) {
-      console.warn('Brevo API key missing, OTP not sent');
-      return { success: false, error: 'Brevo API key not configured' };
+    if (!resendApiKey) {
+      console.warn('Resend API key missing, OTP not sent');
+      return { success: false, error: 'Resend API key not configured' };
     }
 
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'accept': 'application/json',
-        'api-key': brevoApiKey,
-        'content-type': 'application/json'
+        'Authorization': 'Bearer ' + resendApiKey,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        sender: { email: 'vrushabhpchauhan53@gmail.com', name: 'Ek-EPFO Member Services' },
-        to: [{ email: cleanEmail }],
-        subject: 'Your Verification Code',
-        htmlContent: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`
+        from: 'onboarding@resend.dev',
+        to: [cleanEmail],
+        subject: `Your 6-Digit Ek-EPFO Verification Code: ${code}`,
+        html: `<p>Your 6-digit verification code is: <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`
       })
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('Brevo API Error:', errText);
+      console.error('Resend API Error:', errText);
       throw new Error('Failed to send verification email due to service configuration or limits. Please try again later.');
     }
 

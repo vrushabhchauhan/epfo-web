@@ -1,87 +1,66 @@
-# Custom SMTP Email Delivery Setup (Brevo + Supabase)
+# Custom Email Delivery Setup (Resend REST API + Supabase)
 
-This guide documents how to configure **Brevo (formerly Sendinblue)** as a custom SMTP provider for the **Ek-EPFO** Supabase backend. This replaces Supabase’s default free-tier rate limit (3–4 emails/hour) with Brevo’s free tier (**300 emails/day**), enabling real OTP delivery for users and hackathon judges.
-
----
-
-## 1. Important Security Architecture Note
-- **No SMTP Credentials in Code**: SMTP credentials (host, port, username, password) are **never** committed to this repository or placed in client `.env` files.
-- **Hosted Supabase Configuration**: SMTP is handled entirely by Supabase's server-side Auth service and configured directly in the Supabase Dashboard.
+This guide documents how **Resend REST API** is configured as the email delivery provider for the **Ek-EPFO** portal. This powers instant 6-digit OTP verification email delivery for member login, UAN activation, and account recovery without third-party SMTP throttling.
 
 ---
 
-## 2. Step-by-Step Brevo SMTP Configuration
+## 1. Architecture & Security Overview
 
-### Step A: Create a Free Brevo Account
-1. Visit **[https://www.brevo.com](https://www.brevo.com)** and sign up for a free account.
-2. Complete the initial registration and verify your email address.
-
-### Step B: Verify Your Sender Email
-> [!IMPORTANT]
-> Brevo will **not** send emails until you verify the sender address.
-1. In the Brevo Dashboard, click your profile icon (top-right) &rarr; **Senders, Domains & Dedicated IPs**.
-2. Under **Senders**, click **Add a Sender**.
-3. Set:
-   - **From Name**: `Ek-EPFO Member Services`
-   - **From Email**: Enter your verified email (e.g. `vrushabhpchauhan53@gmail.com` or your custom domain email).
-4. Check your inbox for the verification email from Brevo and click the verification link.
-
-### Step C: Brevo SMTP Settings (Active Configuration)
-- **SMTP Server (Host)**: `smtp-relay.brevo.com`
-- **Port**: `587`
-- **Login / Username**: `vrushabhpchauhan53@gmail.com`
-- **Sender Email**: `vrushabhpchauhan53@gmail.com`
-- **Sender Name**: `Ek-EPFO Member Services`
-- **Daily Quota**: `300 emails/day` (Free Tier Active)
+- **Direct REST API Integration**: Email dispatch is executed via Resend's REST API endpoint (`POST https://api.resend.com/emails`).
+- **Secure Key Management**: The Resend API Key is loaded from environment variables (`VITE_RESEND_API_KEY`) across client environments (`.env`, `.env.qa`, and `ek-epfo/.env`).
+- **Database Backed Verification**: 6-digit numeric OTP codes are securely generated, stored in the Supabase `otp_codes` database table with a strict 10-minute expiration timestamp (`expires_at`), and invalidated upon single use (`used: true`).
+- **Zero SMTP Dependency**: Direct OTP verification runs over HTTPS REST API calls, avoiding SMTP socket timeouts and port blocking.
 
 ---
 
-## 3. Live Automated Supabase Configuration Status
+## 2. Resend API Configuration
 
-The project (`zeswhdxfovzmcdwqxmhz`) and QA Sandbox (`vmiikhbveduhkfcrtrew`) are configured via Supabase Management API with:
-- `smtp_host`: `smtp-relay.brevo.com`
-- `smtp_port`: `587`
-- `smtp_user`: `vrushabhpchauhan53@gmail.com`
-- `smtp_sender_name`: `Ek-EPFO Member Services`
-- `smtp_admin_email`: `vrushabhpchauhan53@gmail.com`
-- `mailer_subjects_magic_link`: `Your 6-Digit Verification Code: {{ .Token }}`
-- Delivery Status: **Verified (HTTP 200 OK — Direct 6-Digit Numeric OTP Delivery Active)**
+### Step A: API Key Provisioning
+1. Sign in to **[https://resend.com](https://resend.com)**.
+2. Under **API Keys**, create a new restricted sending API key or full-access key.
+3. Configure the key in the application environment files:
+   ```env
+   VITE_RESEND_API_KEY=re_************************************
+   ```
 
----
-
-## 4. Supabase Email Template Customization (OTP Display)
-
-To ensure users receive clean 6-digit numerical OTPs matching the Ek-EPFO portal:
-
-1. In Supabase Dashboard, navigate to **Authentication** &rarr; **Email Templates**.
-2. Click **Magic Link / Confirmation**:
-   - **Subject**: `Your Ek-EPFO Verification Code: {{ .Token }}`
-   - **Body**:
-     ```html
-     <h2>Ek-EPFO National Member Portal</h2>
-     <p>Your one-time 6-digit verification code is:</p>
-     <h1 style="font-size: 32px; letter-spacing: 4px; color: #003366;">{{ .Token }}</h1>
-     <p>This statutory code is valid for 10 minutes. Do not share this code with anyone.</p>
-     <hr/>
-     <small style="color: #64748b;">Employees' Provident Fund Organisation • CITES 2.01 Centralized Registry</small>
-     ```
-3. Under **Authentication** &rarr; **URL Configuration**:
-   - Set **OTP Expiry** to `3600` seconds (1 hour) or `600` seconds (10 minutes).
-4. Click **Save Changes**.
+### Step B: Sender Address Configuration
+- **Testing / Onboarding Domain**: `onboarding@resend.dev` (allows sending directly to the verified account owner email e.g. `vrushabhpchauhan53@gmail.com`).
+- **Production Custom Domain**: Verify your custom domain (e.g. `mail.ekepfo.gov.in` or custom apex domain) at [resend.com/domains](https://resend.com/domains) and update the `from` sender header.
 
 ---
 
-## 5. Free Tier Usage & Quota Summary
+## 3. Email Dispatch Payload Format
 
-| Provider | Free Quota | Rate Limits | Upgrade Triggers |
-| :--- | :--- | :--- | :--- |
-| **Default Supabase** | ~3–4 emails/hour | Very strict test limit | Continuous demo usage |
-| **Brevo Custom SMTP** | **300 emails/day** | No hourly throttle | >300 logins or registrations/day |
+Direct OTP emails are dispatched using the following JSON payload:
+
+```json
+{
+  "from": "onboarding@resend.dev",
+  "to": ["user@example.com"],
+  "subject": "Your 6-Digit Ek-EPFO Verification Code: 123456",
+  "html": "<p>Your 6-digit verification code is: <strong>123456</strong>.</p><p>This code expires in 10 minutes.</p>"
+}
+```
+
+### HTTP Headers:
+- `Authorization`: `Bearer <VITE_RESEND_API_KEY>`
+- `Content-Type`: `application/json`
 
 ---
 
-## 6. Verification Test
-1. Go to **[https://epfo-web.vercel.app/login/email](https://epfo-web.vercel.app/login/email)**.
-2. Enter your real email address.
-3. Check your inbox — you will receive an email branded as **Ek-EPFO Member Services** containing the real 6-digit code delivered via Brevo relay.
-4. Enter the code on the verification screen to instantly authenticate.
+## 4. Quota & Rate Limit Summary
+
+| Provider / Tier | Monthly Quota | Daily Limit | Rate Throttling | Best Use Case |
+| :--- | :--- | :--- | :--- | :--- |
+| **Resend Free Tier** | **3,000 emails/month** | **100 emails/day** | High throughput REST | Demo, QA, and Production OTP delivery |
+| **Default Supabase Auth** | ~100 emails/month | Strict hourly burst | 3–4 emails/hour | Basic dev fallbacks |
+
+---
+
+## 5. Verification Test & Flow
+
+1. Go to **[https://epfo-web.vercel.app/login/email](https://epfo-web.vercel.app/login/email)** or the local development server.
+2. Enter your email address (`vrushabhpchauhan53@gmail.com`).
+3. Click **Get Verification Code**.
+4. Check your inbox — you will receive an email from `onboarding@resend.dev` with subject **"Your 6-Digit Ek-EPFO Verification Code: [CODE]"**.
+5. Enter the 6-digit code on the verification screen to authenticate immediately.
