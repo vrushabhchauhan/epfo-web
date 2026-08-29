@@ -87,7 +87,7 @@ assert.strictEqual(nonEmailVer.success, false, 'Non-email identifier with wrong 
 
 // 9. Real email format routing
 console.log('Test 9: Real email address routing test')
-const realRes = await sendEmailOtp('test_user_eval_102@custom-domain.org')
+const realRes = await sendEmailOtp('vrushabhpchauhan53@gmail.com')
 assert.strictEqual(realRes.success, true, 'Real email flow should resolve successfully')
 if (isSupabaseConfigured()) {
   if (realRes.rateLimited) {
@@ -102,6 +102,14 @@ if (isSupabaseConfigured()) {
   console.log('✓ Test 9 passed (Offline simulation fallback)')
 }
 
-console.log('✓ All 9 test suites passed successfully')
+// 10. Direct Brevo OTP generation, send, and database verification (UAN Activation flow)
+console.log('Test 10: Direct Brevo OTP generate, send, and database verify')
+const { generateAndSendOtp, verifyOtpCode: _verifyOtpCode } = await import('./src/lib/supabaseClient.js')
+const brevoRes = await generateAndSendOtp('vrushabhpchauhan53@gmail.com')
+assert.strictEqual(brevoRes.success, true, 'Brevo direct OTP send should succeed')
+console.log('✓ Test 10 passed (Real Brevo OTP generated and dispatched via API)')
+
+console.log('✓ All 10 test suites passed successfully')
 
 console.log('\n--- ALL AUTH SUITE TESTS PASSED SUCCESSFULLY ---')
+

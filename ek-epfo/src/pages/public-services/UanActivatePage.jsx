@@ -110,6 +110,12 @@ function UanActivatePage() {
               <span>Ensure your Name, DOB, and Mobile number match your <strong>Aadhaar record</strong> exactly to pass UIDAI verification.</span>
             </div>
 
+            {stepError && (
+              <div className="auth-error-banner" role="alert" style={{ margin: '0 0 1rem', padding: '0.85rem 1rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', fontSize: '0.875rem' }}>
+                ⚠️ {stepError}
+              </div>
+            )}
+
             <div className="uan-form-grid">
               <div className="form-group">
                 <label htmlFor="act-uan">12-Digit UAN Number *</label>
