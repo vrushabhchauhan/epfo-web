@@ -27,16 +27,20 @@ export function SessionProvider({ children }) {
     }
   }, [session])
 
-  function login(identifier, customProfile = {}) {
+  async function login(identifier, customProfile = {}) {
     const existing = findMemberByIdentifier(identifier)
     let memberData
     if (existing) {
       memberData = { ...existing, ...customProfile, loginTime: new Date().toLocaleTimeString() }
     } else {
       const isEmail = identifier && identifier.includes('@')
+      let finalUan = identifier
+      if (isEmail) {
+        finalUan = customProfile.uan || await generateUniqueUan()
+      }
       memberData = registerMemberAccount({
         ...customProfile,
-        uan: isEmail ? (customProfile.uan || generateUniqueUan()) : identifier,
+        uan: finalUan,
         email: isEmail ? identifier : (customProfile.email || `${identifier}@member.epfo.gov.in`),
         name: customProfile.name || (isEmail ? identifier.split('@')[0] : 'Member'),
       })

@@ -1,6 +1,6 @@
 import { seedMembers } from '../data/seedData.js'
 import { member as fallbackTemplate } from '../data/mockData.js'
-import { upsertCloudMember } from './supabaseClient.js'
+import { upsertCloudMember, checkUanExists } from './supabaseClient.js'
 
 const REGISTRY_STORAGE_KEY = 'ek_epfo_registered_members'
 
@@ -41,14 +41,18 @@ export function findMemberByIdentifier(identifier) {
   )
 }
 
-export function generateUniqueUan() {
+export async function generateUniqueUan() {
   const registry = getRegisteredMembers()
   let uanCandidate
   let isUnique = false
   while (!isUnique) {
     uanCandidate = `101${Math.floor(100000000 + Math.random() * 900000000)}`
-    if (!registry.some((m) => m.uan === uanCandidate)) {
-      isUnique = true
+    const existsLocally = registry.some((m) => m.uan === uanCandidate)
+    if (!existsLocally) {
+      const existsInCloud = await checkUanExists(uanCandidate)
+      if (!existsInCloud) {
+        isUnique = true
+      }
     }
   }
   return uanCandidate
@@ -68,7 +72,7 @@ export function registerMemberAccount(newMemberData = {}) {
     ? String(safeMemberData.uan).trim()
     : existingIdx >= 0
     ? registry[existingIdx].uan
-    : generateUniqueUan()
+    : `101${Math.floor(100000000 + Math.random() * 900000000)}`
   
   const fullRecord = {
     ...fallbackTemplate,

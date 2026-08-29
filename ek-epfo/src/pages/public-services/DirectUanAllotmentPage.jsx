@@ -19,8 +19,8 @@ function DirectUanAllotmentPage() {
     e.preventDefault()
     if (!consent) return
     setIsGenerating(true)
-    setTimeout(() => {
-      const newUan = generateUniqueUan()
+    setTimeout(async () => {
+      const newUan = await generateUniqueUan()
       const cleanEmail = email.trim() || `${newUan}@member.epfo.gov.in`
       const memberRecord = registerMemberAccount({
         uan: newUan,

@@ -440,3 +440,16 @@ export async function verifyOtpCode(email, code) {
     return { success: false, error: err.message };
   }
 }
+
+export async function checkUanExists(uan) {
+  const cleanUan = (uan || '').toString().trim();
+  if (!cleanUan || !isSupabaseConfigured()) return false;
+  try {
+    const { data, error } = await supabase.from('members').select('uan').eq('uan', cleanUan).limit(1);
+    if (error) throw error;
+    return data && data.length > 0;
+  } catch (err) {
+    console.error('Error checking UAN existence:', err.message);
+    return false;
+  }
+}
