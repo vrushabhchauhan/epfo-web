@@ -315,13 +315,8 @@ export async function generateAndSendOtp(email) {
     const { error: insertError } = await client.from('otp_codes').insert([{ email: cleanEmail, code, expires_at: expiresAt, used: false }]);
     if (insertError) throw insertError;
 
-    const fallbackResendKey = typeof atob !== 'undefined'
-      ? atob('cmVfZGltSGY5NENfS3pFa0RQY2lZUXdkd242OFhTd0ZMVUtH')
-      : (typeof Buffer !== 'undefined' ? Buffer.from('cmVfZGltSGY5NENfS3pFa0RQY2lZUXdkd242OFhTd0ZMVUtH', 'base64').toString('utf8') : '');
-
     const resendApiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RESEND_API_KEY)
-      || (typeof process !== 'undefined' && process.env?.VITE_RESEND_API_KEY)
-      || fallbackResendKey;
+      || (typeof process !== 'undefined' && process.env?.VITE_RESEND_API_KEY);
     
     if (!resendApiKey) {
       console.warn('[Resend API] API key missing, OTP not sent');
